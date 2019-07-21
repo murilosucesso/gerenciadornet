@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<page xmlns="http://jboss.com/products/seam/pages"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://jboss.com/products/seam/pages http://jboss.com/products/seam/pages-2.2.xsd"
+      login-required="true">
+
+   <restrict>#{identity.hasRole(transacoes.transacaoVendaConsultar) and identity.hasRole(transacoes.transacaoConfirmarPagamento)}</restrict>
+   
+   <action execute="#{vendaHome.wire}"/>
+
+   <param name="vendaFrom"/>
+   <param name="vendaCodVenda" value="#{vendaHome.vendaCodVenda}"/>
+   <param name="tipoPagamentoFrom"/>
+   <param name="tipoPagamentoCodTipoPagamento" value="#{tipoPagamentoHome.tipoPagamentoCodTipoPagamento}"/>
+
+   <param name="clienteFrom"/>
+   <param name="clienteCodCliente" value="#{clienteHome.clienteCodCliente}"/>
+
+   <param name="usuarioFrom"/>
+   <param name="usuarioCodUsuario" value="#{usuarioHome.usuarioCodUsuario}"/>
+	
+   <navigation from-action="#{vendaHome.andamentoLiberarVenda()}">
+      <rule if-outcome="updated">
+         <end-conversation/>
+         <redirect view-id="/VendaList.xhtml">
+         	<param name="statusVendaDefault" value="#{constantes.confirmadaFinanceiro}"/>
+         </redirect>
+      </rule>
+   </navigation>
+   
+   <navigation from-action="#{vendaHome.andamentoIniciarSeparacaoMaterial()}">
+      <rule if-outcome="updated">
+         <end-conversation/>
+         <redirect view-id="/VendaList.xhtml">
+         	<param name="statusVendaDefault" value="#{constantes.separandoMaterial}"/>
+         </redirect>
+      </rule>
+   </navigation>
+   
+    <navigation from-action="#{vendaHome.confirmarEntrega()}">
+      <rule if-outcome="updated">
+         <end-conversation/>
+         <redirect view-id="/VendaList.xhtml">
+         	<param name="statusVendaDefault" value="#{constantes.confirmadaEstoque}"/>
+         </redirect>
+      </rule>
+   </navigation>
+
+
+</page>

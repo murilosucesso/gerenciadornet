@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<page xmlns="http://jboss.com/products/seam/pages"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://jboss.com/products/seam/pages http://jboss.com/products/seam/pages-2.2.xsd"
+      login-required="true">
+
+   <restrict>#{identity.hasRole(transacoes.transacaoHistoricoUsuarioConsultar)}</restrict>
+	 
+   <begin-conversation join="true" flush-mode="MANUAL"/>
+	
+   <param name="firstResult" value="#{historicoList.firstResult}"/>
+   <param name="sort" value="#{historicoList.orderColumn}"/>
+   <param name="dir" value="#{historicoList.orderDirection}"/>
+   <param name="logic" value="#{historicoList.restrictionLogicOperator}"/>
+
+   <param name="from"/>
+   <param name="usuario" value="#{historicoList.historico.usuario.codUsuario}"/>
+   <param name="descHistorico" value="#{historicoList.historico.descHistorico}"/>
+   <param name="dataInicial" value="#{historicoList.dataInicial}"/>
+   <param name="dataFinal" value="#{historicoList.dataFinal}"/>
+   <param name="mostrarResultados" value="#{historicoList.mostrarResultados}"/>
+
+</page>

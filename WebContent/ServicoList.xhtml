@@ -1,0 +1,137 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:s="http://jboss.com/products/seam/taglib"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:rich="http://richfaces.org/rich"
+    xmlns:a="http://richfaces.org/a4j"
+    template="layout/template.xhtml">
+
+<ui:define name="body">
+
+    <h:form id="servicoSearch" styleClass="edit">
+		
+		<ui:include src="/paginas/help/GenericListHelp.xhtml"/>	
+		
+        <rich:simpleTogglePanel label="Filtro de pesquisa de Serviços" switchType="client">
+
+            <s:decorate template="layout/display.xhtml">
+                <ui:define name="label">Descrição Serviço</ui:define>
+                <h:inputText id="descServico" value="#{servicoList.servico.descServico}" size="50"/>
+            </s:decorate>
+
+        </rich:simpleTogglePanel>
+    
+    	<table border="0" width="10%">
+			<tr>
+				<td nowrap="nowrap">
+		        	<ui:include src="/includes/includeBotoesPesquisarLimpar.xhtml" />
+				</td>
+				<td nowrap="nowrap">    
+				   <s:div styleClass="actionButtons" rendered="#{identity.hasRole(transacoes.transacaoServicoInserir)}">
+				        <s:button view="/ServicoEdit.xhtml"
+				                    id="create"
+				           propagation="none"
+				                 value="Novo Serviço">
+				            <f:param name="servicoCodServico"/>
+				        </s:button>
+				   </s:div>
+			   	</td>
+	    	</tr>
+		</table>
+    
+    
+    </h:form>
+    
+	<h:form>
+	
+    <rich:panel>
+    
+    <f:facet name="header">
+    	<a:outputPanel  id="panelDiv" ajaxRendered="true">
+    		Resultado da pesquisa de Serviços (#{empty servicoList.resultList ? 0 : (servicoList.paginated ? servicoList.resultCount : servicoList.resultList.size)})
+	    </a:outputPanel>
+    </f:facet>
+   
+    <a:outputPanel id="msnListaVazia" ajaxRendered="true">
+   	
+   	<h:outputText value="#{messages['mensagem.pesquisa.vazia']}" rendered="#{empty servicoList.resultList}"/>
+
+    <rich:dataTable id="resultadoList"
+                var="_servico"
+              value="#{servicoList.resultList}"
+           onRowMouseOver="this.style.backgroundColor='#F0F0F0'"
+           onRowMouseOut="this.style.backgroundColor='#{a4jSkin.rowBackgroundColor}'"
+           columnClasses="center"  
+           rows="25"
+           rendered="#{not empty servicoList.resultList}"
+           rowClasses="tableRowOne,tableRowTwo">
+                
+        <rich:column sortBy="#{_servico.descServico}"  > 
+           <f:facet name="header">
+               <h:outputText value="Descricao serviço"/>
+           </f:facet> 
+           <h:outputText value="#{_servico.descServico}"/>
+         </rich:column>     
+         
+         <rich:column sortBy="#{_servico.precoCusto}"> 
+           <f:facet name="header">
+               <h:outputText value="Preço Custo Serviço"/>
+           </f:facet>            
+           		 <h:outputText value="#{_servico.precoCusto}">
+           		 	<f:convertNumber currencySymbol="R$"  type="currency"  locale="pt_BR"/>
+           		 </h:outputText>          
+         </rich:column>    
+         
+         <rich:column sortBy="#{_servico.precoServico}"> 
+           <f:facet name="header">
+               <h:outputText value="Preço Serviço"/>
+           </f:facet>            
+           		 <h:outputText value="#{_servico.precoServico}">
+           		 	<f:convertNumber currencySymbol="R$"  type="currency"  locale="pt_BR"/>
+           		 </h:outputText>          
+         </rich:column>    
+         
+          <rich:column> 
+           <f:facet name="header">
+               <h:outputText value="Lucro"/>
+           </f:facet>            
+           		 <h:outputText value="#{_servico.precoServico - _servico.precoCusto}">
+           		 	<f:convertNumber currencySymbol="R$"  type="currency"  locale="pt_BR"/>
+           		 </h:outputText>          
+         </rich:column>                
+         
+        <rich:column styleClass="action">
+            
+            <f:facet name="header">Visualizar/Editar</f:facet>
+            
+            <s:link view="/#{empty from ? 'Servico' : from}.xhtml"  propagation="#{empty from ? 'none' : 'default'}"
+                      id="servicoViewId">
+                <h:graphicImage url="/img/binoculo.jpg"/>
+                <f:param name="servicoCodServico" value="#{_servico.codServico}"/>
+            </s:link>
+            <rich:toolTip for="servicoViewId" value="Visualizar Serviço" direction="top-left"/>
+            
+            #{' '}
+            
+            <s:link view="/ServicoEdit.xhtml"  propagation="none" id="servicoEdit" rendered="#{identity.hasRole(transacoes.transacaoServicoEditar)}">
+            	<h:graphicImage url="/img/editar.jpg"/>
+                <f:param name="servicoCodServico" value="#{_servico.codServico}"/>
+            </s:link>
+            <rich:toolTip for="servicoEdit" value="Editar Serviço" direction="top-left"/>
+            
+        </rich:column>
+    </rich:dataTable>
+    
+   	<ui:include src="/includes/includeDataScroller.xhtml"/>
+	
+    </a:outputPanel>
+    </rich:panel>
+	</h:form>
+	  
+
+</ui:define>
+
+</ui:composition>

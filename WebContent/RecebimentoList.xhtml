@@ -1,0 +1,765 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:s="http://jboss.com/products/seam/taglib"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:a="http://richfaces.org/a4j"
+	xmlns:easy="http://easyfaces.com.br/easyfaces"
+	template="layout/template.xhtml">
+
+	<ui:define name="body">
+		<script>
+		function selecionarTudo(){
+			for (i=0; document.resultadoForm.elements.length > i; i++){
+				if(document.resultadoForm.elements[i].type == "checkbox"){
+				   document.resultadoForm.elements[i].checked = document.resultadoForm.tudo.checked;
+				}
+			}
+		}
+		</script>
+		
+		<a:form id="recebimentoSearch" styleClass="edit">
+
+			<ui:include src="/paginas/help/GenericListHelp.xhtml" />
+
+			<rich:simpleTogglePanel label="Filtro de pesquisa de Recebimentos"
+				switchType="client">
+
+				<table width="100%" align="left">
+					<tr>
+						<td width="20%" nowrap="nowrap" colspan="2"><s:decorate
+								template="layout/display.xhtml">
+								<ui:define name="label">Venda</ui:define>
+								<h:inputText id="codVenda"
+									value="#{recebimentoList.recebimento.venda.codVenda}" size="10" />
+							</s:decorate></td>
+					</tr>
+					<tr>
+						<td width="20%" nowrap="nowrap" colspan="2"><s:decorate
+								template="layout/display.xhtml">
+								<ui:define name="label">Valor Parcela</ui:define>
+								<easy:inputCurrency id="valorAReceber"
+									value="#{recebimentoList.recebimento.valorAReceber}"
+									required="false" decimalSeparator="," groupSeparator="."
+									useValidate="false" returnDecimal="true" size="10" />
+							</s:decorate></td>
+					</tr>
+					<tr>
+						<td width="20%" nowrap="nowrap" colspan="2"><s:decorate
+								template="layout/display.xhtml">
+								<ui:define name="label"><h:outputText value="Núm. Documento" tittle="Número do Documento (Cheque, Boleto, Cartão)" /></ui:define>
+								<h:inputText maxlength="40" id="numDocumento"
+									value="#{recebimentoList.recebimento.numDocumento}"
+									title="Número do Boleto, Cheque, Cartão ou outro documento"
+									styleClass="defaultInput" />
+							</s:decorate></td>
+					</tr>
+					<tr>
+						<td width="20%" nowrap="nowrap" colspan="2"><s:decorate
+								template="layout/display.xhtml">
+								<ui:define name="label"><h:outputText value="Tipo Pagamento" /></ui:define>
+								<h:selectOneMenu id="statusVenda" value="#{recebimentoList.tipoPagamento}" styleClass="defaultInput">
+				                	<f:selectItem itemLabel="Todas"/>					
+									<f:selectItem itemLabel="Boleto" itemValue="Cheque"/>
+									<f:selectItem itemLabel="Cartao" itemValue="Cartao"/>
+									<f:selectItem itemLabel="Cheque" itemValue="Cheque"/>
+									<f:selectItem itemLabel="Conta Mensal" itemValue="Conta Mensal"/>
+									<f:selectItem itemLabel="Dinheiro" itemValue="Dinheiro" />
+									<f:selectItem itemLabel="Nota Empenho" itemValue="Nota Empenho"/>
+									<f:selectItem itemLabel="Ordem Pagamento" itemValue="Ordem Pagamento"/>
+								</h:selectOneMenu>				
+							</s:decorate></td>
+					</tr>
+					<tr>
+						<td width="20%" nowrap="nowrap" colspan="2"><s:decorate
+								template="layout/display.xhtml">
+								<ui:define name="label">Cliente</ui:define>
+								<h:selectOneMenu id="cliente"
+									value="#{recebimentoList.recebimento.venda.cliente}"
+									title="Cliente da venda" styleClass="defaultInput">
+									<s:selectItems value="#{clienteList.resultList}" var="cliente"
+										label="#{cliente.nome}" required="false"
+										noSelectionLabel="Selecione.." />
+									<s:convertEntity />
+								</h:selectOneMenu>
+							</s:decorate></td>
+					</tr>
+					<tr>
+						<td width="20%" nowrap="nowrap" colspan="2"><s:decorate
+								template="layout/display.xhtml">
+								<ui:define name="label">Vendedor</ui:define>
+								 <h:selectOneMenu id="vendedor" value="#{recebimentoList.recebimento.venda.usuario}" 
+								 		title="Recebimento gerados pela vendas de um vendedor" styleClass="defaultInput">		
+								   <s:selectItems value="#{usuarioList.resultList}" 
+								   				  var="usuario" 			
+								                  label="#{usuario.nomeUsuario}"
+								                  required="false"
+								                  noSelectionLabel="Selecione.." />							       		
+								   <s:convertEntity />			
+								</h:selectOneMenu>	
+							</s:decorate></td>
+					</tr>
+					<tr>
+						<td width="20%" nowrap="nowrap" colspan="2">
+							<s:decorate template="layout/display.xhtml" id="statusDiv">
+				                <ui:define name="label"><h:outputText value="Status Venda"/> </ui:define>
+				                <h:selectOneMenu id="statusVenda" value="#{recebimentoList.codigoStatusVenda}"  styleClass="defaultInput">
+									<f:selectItem itemLabel="Todas" />					
+									<f:selectItem itemLabel="Em Aberto(Não Concluídas)" itemValue="88" />
+									<f:selectItem itemLabel="Concluídas" itemValue="2" />		
+								</h:selectOneMenu>				
+				            </s:decorate>
+            			</td>
+            		</tr>
+					<tr>
+						<td width="20%" nowrap="nowrap" colspan="2"><s:decorate
+								template="layout/display.xhtml">
+								<ui:define name="label">Tipo de Data</ui:define>
+								<h:selectOneMenu id="tipoData"
+									value="#{recebimentoList.tipoData}" styleClass="defaultInput">
+									<f:selectItem itemLabel="Data de Agendamento do Recebimento" itemValue="3" />
+									<f:selectItem itemLabel="Data de Balancete" itemValue="1" />
+									<f:selectItem itemLabel="Data da Venda" itemValue="2" />									
+								</h:selectOneMenu>
+							</s:decorate></td>
+					</tr>
+					<tr>
+						<td width="20%" nowrap="nowrap" colspan="2">
+						
+							<h:outputLabel value="Data Início*" styleClass="name" /> 
+							<rich:spacer width="5px" /> 
+							
+							<rich:calendar id="dataInicio" required="true" onchanged="document.getElementById('recebimentoSearch:search').focus()"
+								value="#{recebimentoList.dataInicio}" defaultTime="00:00"
+								resetTimeOnDateSelect="true" datePattern="dd/MM/yyyy">
+									<f:convertDateTime pattern="yyyy-MM-dd HH:mm" />
+							</rich:calendar> 
+							
+							<rich:spacer width="20px" /> 
+							
+							<h:outputLabel value="Data Fim*" styleClass="textoNegrito" /> 
+							<rich:spacer width="15" /> 
+							
+							<rich:calendar
+								id="dataFim" required="true" value="#{recebimentoList.dataFim}"  onchanged="document.getElementById('recebimentoSearch:search').focus()"
+								defaultTime="23:59" resetTimeOnDateSelect="false"
+								datePattern="dd/MM/yyyy">
+									<f:convertDateTime pattern="yyyy-MM-dd HH:mm" />
+							</rich:calendar>
+						</td>
+					</tr>
+					<tr>
+						<td width="20%" nowrap="nowrap" colspan="2">	
+							<s:decorate template="layout/display.xhtml">
+								<ui:define name="label">Conferidos</ui:define>												
+			               		<h:selectOneRadio id="inConferencia" value="#{recebimentoList.indicadorConferencia}" styleClass="textoNegrito">
+				                	<f:selectItem itemLabel="Todos" />
+									<f:selectItem itemLabel="Sim" itemValue="true" />
+									<f:selectItem itemLabel="Não" itemValue="false" />
+								</h:selectOneRadio>
+							</s:decorate>
+						</td>
+					</tr>
+					<tr>
+			            <td colspan="3">
+				            <s:decorate template="layout/display.xhtml"> 
+				                <ui:define name="label"><h:outputText value="Qtd. Linhas" title="Quantidade de linhas que serão exibidas na consulta" /></ui:define>                                
+								<rich:inputNumberSpinner id="numeroLinhasDT" value="#{recebimentoList.numeroLinhasDT}" step="10" inputSize="8" maxValue="500" styleClass="inputDefault"/>				
+				            </s:decorate> 
+	                     </td>
+	            	</tr>
+				</table>
+
+				<div style="clear: both">
+					<span class="required">*</span> Campos obrigatórios
+				</div>
+
+			</rich:simpleTogglePanel>
+
+			<div class="actionButtons">
+				<a:commandButton id="search" type="submit" value="Pesquisar"
+					action="#{recebimentoList.setMostrarResultados(true)}" actionListener="#{recebimentoList.listarRecebimentos()}"
+					reRender="panelResultado, panelResultadoImprimir, resultadoList" />
+					
+				<s:button id="reset" value="Limpar" includePageParams="false" />
+				
+				<a:commandButton value="Novo Recebimento" type="button" reRender="panelEditRecebimento" 
+					actionListener="#{recebimentoHome.novoRecebimento()}" 
+					ajaxSingle="true"
+					limitToList="true"
+					oncomplete="#{rich:component('editPanel')}.show()"/>
+					
+				<a:commandButton value="Finalizar Venda" type="button" reRender="formularioFinalizarVenda, vendasList, qtdResultFinalizadas, sc2" 
+					action="#{recebimentoList.listarVendasFinalizadasDia()}"
+					ajaxSingle="true"
+					limitToList="true"					
+					oncomplete="#{rich:component('finalizarVendaPanel')}.show()"/>
+				
+				<rich:hotKey key="return" selector="#codVenda, #valorAReceber, #numDocumento, #cliente, #tipoData"
+					handler="#{rich:element('search')}.click()" />
+			</div>
+
+		</a:form>
+
+		<h:form id="resultadoForm">
+
+			<a:outputPanel id="panelResultado" ajaxRendered="true">
+
+				<rich:panel rendered="#{recebimentoList.mostrarResultados}">
+
+					<f:facet name="header">
+			    	Resultado da pesquisa por Recebimento(#{recebimentoList.qtdResultados})
+		    		</f:facet>
+
+					<h:outputText value="#{messages['mensagem.pesquisa.vazia']}"
+						rendered="#{empty recebimentoList.recebimentosList}" />
+					
+					
+					<rich:dataTable id="resultadoList" var="_recebimento"
+						value="#{recebimentoList.recebimentosList}"
+						onRowMouseOver="this.style.backgroundColor='#F0F0F0'"
+						onRowMouseOut="this.style.backgroundColor='#{a4jSkin.rowBackgroundColor}'"
+						footerClass="center"
+						rows="#{recebimentoList.numeroLinhasDT}" 
+						rowClasses="tableRowOne,tableRowTwo"
+						rowKeyVar="row">
+
+						<rich:column sortBy="#{_recebimento.venda.codVenda}"
+							styleClass="#{_recebimento.inConferencia ? 'tableRowSelecionada center': 'center'}">
+							<f:facet name="header">
+								<h:outputText value="Venda" />
+							</f:facet>
+							<h:outputText value="#{_recebimento.venda.codVenda}"/>
+						</rich:column>
+						
+						<rich:column styleClass="#{_recebimento.inConferencia ? 'tableRowSelecionada center': 'center'}">
+							<f:facet name="header">
+								<h:outputText value="Valor Venda" title="Valor total da venda"/>
+							</f:facet>
+							<h:outputText value="#{_recebimento.venda.valorTotalVenda}">
+								<f:convertNumber currencySymbol="R$" type="currency" locale="pt_BR" />
+							</h:outputText>
+						</rich:column>
+						
+						<rich:column styleClass="#{_recebimento.inConferencia ? 'tableRowSelecionada center': 'center'}"> 
+				           <f:facet name="header">
+				               <h:outputText value="Status"/>
+				           </f:facet> 				    
+				           <h:graphicImage url="/img/novoPedido.jpg" title="Novo Pedido" rendered="#{_recebimento.venda.statusVenda.codStatusVenda == constantes.pedido}"/>
+				           <h:graphicImage url="/img/novoPedido.jpg" title="Pedido Autorizado" rendered="#{_recebimento.venda.statusVenda.codStatusVenda == constantes.pedidoAutorizado}"/>
+				           <h:graphicImage url="/img/emEdicao.jpg" title="Venda em edição" rendered="#{_recebimento.venda.statusVenda.codStatusVenda == constantes.emEdicao}"/>
+				           <h:graphicImage url="/img/novaVenda.gif" title="Venda Aberta" rendered="#{_recebimento.venda.statusVenda.codStatusVenda == constantes.aberta}"/>
+				           <h:graphicImage url="/img/iniciar-separacao-material.gif" title="Iniciar a separação do material - Confirmada Financeiro" rendered="#{_recebimento.venda.statusVenda.codStatusVenda == constantes.confirmadaFinanceiro}"/>
+				           <h:graphicImage url="/img/validar-separacao-material.png" title="Validar a separação do material" rendered="#{_recebimento.venda.statusVenda.codStatusVenda == constantes.separandoMaterial}"/>
+				           <h:graphicImage url="/img/confirmarEntrega.jpg" title="Em fase de entrega" rendered="#{_recebimento.venda.statusVenda.codStatusVenda == constantes.emFaseEntrega}"/>
+				           <h:graphicImage url="/img/confirmarPagamento.jpg" title="Entregue - Confirmada Estoque" rendered="#{_recebimento.venda.statusVenda.codStatusVenda == constantes.confirmadaEstoque}"/>
+				           <h:graphicImage url="/img/vendaFinalizada.jpg" title="Venda Finalizada/Concluída" rendered="#{_recebimento.venda.statusVenda.codStatusVenda == constantes.concluida}"/>
+				           <h:graphicImage url="/img/cancelada.jpg" title="Venda Cancelada" rendered="#{_recebimento.venda.statusVenda.codStatusVenda == constantes.cancelada}"/>
+				           
+				           	<f:facet name="footer">
+								<a:commandLink styleClass="right" title="Confirmar Todos os Recebimentos da Lista/ Finalizar Todas as Vendas" 
+										action="#{vendaHome.andamentoFinalizarVendasPorRecebimento(recebimentoList.recebimentosList)}" 
+                				  		rendered="#{identity.hasRole(transacoes.transacaoVendaFinalizar)}" ajaxSingle="true">
+	            							<h:graphicImage url="/img/confirmarPagamento_black.jpg"/>     
+	            				</a:commandLink>
+	            			</f:facet>
+	            			 
+				        </rich:column>
+
+						<rich:column sortBy="#{_recebimento.venda.cliente.nome}"
+							styleClass="#{_recebimento.inConferencia ? 'tableRowSelecionada left': 'left'}">
+							<f:facet name="header">
+								<h:outputText value="Cliente" />
+							</f:facet>
+							<h:outputText rendered="#{_recebimento.venda.cliente.inAdimplente}"  value="#{_recebimento.venda.cliente.nome} - #{_recebimento.venda.cliente.telefone}" title="#{_recebimento.venda.cliente.nomeFantasiaApelido}" />
+							<h:outputText rendered="#{!_recebimento.venda.cliente.inAdimplente}" value="#{_recebimento.venda.cliente.nome} - #{_recebimento.venda.cliente.telefone} '- (Inadimplente)'" title="#{_recebimento.venda.cliente.nomeFantasiaApelido}" styleClass="textoMedioVermelho"/>
+						</rich:column>
+						
+						<rich:column sortBy="#{_recebimento.venda.tipoPagamento.descTipoPagamento}"
+							styleClass="#{_recebimento.inConferencia ? 'tableRowSelecionada center': 'center'}">
+							<f:facet name="header">
+								<h:outputText value="Tipo Pag." title="Tipo do Pagamento da Venda" />
+							</f:facet>
+							<h:outputText value="#{_recebimento.venda.tipoPagamento.descTipoPagamento}" id="tipoPagamento"/>
+						</rich:column>
+
+						<rich:column sortBy="#{_recebimento.venda.dataInicioVenda}"
+							styleClass="#{_recebimento.inConferencia ? 'tableRowSelecionada center': 'center'}">
+							<f:facet name="header">
+								<h:outputText value="Data Venda" />
+							</f:facet>
+							<h:outputText value="#{_recebimento.venda.dataInicioVenda}" id="dataVenda">
+								<s:convertDateTime type="date" pattern="dd/MM/yyyy"/>
+							</h:outputText>
+						</rich:column>
+						
+						<rich:column sortBy="#{_recebimento.dataAgendamentoRecebimento}"
+							styleClass="#{_recebimento.inConferencia ? 'tableRowSelecionada center': 'center'}">
+							<f:facet name="header">
+								<h:outputText value="Data Ag. Rec."
+									title="Data Agendamento do Recebimento. Data prevista de recebimento da parcela. " />
+							</f:facet>
+							<h:outputText value="#{_recebimento.dataAgendamentoRecebimento}" id="dataAgendamentoRecebimento">
+								<s:convertDateTime type="date" pattern="dd/MM/yyyy"/>
+							</h:outputText>
+						</rich:column>
+						
+						<rich:column sortBy="#{_recebimento.valorAReceber}"
+							styleClass="#{_recebimento.inConferencia ? 'tableRowSelecionada center': 'center'}">
+							<f:facet name="header">
+								<h:outputText value="Valor a Receber"
+									title="Valor a Receber" />
+							</f:facet>
+
+							<h:outputText value="#{_recebimento.valorAReceber}" id="valorAReceber">
+								<f:convertNumber currencySymbol="R$" type="currency" locale="pt_BR" />
+							</h:outputText>
+
+							<f:facet name="footer">
+								<h:outputText styleClass="textoNegrito" id="valorTotalAReceber" value="#{recebimentoList.valorTotalAReceber}">
+									<f:convertNumber currencySymbol="R$" type="currency" locale="pt_BR" />
+								</h:outputText>
+							</f:facet>
+						</rich:column>
+						
+						<rich:column sortBy="#{_recebimento.dataBalancete}"
+							styleClass="#{_recebimento.inConferencia ? 'tableRowSelecionada center': 'center'}">
+							<f:facet name="header">
+								<h:outputText value="Data Balancete"
+									title="Data em que o recebimento foi realmente efetivado" id="dataBalancete"/>
+							</f:facet>
+
+							<h:outputText value="#{_recebimento.dataBalancete}" rendered="true">
+								<s:convertDateTime type="date" pattern="dd/MM/yyyy"/>
+							</h:outputText>
+							
+							<f:facet name="footer">
+								<a:commandLink 
+										ajaxSingle="true"
+										actionListener="#{recebimentoHome.conferirTodos( recebimentoList.recebimentosList, false )}"
+				                        action="#{recebimentoList.listarRecebimentos}"
+										reRender="panelResultadoImprimir">
+				                        	<h:graphicImage url="/img/iconBlueCheck.gif" style="border:0" title="Incluir TODAS as Data do Balancete e replicar TODOS os valores a Receber para Valor Recebido"/>			                        
+				                    </a:commandLink>
+			                 </f:facet>
+						</rich:column>
+
+						<!--
+						<rich:column sortBy="#{_recebimento.valorMulta}"
+							styleClass="#{_recebimento.inConferencia ? 'tableRowSelecionada center': 'center'}">
+							<f:facet name="header">
+								<h:outputText value="Multa" title="Valor da Multa" />
+							</f:facet>
+
+							<h:outputText value="#{_recebimento.valorMulta}" id="valorMulta">
+								<f:convertNumber currencySymbol="R$" type="currency" locale="pt_BR" />
+							</h:outputText>
+
+							<f:facet name="footer">
+								<h:outputText styleClass="textoNegrito" value="#{recebimentoList.valorTotalMulta}">
+									<f:convertNumber currencySymbol="R$" type="currency" locale="pt_BR" />
+								</h:outputText>
+							</f:facet>
+						</rich:column>
+						-->
+						
+						<rich:column sortBy="#{_recebimento.numDocumento}"
+							styleClass="#{_recebimento.inConferencia ? 'tableRowSelecionada center': 'center'}">
+							<f:facet name="header">
+								<h:outputText value="Núm. Doc." title="Número do Documento (Cheque, Boleto, Cartão)" />
+							</f:facet>
+							<h:outputText value="#{_recebimento.numDocumento}" id="numDocumento"/>
+						</rich:column>
+						
+						<rich:column sortBy="#{_recebimento.valorPago}"
+							styleClass="#{_recebimento.inConferencia ? 'tableRowSelecionada center': 'center'}">
+							<f:facet name="header">
+								<h:outputText value="Valor Recebido" title="Valor Real Recebido da Parcela" />
+							</f:facet>
+
+							<h:outputText value="#{_recebimento.valorPago}" id="valorPago" styleClass="textoNegrito">
+								<f:convertNumber currencySymbol="R$" type="currency" locale="pt_BR" />
+							</h:outputText>
+
+							<f:facet name="footer">
+								<h:outputText id="valorTotalRecebido" value="#{recebimentoList.valorTotalRecebido}" styleClass="textoNegrito">
+									<f:convertNumber currencySymbol="R$" type="currency" locale="pt_BR" />
+								</h:outputText>
+							</f:facet>
+						</rich:column>
+						
+						<!--
+						<rich:column styleClass="#{_recebimento.inConferencia ? 'tableRowSelecionada center semQuebra': 'center semQuebra'}">
+							<f:facet name="header">
+								<h:outputText value="Total"
+									title="Valor a Recebido + Valor Multa" />
+							</f:facet>
+							
+							<h:outputText value="#{_recebimento.valorPago + _recebimento.valorMulta}" id="total" styleClass="textoNegrito">
+								<f:convertNumber currencySymbol="R$" type="currency" locale="pt_BR" />
+							</h:outputText>
+							
+							<f:facet name="footer">
+								<h:outputText styleClass="textoNegrito" value="#{recebimentoList.valorTotalRecebido + recebimentoList.valorTotalMulta}">
+									<f:convertNumber currencySymbol="R$" type="currency" locale="pt_BR" />
+								</h:outputText>
+							</f:facet>
+						</rich:column>
+						-->
+						
+						<rich:column
+							styleClass="#{_recebimento.inConferencia ? 'tableRowSelecionada center semQuebra': 'center semQuebra'}">
+							<f:facet name="header">
+								<h:outputText value="Editar" title="Alterar ou Excluir um pagamento"/>
+							</f:facet>
+
+<!-- link confirmar parte 1 -->
+							<a:commandLink id="oklink"
+								ajaxSingle="true"
+		                        action="#{recebimentoHome.conferir(_recebimento, false)}"
+								reRender="valorPago, dataBalancete, panelResultadoImprimir" rendered="#{!_recebimento.inConferencia and (_recebimento.venda.statusVenda.codStatusVenda != constantes.concluida or user.perfil.codPerfil == constantes.administrador)}">
+		                        <h:graphicImage url="/img/true.png" style="border:0" title="Incluir Data do Balancete e replicar Valor a Receber para Valor Recebido"/>
+		                        
+		                        <f:setPropertyActionListener value="#{_recebimento}" target="#{recebimentoHome.instance}" />
+		                        <f:setPropertyActionListener value="#{row}" target="#{recebimentoHome.currentRow}" />
+		                    </a:commandLink>
+		                    							
+<!-- link editar -->
+							<a:commandLink id="editlink"
+								ajaxSingle="true"  
+								action="#{recebimentoHome.selectedRecebimento(_recebimento)}"
+		                        oncomplete="#{rich:component('editPanel')}.show()" 
+		                        rendered="#{!_recebimento.inConferencia and (_recebimento.venda.statusVenda.codStatusVenda != constantes.concluida or user.perfil.codPerfil == constantes.administrador)}">
+		                        
+		                        <h:graphicImage url="/img/editar.jpg" style="border:0" title="Alterar"/>		                        
+		                        <f:setPropertyActionListener value="#{_recebimento}" target="#{recebimentoHome.instance}" />
+		                        <f:setPropertyActionListener value="#{row}" target="#{recebimentoHome.currentRow}" />
+		                    </a:commandLink>
+<!-- link deletar -->		                    
+		                    <a:commandLink id="deltelink"
+		                    	ajaxSingle="true"
+		                    	action="#{recebimentoHome.selectedRecebimento(_recebimento)}"
+		                        oncomplete="#{rich:component('deletePanel')}.show()" 
+		                        rendered="#{!_recebimento.inConferencia and (_recebimento.venda.statusVenda.codStatusVenda != constantes.concluida or user.perfil.codPerfil == constantes.administrador)}">
+		                        <h:graphicImage url="/img/cancelada.jpg" style="border:0" title="Excluir"/>
+		                        
+		                        <f:setPropertyActionListener value="#{_recebimento}" target="#{recebimentoHome.instance}" />
+		                        <f:setPropertyActionListener value="#{row}" target="#{recebimentoHome.currentRow}" />
+		                    </a:commandLink>
+<!-- img iconBlueCheck -->		           		 
+							<h:graphicImage url="/img/iconBlueCheck.gif" style="border:0" title="Confirmado o Recebimento" rendered="#{_recebimento.inConferencia}"/>        
+<!-- img iconLocked -->		       							
+							<h:graphicImage id="locked" url="/img/locked.gif" title="Recebimento bloqueado para edição."
+								rendered="#{!_recebimento.inConferencia and _recebimento.venda.statusVenda.codStatusVenda == constantes.concluida and user.perfil.codPerfil != constantes.administrador}"/>
+							
+							<f:facet name="footer">
+								<h:outputText value="Conf. Todos" title="Conferir todos os recebimentos." styleClass="textoNegrito" rendered="#{identity.hasRole(transacoes.transacaoGerenciarRecebimentosConferir)}"/>
+							</f:facet>   
+						</rich:column>
+
+<!-- checkbox confirmar  -->							
+						<rich:column rendered="#{identity.hasRole(transacoes.transacaoGerenciarRecebimentosConferir)}"
+							styleClass="#{_recebimento.inConferencia ? 'tableRowSelecionada center': 'center'}">
+							<f:facet name="header">
+								<h:outputText value="Conferir" title="Este valor foi repassado para o responsável financeiro pra realização do depósito"/>
+							</f:facet>
+
+							<h:selectBooleanCheckbox id="op" value="#{_recebimento.inConferencia}">
+								<a:support ajaxSingle="true" event="onclick" action="#{recebimentoHome.conferir(_recebimento, true)}"
+									reRender="valorPago, dataBalancete, panelResultadoImprimir"/>
+							</h:selectBooleanCheckbox>
+													
+							<f:facet name="footer">
+							
+								<h:selectBooleanCheckbox id="opTodos" value="#{recebimentoHome.inConferenciaTodos}">
+									<a:support ajaxSingle="true" event="onclick" 
+										actionListener="#{recebimentoHome.conferirTodos( recebimentoList.recebimentosList, true )}" 
+										action="#{recebimentoList.listarRecebimentos}" 
+										reRender="resultadoList, panelResultadoImprimir"/>
+								</h:selectBooleanCheckbox>
+							</f:facet>
+							
+						</rich:column>
+
+					</rich:dataTable>
+
+					<ui:include src="/includes/includeDataScroller.xhtml" />
+
+					<div class="actionButtons right">
+						<a:region>
+							<a:commandButton type="button" id="btnImprimir" ajaxSingle="true" limitToList="true" value="Imprimir" title="Imprimi">
+								<rich:componentControl for="imprimirRecebimentoPopUp" attachTo="btnImprimir"  operation="show" event="onclick"/>								
+							</a:commandButton>
+						</a:region>
+					</div>
+					
+					<!-- modal IMPRIMIR -->		
+					<ui:include src="/RecebimentoListImprimir.xhtml" />
+					
+				</rich:panel>
+			</a:outputPanel>
+		</h:form>
+		
+<!-- Modal Novo/Editar Recebimento -->		
+		<a:outputPanel id="panelEditRecebimento" ajaxRendered="true">
+		<rich:modalPanel id="editPanel" autosized="true" width="450" onshow="document.getElementById('form:numDoc:inputNumDocumento').focus()" >
+		        <f:facet name="header">
+		            <h:outputText value="#{recebimentoHome.novoRecebimento ? 'Novo Recebimento' : 'Editar Recebimento'}"/>
+		        </f:facet>
+		        <f:facet name="controls">
+		            <h:panelGroup>
+		                <h:graphicImage value="/img/close.png" id="hidelink" style="cursor:pointer;"/>
+		                <rich:componentControl for="editPanel" attachTo="hidelink" operation="hide" event="onclick" />
+		            </h:panelGroup>
+		        </f:facet>
+	            <h:form id="form">
+	            <rich:panel>
+	             <a:outputPanel ajaxRendered="true" id="panelGlobalMessages">
+			         <h:messages id="messages" globalOnly="false" styleClass="message"
+			            errorClass="errormsg" infoClass="infomsg" warnClass="warnmsg"
+			            rendered="#{showGlobalMessages != 'false'}"/>
+			     </a:outputPanel>
+	            
+				<h:panelGrid columns="1">
+					
+
+					<s:decorate template="layout/edit.xhtml" rendered="#{empty recebimentoHome.instance.venda.codVenda}" >
+						<ui:define name="label"><h:outputText value="Código Venda"/></ui:define>
+						<h:inputText maxlength="40" id="codVenda" required="true" requiredMessage="Campo Código Venda Obrigatório "
+								value="#{recebimentoHome.instance.venda.codVenda}"
+								title="Código da Venda para qual será gerado um novo Recebimento"
+								styleClass="defaultInput2" />
+					</s:decorate>
+
+					<s:decorate template="layout/edit.xhtml">
+						<ui:define name="label"><h:outputText value="Data Agendamento Rec."  title="Data do Agendamento do Recebimento"/></ui:define>
+						<rich:calendar required="true" id="inputDataInicial"
+							value="#{recebimentoHome.instance.dataAgendamentoRecebimento}" requiredMessage="Campo Obrigatório" 
+							onchanged="document.getElementById('form:numDoc:inputNumDocumento').focus()"
+							defaultTime="00:00" resetTimeOnDateSelect="true"
+							datePattern="dd/MM/yyyy">
+							<f:convertDateTime pattern="yyyy-MM-dd HH:mm" />
+						</rich:calendar>
+					</s:decorate>
+
+					<s:decorate template="layout/edit.xhtml">
+						<ui:define name="label"><h:outputText value="Data Balancete" /></ui:define>
+						<rich:calendar id="inputDataFinal"
+							value="#{recebimentoHome.instance.dataBalancete}"
+							onchanged="document.getElementById('form:numDoc:inputNumDocumento').focus();"
+							defaultTime="00:00" resetTimeOnDateSelect="true"
+							datePattern="dd/MM/yyyy">
+							<f:convertDateTime pattern="yyyy-MM-dd HH:mm" />
+						</rich:calendar>
+					</s:decorate>
+				
+					<s:decorate id="numDoc" template="layout/edit.xhtml">
+							<ui:define name="label">Núm. Documento</ui:define>
+							<h:inputText maxlength="40" id="inputNumDocumento"
+								value="#{recebimentoHome.instance.numDocumento}"
+								title="Número do Boleto, Cheque, Cartão ou outro documento"
+								styleClass="defaultInput2" />
+					</s:decorate>
+				
+					<s:decorate template="layout/edit.xhtml">
+							<ui:define name="label"><h:outputText value="Valor a Receber" /></ui:define>
+							<easy:inputCurrency value="#{recebimentoHome.instance.valorAReceber}" required="true" requiredMessage="Campo Obrigatório"
+								decimalSeparator="," groupSeparator="." useValidate="false" id="inputValorAReceber"
+								returnDecimal="true" size="10">
+							</easy:inputCurrency>
+					</s:decorate>
+					
+					<s:decorate template="layout/edit.xhtml">
+							<ui:define name="label"><h:outputText value="Valor Recebido" /></ui:define>
+							<easy:inputCurrency value="#{recebimentoHome.instance.valorPago}" id="inputValorRecebido"
+								decimalSeparator="," groupSeparator="." useValidate="false"
+								returnDecimal="true" size="10">
+							</easy:inputCurrency>
+					</s:decorate>
+
+					<s:decorate template="layout/edit.xhtml">
+							<ui:define name="label">Valor Multa</ui:define>
+							<easy:inputCurrency value="#{recebimentoHome.instance.valorMulta}"  id="inputValorMulta"
+								decimalSeparator="," groupSeparator="." useValidate="false"
+								returnDecimal="true" size="10">
+							</easy:inputCurrency>
+					</s:decorate>
+					
+				</h:panelGrid>
+				</rich:panel>
+				
+				<table width="100%" border="0" cellspacing="3">
+					<tr>
+						<td class="right" width="50%">
+							<a:commandButton id="btnSalvarUpdate" value="Salvar" action="#{recebimentoHome.update}" rendered="#{!recebimentoHome.novoRecebimento}"
+								reRender="valorPago, valorAReceber, numDocumento, dataBalancete, dataAgendamentoRecebimento, panelResultadoImprimir"
+								oncomplete="#{rich:component('editPanel')}.hide();" />
+							<rich:hotKey key="return" selector="#inputNumDocumento, #inputValorAReceber, #inputValorRecebido, #inputValorMulta" rendered="#{!recebimentoHome.novoRecebimento}" handler="#{rich:element('btnSalvarUpdate')}.click()"/>
+							
+							<a:commandButton id="btnSalvarPersist" value="Salvar" 
+								actionListener="#{recebimentoHome.persist}"
+								action="#{recebimentoList.listarRecebimentos}" 
+								rendered="#{recebimentoHome.novoRecebimento}"
+								oncomplete="#{rich:component('editPanel')}.hide();" 
+								reRender="panelResultado, panelResultadoImprimir"/>
+							<rich:hotKey key="return"  selector="#inputNumDocumento, #inputValorAReceber, #inputValorRecebido, #inputValorMulta"  rendered="#{recebimentoHome.novoRecebimento}" handler="#{rich:element('btnSalvarPersist')}.click()"/>	
+							
+						</td>
+						<td style="align:left">						
+							<input value="Cancelar" type="button" onclick="#{rich:component('editPanel')}.hide();"/>
+						</td>
+					</tr>
+				</table>
+			</h:form>
+	    </rich:modalPanel>
+		</a:outputPanel>
+
+<!-- Modal DELETE -->	    
+	    <rich:modalPanel id="deletePanel" autosized="true" width="200"  onshow="document.getElementById('formDelete:btnSim').focus()">
+        <f:facet name="header">
+            <h:outputText value="Excluir?" style="padding-right:15px;" />
+        </f:facet>
+        
+        <f:facet name="controls">
+            <h:panelGroup>
+                <h:graphicImage value="/img/close.png" id="hidelink2" style="cursor:pointer;"/>
+                <rich:componentControl for="deletePanel" attachTo="hidelink2"
+                    operation="hide" event="onclick" />
+            </h:panelGroup>
+        </f:facet>
+        <h:form id="formDelete">
+            <table width="100%">
+                <tbody>
+                	<tr>
+                        <td align="center" colspan="2">	
+                		<h:outputText value="Tem certeza que deseja deletar este pagamento?" styleClass="textoNegrito" />
+                		</td>
+                	</tr>
+                    <tr>
+                        <td align="right" width="50%">
+                        	<a:commandButton id="btnSim" value="SIM"
+                        	action="#{recebimentoList.listarRecebimentos()}"
+                        	actionListener="#{recebimentoHome.remove}"
+                            ajaxSingle="true" 
+                            oncomplete="#{rich:component('deletePanel')}.hide();"
+                            reRender="panelResultado, panelResultadoImprimir" />
+                        </td>
+                            
+                        <td align="left" width="50%">
+                        	<input value="NAO" type="button" onclick="#{rich:component('deletePanel')}.hide();"/>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </h:form>
+    </rich:modalPanel>
+
+<!-- Modal Finalizar Venda -->	    
+	<rich:modalPanel id="finalizarVendaPanel" autosized="true" width="460" onshow="document.getElementById('formFinalizarVenda:codVendaFinalizar').focus()">
+        <f:facet name="header">
+            <h:outputText value="Finalizar Venda?" style="padding-right:15px;" />
+        </f:facet>
+        
+        <f:facet name="controls">
+            <h:panelGroup>
+                <h:graphicImage value="/img/close.png" id="hidelink3" style="cursor:pointer;"/>
+                <rich:componentControl for="finalizarVendaPanel" attachTo="hidelink3"
+                    operation="hide" event="onclick" />
+            </h:panelGroup>
+        </f:facet>
+        
+        <a:form id="formFinalizarVenda">
+	        <a:outputPanel id="formularioFinalizarVenda" ajaxRendered="true">
+			
+				<a:outputPanel ajaxRendered="true" id="panelGlobalMessages">
+			         <h:messages id="messages" globalOnly="false" styleClass="message"
+			            errorClass="errormsg" infoClass="infomsg" warnClass="warnmsg"
+			            rendered="#{showGlobalMessages != 'false'}"/>
+			     </a:outputPanel>
+	            
+	            <table width="100%">
+					<tr align="center">
+						<td><h:outputText value="Confirmar Recebimento de Pagamento/Finalizar Venda?  " styleClass="textoNegrito" /></td>
+					</tr>
+					<tr align="center">
+						<td><h:graphicImage url="/img/confirmarPagamento.jpg"/></td>
+					</tr>
+				</table>
+				
+            	<table width="100%">
+                	<tbody>
+                		<tr>
+	                        <td colspan="2">
+	                        	<h:outputText value="Código Venda: " styleClass="textoNegrito"/>
+		                        <h:inputText maxlength="12" id="codVendaFinalizar" required="true" 
+		                        	requiredMessage="Campo Código Venda Obrigatório "
+									value="#{recebimentoHome.codVenda}"
+									title="Código da Venda a ser finalizada."
+									styleClass="defaultInput" />
+							</td>
+	                    </tr>
+	                    <tr>
+	                        <td align="right" width="50%">
+	                        	<a:commandButton id="btnSim2" value="SIM"  title="Confirmar Pagamento / Finalizar Venda"
+		                            ajaxSingle="true" 
+		                            process="codVendaFinalizar" 
+		                            actionListener="#{recebimentoHome.finalizarVenda()}"
+		                            action="#{recebimentoList.listarVendasFinalizadasDia()}"
+		                            reRender="resultadoList, panelResultadoImprimir, vendasList, qtdResultFinalizadas, sc2"
+		                            oncomplete="#{rich:element('codVendaFinalizar')}.focus()"/>
+	                            																													 
+	                            <rich:hotKey key="return"  selector="#codVendaFinalizar" handler="#{rich:element('btnSim2')}.click();"  />
+	                            <rich:hotKey key="esc"  selector="#codVendaFinalizar, #btnSim2, #btnNao2" handler="#{rich:component('finalizarVendaPanel')}.hide();"/>
+	                        </td>
+	                            
+	                        <td align="left" width="50%">
+	                        	<a:commandButton id="btnNao2" value="NAO" type="button"  onclick="#{rich:component('finalizarVendaPanel')}.hide();return false;" />
+	                        </td>
+	                    </tr>
+                	</tbody>
+            	</table>
+            </a:outputPanel>
+            	
+            <h:outputText id="qtdResultFinalizadas" value="Vendas finalizadas hoje: #{recebimentoList.qtdResultFinalizadas}" styleClass="textoNegrito"/>
+            	
+           	<rich:dataTable id="vendasList" var="_venda"
+					value="#{recebimentoList.vendasFinalizadasDia}"
+					onRowMouseOver="this.style.backgroundColor='#F0F0F0'"
+					onRowMouseOut="this.style.backgroundColor='#{a4jSkin.rowBackgroundColor}'"
+					rows="5" 
+					rowClasses="tableRowOne,tableRowTwo">
+					
+					<rich:column styleClass="center">
+						<f:facet name="header">
+							<h:outputText value="Venda"/>
+						</f:facet>
+						<h:outputText value="#{_venda.codVenda}"/>
+					</rich:column>
+					
+					<rich:column>
+						<f:facet name="header">
+							<h:outputText value="Cliente"/>
+						</f:facet>
+						<h:outputText value="#{_venda.cliente.nome}"/>
+					</rich:column>
+					
+					<rich:column styleClass="center">
+						<f:facet name="header">
+							<h:outputText value="Valor"/>
+						</f:facet>
+						<h:outputText value="#{_venda.valorTotalVenda}">
+							<f:convertNumber currencySymbol="R$"  type="currency"  locale="pt_BR"/>
+						</h:outputText>
+					</rich:column>
+			</rich:dataTable>
+			<rich:datascroller align="center" renderIfSinglePage="false" for="vendasList" maxPages="10" id="sc2"/>
+        </a:form>
+    	</rich:modalPanel>
+		
+	<rich:jQuery selector="#codVenda" timing="onload" query="focus()" />
+	</ui:define>
+
+</ui:composition>

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<page xmlns="http://jboss.com/products/seam/pages" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://jboss.com/products/seam/pages http://jboss.com/products/seam/pages-2.2.xsd"
+	login-required="true">
+	
+	<restrict>#{identity.hasRole(transacoes.transacaoRelatorioParaOCliente)}</restrict>
+	
+	<param name="firstResult" value="#{relatorioList.firstResult}" />
+	<param name="sort" value="#{relatorioList.orderColumn}" />
+	<param name="dir" value="#{relatorioList.orderDirection}" />
+	<param name="logic" value="#{relatorioList.restrictionLogicOperator}" />
+	<param name="vendaFrom" />
+	<param name="cliente" value="#{relatorioList.venda.cliente.codCliente}" />
+	<param name="usuario" value="#{relatorioList.venda.usuario.codUsuario}" />
+	<param name="usuarioResponsavel" value="#{relatorioList.usuarioResponsavel.codUsuario}" />
+	<param name="dataInicioVenda" value="#{relatorioList.venda.dataInicioVenda}" />
+	<param name="dataFimVenda" value="#{relatorioList.venda.dataFimVenda}" />
+	<param name="statusVenda" value="#{relatorioList.statusVenda}" />
+	<param name="numeroLinhasDT" value="#{relatorioList.numeroLinhasDT}" />
+	<param name="mostrarResultados" value="#{relatorioList.mostrarResultados}" />
+	
+</page>

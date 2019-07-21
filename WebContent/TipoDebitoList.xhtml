@@ -1,0 +1,112 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:s="http://jboss.com/products/seam/taglib"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:rich="http://richfaces.org/rich"
+    xmlns:a="http://richfaces.org/a4j"
+    template="layout/template.xhtml">
+
+<ui:define name="body">
+
+    <h:form id="tipoDebitoSearch" styleClass="edit">
+
+		<ui:include src="/paginas/help/GenericListHelp.xhtml"/>	
+
+        <rich:simpleTogglePanel label="Filtro de pesquisa de Tipo de Debito" switchType="client">
+
+            <s:decorate template="layout/display.xhtml">
+                <ui:define name="label">Tipo Debito</ui:define>
+                <h:inputText id="descTipoDebito" value="#{tipoDebitoList.tipoDebito.descTipoDebito}" size="50"/>
+            </s:decorate>
+
+        </rich:simpleTogglePanel>
+        
+	    <table border="0" width="10%">
+			<tr>
+				<td nowrap="nowrap">
+		        	<ui:include src="/includes/includeBotoesPesquisarLimpar.xhtml" />
+				</td>
+				<td nowrap="nowrap">    
+				  <s:div styleClass="actionButtons">
+			        <s:button view="/TipoDebitoEdit.xhtml"
+			                    id="create"
+			           propagation="none"
+			                 value="Novo Tipo Debito">
+			            <f:param name="tipoDebitoCodTipoDebito"/>
+			        </s:button>
+			    </s:div>
+			   	</td>
+	    	</tr>
+		</table>
+    
+    </h:form>
+
+	<h:form>
+    <rich:panel>
+    
+    <f:facet name="header">
+		<a:outputPanel  id="panelDiv" ajaxRendered="true">
+	        Resultado da pesquisa por Tipo Debito (#{empty tipoDebitoList.resultList ? 0 : (tipoDebitoList.paginated ? tipoDebitoList.resultCount : tipoDebitoList.resultList.size)})
+	    </a:outputPanel>
+    </f:facet>
+    
+    <a:outputPanel id="msnListaVazia" ajaxRendered="true">
+   	
+	<h:outputText value="#{messages['mensagem.pesquisa.vazia']}" rendered="#{empty tipoDebitoList.resultList}" />
+
+    <rich:dataTable id="resultadoList"
+                var="_tipoDebito"
+              value="#{tipoDebitoList.resultList}"
+     onRowMouseOver="this.style.backgroundColor='#F0F0F0'"
+      onRowMouseOut="this.style.backgroundColor='#{a4jSkin.rowBackgroundColor}'"
+      columnClasses="left, center"  
+      		   rows="15"
+      	   rendered="#{not empty tipoDebitoList.resultList}"
+         rowClasses="tableRowOne,tableRowTwo">
+                   
+       <rich:column sortBy="#{_tipoDebito.descTipoDebito}"> 
+           <f:facet name="header">
+               <h:outputText value="Tipo Debito"/>
+           </f:facet> 
+           <h:outputText value="#{_tipoDebito.descTipoDebito}"/>
+        </rich:column>
+              
+        
+        <rich:column styleClass="action">
+        
+            <f:facet name="header">Visualizar/Editar</f:facet>
+        
+            <s:link view="/TipoDebito.xhtml" propagation="default"
+                      id="tipoDebitoViewId">
+                <h:graphicImage url="/img/binoculo.jpg"/>
+                <f:param name="tipoDebitoCodTipoDebito" value="#{_tipoDebito.codTipoDebito}"/>
+                <f:param name="from" value="TipoPagamentoList"/>
+            </s:link>
+            
+            <rich:toolTip for="tipoDebitoViewId" value="Visualizar Tipo de Debito" direction="top-left"/>
+            
+            #{' '}
+            
+            <s:link view="/TipoDebitoEdit.xhtml" propagation="default" id="tipoDebitoEdit">
+                <h:graphicImage url="/img/editar.jpg"/>
+                <f:param name="tipoDebitoCodTipoDebito" value="#{_tipoDebito.codTipoDebito}"/>
+                <f:param name="from" value="TipoDebitoList"/>
+            </s:link>
+            
+            <rich:toolTip for="tipoDebitoEdit" value="Editar Tipo de Debito" direction="top-left"/>
+            
+        </rich:column>
+    </rich:dataTable>
+	
+	<ui:include src="/includes/includeDataScroller.xhtml"/>
+	
+    </a:outputPanel>
+    </rich:panel>
+	</h:form>
+<rich:jQuery selector="#descTipoDebito" timing="onload" query="focus()" />
+</ui:define>
+
+</ui:composition>

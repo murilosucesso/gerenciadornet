@@ -1,0 +1,223 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<rich:modalPanel id="imprimirRecebimentoPopUp" minWidth="950" minHeight="530" autosized="true" top="15px"
+		onshow="window.print();alert('Impressão Finalizada. A janela será fechada.'),Richfaces.hideModalPanel('imprimirRecebimentoPopUp')"
+	xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:s="http://jboss.com/products/seam/taglib"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html" 
+    xmlns:a="http://richfaces.org/a4j"
+    xmlns:rich="http://richfaces.org/rich">
+
+	<style type="text/css">
+	@media print {
+		 body > * {
+		 display: none;
+		 }
+		 
+		 body > .rich-modalpanel {
+		 display: block;
+		 }
+		 
+		 .rich-mpnl_panel, .rich-mpnl_panel > div {
+		 position: static !important;
+		 }
+		 
+		 .rich-mpnl-mask-div, .rich-mpnl-shadow{
+		 display: none !important;
+		 }
+		 
+		 .rich-mp-content {
+		 overflow: visible !important;
+		 width: auto !important;
+		 height: auto !important;
+		 }
+	}
+	</style>
+	
+	<div>
+		
+		<table width="100%">
+		<tr>
+			<td width="25%">
+				<h:graphicImage url="/img#{facesContext.externalContext.requestContextPath}/logo-imprimir.jpg" />
+			</td>
+			<td style="text-align: center">
+				<h:outputLabel value="RELATÓRIO DE RECEBIMENTOS" styleClass="textoMedioCinza left" />
+				<br/>
+				<h:outputLabel value="PERÍODO:" styleClass="textoMedioCinza left" />
+				<h:outputLabel value="#{recebimentoList.dataInicio}" styleClass="textoMedioCinza left"> 
+					<f:convertDateTime pattern="dd/MM/yyyy" />
+				</h:outputLabel>
+				<h:outputLabel value=" À " styleClass="textoMedioCinza left"/>
+				<h:outputLabel value="#{recebimentoList.dataFim}" styleClass="textoMedioCinza left">
+					<f:convertDateTime pattern="dd/MM/yyyy" />
+				</h:outputLabel> 
+			</td>
+		</tr>
+		</table>
+
+		<a:outputPanel id="panelResultadoImprimir" ajaxRendered="true">
+		<h:form id="resultadoForm2">
+
+			<h:outputText value="#{messages['mensagem.pesquisa.vazia']}"
+						rendered="#{empty recebimentoList.recebimentosList}" />
+						
+			<rich:dataTable id="resultadoList2" var="_recebimento"
+				value="#{recebimentoList.recebimentosList}"
+				rendered="#{not empty recebimentoList.recebimentosList}"
+				onRowMouseOver="this.style.backgroundColor='#F0F0F0'"
+				onRowMouseOut="this.style.backgroundColor='#{a4jSkin.rowBackgroundColor}'"
+				footerClass="center"
+				rowClasses="tableRowOne,tableRowTwo"
+				rowKeyVar="row">
+
+				<rich:column styleClass="#{_recebimento.inConferencia ? 'tableRowSelecionada center': 'center'}">
+					<f:facet name="header">
+						<h:outputText value="Venda" />
+					</f:facet>
+					<h:outputText value="#{_recebimento.venda.codVenda}" />
+				</rich:column>
+				
+				<rich:column styleClass="#{_recebimento.inConferencia ? 'tableRowSelecionada center': 'center'}">
+					<f:facet name="header">
+						<h:outputText value="Vlr Venda" title="Valor total da venda"/>
+					</f:facet>
+					<h:outputText value="#{_recebimento.venda.valorTotalVenda}">
+						<f:convertNumber currencySymbol="R$" type="currency" locale="pt_BR" />
+					</h:outputText>
+				</rich:column>
+				
+				<rich:column styleClass="#{_recebimento.inConferencia ? 'tableRowSelecionada center': 'center'}"> 
+		           <f:facet name="header">
+		               <h:outputText value="Status"/>
+		           </f:facet> 
+		           <h:outputText value="#{_recebimento.venda.statusVenda.descStatusVenda}"/>
+		        </rich:column>
+
+				<rich:column styleClass="#{_recebimento.inConferencia ? 'tableRowSelecionada left': 'left'}">
+					<f:facet name="header">
+						<h:outputText value="Cliente" />
+					</f:facet>
+					<h:outputText value="#{_recebimento.venda.cliente.nome} - #{_recebimento.venda.cliente.telefone}" />
+				</rich:column>
+				
+				<rich:column styleClass="#{_recebimento.inConferencia ? 'tableRowSelecionada center': 'center'}">
+					<f:facet name="header">
+						<h:outputText value="Tipo Pag." title="Tipo do Pagamento da Venda" />
+					</f:facet>
+					<h:outputText value="#{_recebimento.venda.tipoPagamento.descTipoPagamento}"/>
+				</rich:column>
+
+				<rich:column
+					styleClass="#{_recebimento.inConferencia ? 'tableRowSelecionada center': 'center'}">
+					<f:facet name="header">
+						<h:outputText value="Dt Venda" />
+					</f:facet>
+					<h:outputText value="#{_recebimento.venda.dataInicioVenda}">
+						 <s:convertDateTime type="date" pattern="dd/MM/yyyy"/>
+					</h:outputText>
+				</rich:column>
+				
+				<rich:column
+					styleClass="#{_recebimento.inConferencia ? 'tableRowSelecionada center': 'center'}">
+					<f:facet name="header">
+						<h:outputText value="Dt Agend. Rec."/>
+					</f:facet>
+					<h:outputText value="#{_recebimento.dataAgendamentoRecebimento}" id="dataAgendamentoRecebimento2">
+						 <s:convertDateTime type="date" pattern="dd/MM/yyyy"/>
+					</h:outputText>
+				</rich:column>
+				
+				<rich:column styleClass="#{_recebimento.inConferencia ? 'tableRowSelecionada center': 'center'}">
+					<f:facet name="header">
+						<h:outputText value="Vlr a Receber"/>
+					</f:facet>
+
+					<h:outputText value="#{_recebimento.valorAReceber}" id="valorAReceber2">
+						<f:convertNumber currencySymbol="R$" type="currency" locale="pt_BR" />
+					</h:outputText>
+
+					<f:facet name="footer">
+						<h:outputText styleClass="textoNegrito" id="valorTotalAReceber2" value="#{recebimentoList.valorTotalAReceber}">
+							<f:convertNumber currencySymbol="R$" type="currency" locale="pt_BR" />
+						</h:outputText>
+					</f:facet>
+				</rich:column>
+				
+				<rich:column styleClass="#{_recebimento.inConferencia ? 'tableRowSelecionada center': 'center'}">
+					<f:facet name="header">
+						<h:outputText value="Dt Balancete"
+							title="Data em que o recebimento foi realmente efetivado" id="dataBalancete2"/>
+					</f:facet>
+
+					<h:outputText value="#{_recebimento.dataBalancete}" rendered="true">
+						 <s:convertDateTime type="date" pattern="dd/MM/yyyy"/>
+					</h:outputText>	
+				</rich:column>
+
+				<rich:column styleClass="#{_recebimento.inConferencia ? 'tableRowSelecionada center': 'center'}">
+					<f:facet name="header">
+						<h:outputText value="Vlr Recebido" title="Valor Real Recebido da Parcela" />
+					</f:facet>
+
+					<h:outputText value="#{_recebimento.valorPago}" id="valorPago2" styleClass="textoNegrito">
+						<f:convertNumber currencySymbol="R$" type="currency" locale="pt_BR" />
+					</h:outputText>
+
+					<f:facet name="footer">
+						<h:outputText styleClass="textoNegrito" value="#{recebimentoList.valorTotalRecebido}">
+							<f:convertNumber currencySymbol="R$" type="currency" locale="pt_BR" />
+						</h:outputText>
+					</f:facet>
+				</rich:column>
+
+				<!--
+				<rich:column styleClass="#{_recebimento.inConferencia ? 'tableRowSelecionada center': 'center'}">
+					<f:facet name="header">
+						<h:outputText value="Vlr Multa" title="Valor da Multa" />
+					</f:facet>
+
+					<h:outputText value="#{_recebimento.valorMulta}" id="valorMulta2">
+						<f:convertNumber currencySymbol="R$" type="currency" locale="pt_BR" />
+					</h:outputText>
+
+					<f:facet name="footer">
+						<h:outputText styleClass="textoNegrito" value="#{recebimentoList.valorTotalMulta}">
+							<f:convertNumber currencySymbol="R$" type="currency" locale="pt_BR" />
+						</h:outputText>
+					</f:facet>
+				</rich:column>
+				-->
+
+				<rich:column styleClass="#{_recebimento.inConferencia ? 'tableRowSelecionada center': 'center'}">
+					<f:facet name="header">
+						<h:outputText value="Núm. Doc."/>
+					</f:facet>
+					<h:outputText value="#{_recebimento.numDocumento}" id="numDocumento2"/>
+				</rich:column>
+				
+				
+				<rich:column styleClass="#{_recebimento.inConferencia ? 'tableRowSelecionada center': 'center'}">
+					<f:facet name="header">
+						<h:outputText value=""/>
+					</f:facet>
+
+<!-- img iconBlueCheck -->		           		 
+					<h:graphicImage url="/img/iconBlueCheck.gif" style="border:0" rendered="#{_recebimento.inConferencia}"/>                   
+                    
+				</rich:column>
+			</rich:dataTable>
+			
+			<rich:spacer height="30px"/>
+			<h:panelGrid border="0" width="100%" cellpadding="0" columnClasses="center">
+				<h:outputLabel value="Documento Impresso" styleClass="textoImpressaoNegrito"/>
+				<h:outputLabel value="#{recebimentoList.dataAtual}" styleClass="textoImpressaoNegrito">
+					<f:convertDateTime pattern="dd/MM/yyyy" />
+				</h:outputLabel> 			
+			</h:panelGrid>
+		</h:form>
+		</a:outputPanel>
+	</div>
+</rich:modalPanel>

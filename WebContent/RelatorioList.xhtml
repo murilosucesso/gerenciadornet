@@ -1,0 +1,433 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:s="http://jboss.com/products/seam/taglib"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:rich="http://richfaces.org/rich"
+    xmlns:a="http://richfaces.org/a4j"
+    template="layout/template.xhtml">
+
+<ui:define name="body">
+	<script type="text/javascript">
+		function hideComissao(){
+			if( document.getElementById('vendaSearch:campoTipoRelatorio:tipoRelatorio').value == '3'){ 
+	       		document.getElementById('divComissao').style.visibility = "visible";
+	       		document.getElementById('divComissao1').style.visibility = "visible";  
+	    	} else { 
+	        	document.getElementById('divComissao').style.visibility = "hidden"; 
+	        	document.getElementById('divComissao1').style.visibility = "hidden";
+	    	} 
+		} 
+	</script>
+	
+    <a:form id="vendaSearch" styleClass="edit">
+		
+		<ui:include src="/paginas/help/RelatorioListHelp.xhtml"/>	
+		
+        <rich:simpleTogglePanel label="Filtro de pesquisa de Vendas" switchType="client">
+			
+			 <table border="0" width="100%" align="left">
+			 	<tr>
+		        	<td width="20%" nowrap="nowrap" colspan="3">
+			            <s:decorate template="layout/display.xhtml">
+			                <ui:define name="label">Cliente</ui:define>
+			                 <h:selectOneMenu id="cliente" value="#{relatorioList.codCliente}" title="Cliente da venda" styleClass="defaultInput">		
+							   <s:selectItems value="#{clienteList.getResultListCombo()}" 
+							   				  var="cliente" 			
+							   				  itemValue="#{cliente.codCliente}"
+							                  label="#{cliente.nome}"
+							                  required="false"
+							                  noSelectionLabel="Selecione.." />							       		
+							</h:selectOneMenu>	
+			            </s:decorate>
+			            </td>
+				</tr>
+				
+				<tr>
+		        	<td width="20%" nowrap="nowrap" colspan="3">
+			            <s:decorate template="layout/display.xhtml">
+			                <ui:define name="label">Tipo de Pagamento</ui:define>
+			                 <h:selectOneMenu id="tipoPagamento" value="#{relatorioList.codTipoPagamento}" title="Cliente da venda" styleClass="defaultInput">		
+							   <s:selectItems value="#{tipoPagamentoList.resultList}" 
+							   				    var="tipoPagamento" 									
+							   				itemValue="#{tipoPagamento.codTipoPagamento}"
+							                  label="#{tipoPagamento.descTipoPagamento}"
+							                  required="false"
+							                  noSelectionLabel="Selecione.." />							       		
+							</h:selectOneMenu>	
+			            </s:decorate>
+			            </td>
+				</tr>
+				
+				<tr>
+		        	<td width="20%" nowrap="nowrap" colspan="3">
+			            <s:decorate template="layout/display.xhtml">
+			                <ui:define name="label">Grupo(Carteira)</ui:define>
+							<h:selectOneMenu id="grupo" value="#{relatorioList.grupoCarteira}" styleClass="defaultInput">		
+							   <s:selectItems value="#{grupoList.resultList}" 
+							   				  var="grupo" 			
+							                  label="#{grupo.nomeGrupo}"
+							                  required="false"
+							                  noSelectionLabel="Selecione.." />							       		
+							   <s:convertEntity />			
+							</h:selectOneMenu>	
+			            </s:decorate>
+			            </td>
+				</tr>
+				<tr>
+	            	<td colspan="3">
+			            <s:decorate template="layout/display.xhtml">
+			                <ui:define name="label">Vendedor</ui:define>                
+			                <h:selectOneMenu id="usuario" value="#{relatorioList.venda.usuario}" title="Vendedor que realizou a venda" styleClass="defaultInput">		
+							   <s:selectItems value="#{usuarioList.resultList}" 
+							   				  var="usuario" 			
+							                  label="#{usuario.loginUsuario} - #{usuario.nomeUsuario}"
+							                  required="false"
+							                  noSelectionLabel="Selecione.." />							       		
+							   <s:convertEntity />			
+							</h:selectOneMenu>		
+			            </s:decorate>
+           			</td>
+            	</tr>
+            	<tr>
+	            	<td colspan="3">
+			            <s:decorate template="layout/display.xhtml">
+			                <ui:define name="label">Responsável</ui:define>                
+			                <h:selectOneMenu id="vendedorResponsavel" value="#{relatorioList.vendedorResponsavel}" title="Vendedor responsável pelo cliente." styleClass="defaultInput">		
+							   <s:selectItems value="#{usuarioList.resultList}" 
+							   				  var="usuario" 			
+							                  label="#{usuario.loginUsuario} - #{usuario.nomeUsuario}"
+							                  required="false"
+							                  noSelectionLabel="Selecione.." />							       		
+							   <s:convertEntity />			
+							</h:selectOneMenu>		
+			            </s:decorate>
+           			</td>
+            	</tr>
+            	<tr>
+	            	<td colspan="3">
+			            <s:decorate template="layout/display.xhtml">
+			                <ui:define name="label">Usuário Cadastro</ui:define>                
+			                <h:selectOneMenu id="usuarioResponsavel" value="#{relatorioList.usuarioResponsavel}" title="Usuário responsável pelo cadastro da venda." 
+			                	styleClass="defaultInput" rendered="#{user.perfil.codPerfil != constantes.vendedor}">		
+							   <s:selectItems value="#{usuarioList.resultList}" 
+							   				  var="usuario" 			
+							                  label="#{usuario.loginUsuario} - #{usuario.nomeUsuario}"
+							                  required="false"
+							                  noSelectionLabel="Selecione.." />							       		
+							   <s:convertEntity />			
+							</h:selectOneMenu>		
+							<h:outputText value="#{user.nomeUsuario}" rendered="#{user.perfil.codPerfil == constantes.vendedor}"/>
+			            </s:decorate>
+            		</td>
+		        </tr>
+           		<tr>
+		            <td colspan="3">
+			            <s:decorate template="layout/display.xhtml">
+			                <ui:define name="label">Status Venda</ui:define>
+							 <h:selectOneMenu id="statusVenda" value="#{relatorioList.statusVenda}" styleClass="defaultInput textoNegrito">
+			                	<f:selectItem itemLabel="Todas" />					
+								<f:selectItem itemLabel="Abertas" itemValue="1" />
+								<f:selectItem itemLabel="Concluídas" itemValue="2" />
+								<f:selectItem itemLabel="Canceladas" itemValue="3"/>
+								<f:selectItem itemLabel="Confirmada Financeiro" itemValue="5" />
+								<f:selectItem itemLabel="Confirmada Estoque" itemValue="6" />
+							</h:selectOneMenu>				
+			            </s:decorate>
+           			</td>
+		        </tr>
+		        
+		        <tr>
+		            <td colspan="3">
+				        <s:decorate template="layout/display.xhtml">
+			                <ui:define name="label">Sistema de Origem</ui:define>
+			                <h:selectOneMenu id="canal" value="#{relatorioList.venda.canal}" styleClass="defaultInput textoNegrito">
+			                	<f:selectItem itemLabel="Todos" />					
+			                	<f:selectItem itemLabel="GerenciadorNet" itemValue="#{constantes.canalGn}" />
+			                	<f:selectItem itemLabel="GerenciadorNetB2B" itemValue="#{constantes.canalGnB2b}" />
+			                	<f:selectItem itemLabel="ECommerce" itemValue="#{constantes.canalEcommerce}" />
+							</h:selectOneMenu>
+						</s:decorate>
+					</td>
+		        </tr>
+		        
+	            <tr>
+		            <td nowrap="nowrap">
+			            <s:decorate id="campoTipoRelatorio" template="layout/display.xhtml">
+			                <ui:define name="label">Tipo Relatório</ui:define>
+							 <h:selectOneMenu id="tipoRelatorio" value="#{relatorioList.tipoRelatorio}" styleClass="defaultInput textoNegrito" onchange="hideComissao()">
+								<f:selectItem itemLabel="Completo de Vendas" itemValue="2" />
+								<f:selectItem itemLabel="Resumido de Vendas" itemValue="1" />
+								<f:selectItem itemLabel="Comissões Sobre Venda/Lucro" itemValue="3"/>
+								<f:selectItem itemLabel="Vendas do Cliente" itemValue="4"/>
+							</h:selectOneMenu>	
+			            </s:decorate>
+					</td>
+					<td align="left">
+						<div id="divComissao">
+							<h:outputLabel value="Comissão(%)*" styleClass="name"/>
+						</div>	
+	           		</td>
+	           		<td align="left" nowrap="nowrap">
+	           			<div id="divComissao1">
+							<rich:inputNumberSpinner id="percentualComissao" 
+											value="#{relatorioList.percentualComissao}" step="0.5"
+											inputSize="6" maxValue="100">
+							</rich:inputNumberSpinner>
+						</div>
+	           		</td>
+           		</tr>
+	            <tr>
+		            <td colspan="3">
+		            	<h:outputLabel value="Data Início*" styleClass="name"/>
+		            	<rich:spacer width="5px"/>
+		                <rich:calendar id="dataInicioVenda" required="true" value="#{relatorioList.venda.dataInicioVenda}" defaultTime="00:00" resetTimeOnDateSelect="true" datePattern="dd/MM/yyyy">
+		                	<f:convertDateTime pattern="yyyy-MM-dd HH:mm"/>
+		                </rich:calendar>  
+ 						<rich:spacer width="20px"/>
+		            	<h:outputLabel value="Data Fim*" styleClass="textoNegrito"/>
+		            	<rich:spacer width="15" />
+		                <rich:calendar id="dataFimVenda" required="true" value="#{relatorioList.venda.dataFimVenda}" defaultTime="23:59" resetTimeOnDateSelect="false" datePattern="dd/MM/yyyy">
+		                	<f:convertDateTime pattern="yyyy-MM-dd HH:mm"/>
+		                </rich:calendar>
+		            </td>
+	            </tr>
+	            <tr>
+		            <td colspan="3">
+			        	<s:decorate id="tipoDataId" template="layout/display.xhtml">
+			                <ui:define name="label">Tipo Data</ui:define>
+							 <h:selectOneMenu id="tipoData" value="#{relatorioList.tipoData}" styleClass="defaultInput textoNegrito">
+								<f:selectItem itemLabel="Data Abertura da Venda" itemValue="1" />
+								<f:selectItem itemLabel="Data Conclusão da Venda" itemValue="2" />
+							</h:selectOneMenu>	
+			            </s:decorate>   
+                    </td>
+	            </tr>
+            	<tr>
+		            <td colspan="3">
+			            <s:decorate template="layout/display.xhtml"> 
+			                <ui:define name="label"><h:outputText value="Qtd. Linhas" title="Quantidade de linhas que serão exibidas na consulta" /></ui:define>                                
+							<rich:inputNumberSpinner id="numeroLinhasDT" value="#{relatorioList.numeroLinhasDT}" step="10" inputSize="8" maxValue="500" styleClass="inputDefault"/>				
+			            </s:decorate> 
+                     </td>
+	            </tr>
+           	</table>    
+            <div style="clear:both">
+                <span class="required">*</span>
+                Campos obrigatórios            
+            </div>
+                       
+        </rich:simpleTogglePanel>
+
+         <div class="actionButtons">
+	          <a:commandButton id="search" type="button" value="Pesquisar" action="#{relatorioList.setMostrarResultados(true)}" 
+	          reRender="resultadoList, msnListaVazia, sc" ajaxSingle="true" limitToList="true"
+	          process="cliente, tipoPagamento, grupo, usuario, usuarioResponsavel, vendedorResponsavel, statusVenda, canal, tipoRelatorio, percentualComissao, dataInicioVenda, dataFimVenda, tipoData, numeroLinhasDT" />
+	           
+	          <s:button id="reset" value="Limpar" includePageParams="false"/>   
+	   		  <rich:hotKey key="return" handler="#{rich:element('search')}.click()"/>
+	   	</div>
+
+    </a:form>
+    
+	<h:form>
+	<a:outputPanel id="msnListaVazia" ajaxRendered="true">
+    <rich:panel  rendered="#{relatorioList.mostrarResultados}">
+    
+    <f:facet name="header">   
+	    <a:outputPanel  id="panelDiv" ajaxRendered="true">
+	    	Relatório de Vendas(#{empty relatorioList.resultList ? 0 : (relatorioList.paginated ? relatorioList.resultCount : relatorioList.resultList.size)})
+	    </a:outputPanel> 
+    </f:facet> 
+	
+	<h:outputText value="A pesquisa realizada não retornou resultados." rendered="#{empty relatorioList.resultList}"/>
+    
+    <rich:dataTable id="resultadoList"
+		                var="_venda"
+		              	value="#{relatorioList.resultList}"			           	
+			           	onRowMouseOver="this.style.backgroundColor='#F0F0F0'"
+			           	onRowMouseOut="this.style.backgroundColor='#{a4jSkin.rowBackgroundColor}'"
+			           	columnClasses="center" 
+			           	footerClass="center"	
+			           	rows="#{ relatorioList.numeroLinhasDT }"	
+			           	rendered="#{not empty relatorioList.resultList}"	     	
+			           	rowClasses="tableRowOne,tableRowTwo">
+         
+               
+         <rich:column sortBy="#{_venda.codVenda}"> 
+           <f:facet name="header">
+               <h:outputText value="Venda"/>
+           </f:facet> 
+           <h:outputText value="#{_venda.codVenda}"/>
+         </rich:column>      
+		
+		 <rich:column sortBy="#{_venda.cliente.nome}" styleClass="left">
+           <f:facet name="header">
+               <h:outputText value="Cliente"/>
+           </f:facet> 
+           <h:outputText value="#{_venda.cliente.nome} - #{_venda.cliente.telefone}"/>
+         </rich:column>      
+                
+         <rich:column sortBy="#{_venda.usuario.nomeUsuario}" styleClass="left"> 
+           <f:facet name="header">
+               <h:outputText value="Vendedor" title="Vendedor que realizou a venda"/>
+           </f:facet> 
+           <h:outputText value="#{_venda.usuario.nomeUsuario}"/>
+         </rich:column>    
+         
+         <rich:column sortBy="#{_venda.usuarioCadastro.nomeUsuario}" styleClass="left" rendered="#{relatorioList.tipoRelatorio != 1 and relatorioList.tipoRelatorio != 4}" > 
+           <f:facet name="header">
+               <h:outputText value="Usuário Cadastro" title="Usuário responsável pelo cadastro da venda."/>
+           </f:facet> 
+           <h:outputText value="#{_venda.usuarioCadastro.nomeUsuario}"/>
+         </rich:column>  
+         
+         <rich:column sortBy="#{_venda.dataInicioVenda}">
+           <f:facet name="header">
+               <h:outputText value="Data Venda" title="Data de abertura da venda"/>
+           </f:facet> 
+           <h:outputText value="#{_venda.dataInicioVenda}">
+           		<s:convertDateTime type="date" pattern="dd/MM/yyyy"/>
+           </h:outputText>
+         </rich:column>
+         
+         <rich:column sortBy="#{_venda.dataFimVenda}" rendered="#{relatorioList.tipoRelatorio != 1 and relatorioList.tipoRelatorio != 4}">
+           <f:facet name="header">
+               <h:outputText value="Data Fim" title="Data de Finalização da venda"/>
+           </f:facet> 
+           <h:outputText value="#{_venda.dataFimVenda}">
+           		<s:convertDateTime type="date" pattern="dd/MM/yyyy"/>
+           </h:outputText>
+         </rich:column>
+         
+         <rich:column sortBy="#{_venda.tipoPagamento.descTipoPagamento}">
+           <f:facet name="header">
+               <h:outputText value="Tipo Pagamento" title="Tipo de Pagamento"/>
+           </f:facet> 
+           <h:outputText value="#{_venda.tipoPagamento.descTipoPagamento}"/>
+         </rich:column>
+
+		<rich:column sortBy="#{_venda.statusVenda.descStatusVenda}" rendered="#{relatorioList.tipoRelatorio != 1 and relatorioList.tipoRelatorio != 4}" > 
+           <f:facet name="header">
+               <h:outputText value="Status Venda"/>
+           </f:facet> 
+           <h:outputText value="#{ _venda.statusVenda.descStatusVenda}" title="Situação em que a venda se encontra." rendered="#{_venda.statusVenda.codStatusVenda == constantes.cancelada}" styleClass="textoMedioVermelho"/>
+           <h:outputText value="#{ _venda.statusVenda.descStatusVenda}" title="Situação em que a venda se encontra." rendered="#{_venda.statusVenda.codStatusVenda != constantes.cancelada}"/>
+           <f:facet name="footer">
+             <h:outputText>
+             		<h:outputLabel styleClass="textoNegrito" value="Total"/>
+             </h:outputText>
+           </f:facet>
+         </rich:column> 
+         
+         <rich:column rendered="#{relatorioList.tipoRelatorio != 1 and relatorioList.tipoRelatorio != 4}" > 
+           <f:facet name="header">
+               <h:outputText value="Custo"/>
+           </f:facet>
+           <h:outputText value="#{_venda.valorTotalVenda - _venda.lucroTotalVenda}"  rendered="#{_venda.statusVenda.codStatusVenda == constantes.cancelada}" styleClass="textoMedioVermelho">
+           		<f:convertNumber currencySymbol="R$"  type="currency"  locale="pt_BR"/>
+           </h:outputText>       
+           <h:outputText value="#{_venda.valorTotalVenda - _venda.lucroTotalVenda}"  rendered="#{_venda.statusVenda.codStatusVenda != constantes.cancelada}">
+           		<f:convertNumber currencySymbol="R$"  type="currency"  locale="pt_BR"/>
+           </h:outputText>                  
+         </rich:column>   
+         
+          <rich:column sortBy="#{_venda.lucroTotalVenda}" rendered="#{relatorioList.tipoRelatorio != 1 and relatorioList.tipoRelatorio != 4}" > 
+           <f:facet name="header">
+               <h:outputText value="Lucro"/>
+           </f:facet>
+           <h:outputText value="#{_venda.lucroTotalVenda}"  rendered="#{_venda.statusVenda.codStatusVenda == constantes.cancelada}" styleClass="textoMedioVermelho">
+           		<f:convertNumber currencySymbol="R$"  type="currency"  locale="pt_BR"/>
+           </h:outputText>       
+           <h:outputText value="#{_venda.lucroTotalVenda}"  rendered="#{_venda.statusVenda.codStatusVenda != constantes.cancelada}">
+           		<f:convertNumber currencySymbol="R$"  type="currency"  locale="pt_BR"/>
+           </h:outputText>       
+           <f:facet name="footer">
+           		<h:outputText styleClass="textoNegrito" value="#{relatorioList.lucroTotal}">
+           			<f:convertNumber currencySymbol="R$"  type="currency"  locale="pt_BR"/>
+           		</h:outputText>
+           </f:facet>
+         </rich:column>        
+         
+         <rich:column  sortBy="#{_venda.valorTotalVenda}" rendered="#{relatorioList.tipoRelatorio != 1}"> 
+           <f:facet name="header">
+               <h:outputText value="Valor Venda"/>
+           </f:facet> 
+           <h:outputText value="#{_venda.valorTotalVenda}" title="Valor total da venda" rendered="#{_venda.statusVenda.codStatusVenda == constantes.cancelada}" styleClass="textoMedioVermelho">
+           		<f:convertNumber currencySymbol="R$"  type="currency"  locale="pt_BR"/>
+           </h:outputText> 
+           <h:outputText value="#{_venda.valorTotalVenda}" title="Valor total da venda" rendered="#{_venda.statusVenda.codStatusVenda != constantes.cancelada}">
+           		<f:convertNumber currencySymbol="R$"  type="currency"  locale="pt_BR"/>
+           </h:outputText>          
+           <f:facet name="footer">
+           		<h:outputText styleClass="textoNegrito" value="#{relatorioList.valorTotal}">
+           			<f:convertNumber currencySymbol="R$"  type="currency"  locale="pt_BR"/>
+           		</h:outputText>             		
+           </f:facet>
+         </rich:column>    
+         
+         <rich:column sortBy="#{_venda.valorComissaoVenda}" rendered="#{relatorioList.tipoRelatorio == 3}" > 
+           <f:facet name="header">
+               <h:outputText value="Comissão Venda" title="Valor da comissão calculado sobre o VALOR TOTAL da venda" />
+           </f:facet>
+           <h:outputText value="#{_venda.valorComissaoVenda}" rendered="#{_venda.statusVenda.codStatusVenda == constantes.cancelada}" styleClass="textoMedioVermelho">
+           		<f:convertNumber currencySymbol="R$"  type="currency"  locale="pt_BR"/>
+           </h:outputText> 
+           <h:outputText value="#{_venda.valorComissaoVenda}" rendered="#{_venda.statusVenda.codStatusVenda != constantes.cancelada}">
+           		<f:convertNumber currencySymbol="R$"  type="currency"  locale="pt_BR"/>
+           </h:outputText> 
+                 
+           <f:facet name="footer">
+           		<h:outputText styleClass="textoNegrito" value="#{relatorioList.valorComissaoVendaTotal}">
+           			<f:convertNumber currencySymbol="R$"  type="currency"  locale="pt_BR"/>
+           		</h:outputText>
+           </f:facet>
+         </rich:column>       
+         
+         <rich:column sortBy="#{_venda.valorComissaoLucro}"  rendered="#{relatorioList.tipoRelatorio ==3}" > 
+           <f:facet name="header">
+               <h:outputText value="Comissão Lucro" title="Valor da comissão calculado sobre o LUCRO da venda" />
+           </f:facet>
+          <h:outputText value="#{_venda.valorComissaoLucro}"  rendered="#{_venda.statusVenda.codStatusVenda == constantes.cancelada}" styleClass="textoMedioVermelho" >
+           		<f:convertNumber currencySymbol="R$"  type="currency"  locale="pt_BR"/>
+          </h:outputText>   
+          
+           <h:outputText value="#{_venda.valorComissaoLucro}"  rendered="#{_venda.statusVenda.codStatusVenda != constantes.cancelada}">
+           		<f:convertNumber currencySymbol="R$"  type="currency"  locale="pt_BR"/>
+          </h:outputText>        
+           
+           <f:facet name="footer">
+             <h:outputText>
+             		<h:outputLabel styleClass="textoNegrito" value="#{relatorioList.valorComissaoLucroTotal}">
+             			<f:convertNumber currencySymbol="R$"  type="currency"  locale="pt_BR"/>
+             		</h:outputLabel>
+             </h:outputText>
+           </f:facet>
+         </rich:column>        
+        	
+         <rich:column>   
+         	<f:facet name="header">
+	        	<h:outputText value=""/> 
+	        </f:facet>        
+	        
+            <s:link view="/Venda.xhtml" propagation="default" id="vendaViewId">
+                <h:graphicImage id="visualizar" title="Visualizar Venda" url="/img/binoculo.jpg"/>                
+                <f:param name="vendaCodVenda" value="#{_venda.codVenda}"/>
+                <f:param name="vendaFrom" value="RelatorioList"/>
+            </s:link>
+		</rich:column>
+		
+    </rich:dataTable>
+    
+    <ui:include src="/includes/includeDataScroller.xhtml"/>
+          
+    </rich:panel>
+    </a:outputPanel>
+    <rich:jQuery selector="#cliente" timing="onload" query="focus(), hideComissao()" />
+	</h:form>
+   
+</ui:define>
+
+</ui:composition>

@@ -1,0 +1,169 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:s="http://jboss.com/products/seam/taglib"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:a="http://richfaces.org/a4j"
+    xmlns:rich="http://richfaces.org/rich"
+    template="layout/template.xhtml">
+
+
+<ui:define name="head">
+	<a:loadScript src="/javascript/maskCpfCnpj.js"/>
+</ui:define>
+
+<ui:define name="body">
+
+    <h:form id="empresa" styleClass="edit">
+
+        <rich:panel>
+            <f:facet name="header">#{empresaHome.managed ? 'Editar' : 'Adicionar'} Empresa</f:facet>
+
+			
+			<s:decorate template="layout/edit.xhtml">
+                <ui:define name="label">Nome Fantasia</ui:define>
+                <h:inputText required="true" styleClass="defaultInput" value="#{empresaHome.instance.nomeFantasia}">
+                </h:inputText>
+            </s:decorate>
+            
+            <s:decorate template="layout/edit.xhtml">
+                <ui:define name="label">Razão Social</ui:define>
+                <h:inputText required="false" styleClass="defaultInput" value="#{empresaHome.instance.razaoSocial}">
+                </h:inputText>
+            </s:decorate>
+            
+            <s:decorate template="layout/edit.xhtml">
+                <ui:define name="label">CNPJ</ui:define>
+                <h:inputText required="false" styleClass="defaultInput" value="#{empresaHome.instance.cnpj}" maxlength="18" onkeyup="mascaraTexto(event)">
+                </h:inputText>
+            </s:decorate>
+            
+            <s:decorate template="layout/edit.xhtml">
+                <ui:define name="label">Inscrição Estadual</ui:define>
+                <h:inputText required="false" styleClass="defaultInput" value="#{empresaHome.instance.inscricaoEstadual}">
+                </h:inputText>
+            </s:decorate>
+            
+            <s:decorate template="layout/edit.xhtml">
+                <ui:define name="label">Regime Tributário</ui:define>
+                <h:inputText  required="false" styleClass="defaultInput" value="#{empresaHome.instance.codRegimeTributario}">
+                </h:inputText>
+            </s:decorate>
+            
+            <s:decorate template="layout/edit.xhtml">
+                <ui:define name="label">Endereço</ui:define>
+                <h:inputText required="false" styleClass="defaultInput" value="#{empresaHome.instance.endereco}">
+                </h:inputText>
+            </s:decorate>
+            
+            <s:decorate template="layout/edit.xhtml">
+                <ui:define name="label">Endereço Número</ui:define>
+                <h:inputText required="false" value="#{empresaHome.instance.enderecoNumero}">
+                </h:inputText>
+            </s:decorate>
+            
+            <s:decorate template="layout/edit.xhtml">
+                <ui:define name="label">Bairro</ui:define>
+                <h:inputText required="false" value="#{empresaHome.instance.enderecoBairro}">
+                </h:inputText>
+            </s:decorate>
+            
+            <s:decorate template="layout/edit.xhtml">
+                <ui:define name="label">Código Município</ui:define>
+                <h:inputText required="false" value="#{empresaHome.instance.enderecoCodMunicipio}">
+                </h:inputText>
+            </s:decorate>
+            
+            <s:decorate template="layout/edit.xhtml">
+                <ui:define name="label">CEP</ui:define>
+                <h:inputText required="false" value="#{empresaHome.instance.cep}">
+                </h:inputText>
+            </s:decorate>
+            
+            <s:decorate template="layout/edit.xhtml">
+                <ui:define name="label">Cidade</ui:define>
+                <h:inputText required="false" value="#{empresaHome.instance.cidade}">
+                </h:inputText>
+            </s:decorate>
+            
+            <s:decorate template="layout/edit.xhtml">
+                <ui:define name="label">Estado</ui:define>
+                <h:inputText required="false" value="#{empresaHome.instance.estado}">
+                </h:inputText>
+            </s:decorate>
+            
+            <s:decorate template="layout/edit.xhtml">
+                <ui:define name="label">Telefone</ui:define>
+                <h:inputText required="false" value="#{empresaHome.instance.telefone}">
+                </h:inputText>
+            </s:decorate>
+
+            <s:decorate id="qtdUsuariosField" template="layout/edit.xhtml">
+                <ui:define name="label">Qtd usuarios</ui:define>
+                <h:inputText id="qtdUsuarios"
+                       required="true"
+                          value="#{empresaHome.instance.qtdUsuarios}">
+                </h:inputText>
+            </s:decorate>
+
+
+            <s:decorate id="inEmpresaAtivaField" template="layout/edit.xhtml">
+                <ui:define name="label">Empresa ativa</ui:define>
+                <h:selectBooleanCheckbox id="inEmpresaAtiva"
+                                   required="true"
+                                      value="#{empresaHome.instance.inEmpresaAtiva}"/>
+            </s:decorate>
+            
+            <s:decorate template="layout/edit.xhtml">
+                <ui:define name="label">Inadimplente</ui:define>
+                <h:selectBooleanCheckbox id="inEmpresaAtiva"
+                                   required="true"
+                                      value="#{empresaHome.instance.inContaAtrasada}"/>
+            </s:decorate>
+
+            <div style="clear:both">
+                <span class="required">*</span>
+                Campos obrigatorios
+            </div>
+
+        </rich:panel>
+
+        <div class="actionButtons">
+
+            <h:commandButton id="save"
+                          value="Salvar"
+                         action="#{empresaHome.persist}"
+                       disabled="#{!empresaHome.wired}"
+                       rendered="#{!empresaHome.managed}"/>
+
+            <h:commandButton id="update"
+                          value="Salvar"
+                         action="#{empresaHome.update}"
+                       rendered="#{empresaHome.managed}"/>
+
+            <h:commandButton id="delete"
+                          value="Excluir"
+                         action="#{empresaHome.remove}"
+                      immediate="true"
+                       rendered="#{empresaHome.managed}"/>
+
+            <s:button id="cancelEdit"
+                   value="Voltar"
+             propagation="end"
+                    view="/Empresa.xhtml"
+                rendered="#{empresaHome.managed}"/>
+
+            <s:button id="cancelAdd"
+                   value="Voltar"
+             propagation="end"
+                    view="/#{empty empresaFrom ? 'EmpresaList' : empresaFrom}.xhtml"
+                rendered="#{!empresaHome.managed}"/>
+
+        </div>
+    </h:form>
+
+</ui:define>
+
+</ui:composition>

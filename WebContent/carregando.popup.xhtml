@@ -1,0 +1,19 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<rich:modalPanel id="ajaxLoadingModalBox" autosized="true" zindex="200"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:a4j="http://richfaces.org/a4j">
+	
+	<a4j:status id="statusId" onstart="Richfaces.showModalPanel('ajaxLoadingModalBox',{top:200})" 
+     		onstop="Richfaces.hideModalPanel('ajaxLoadingModalBox')"> 
+    </a4j:status>
+	
+	<h:panelGrid columns="2" border="0"> 
+		<h:graphicImage value="/img/loading.gif" />
+		<h:outputLabel value="Aguarde..." style="font-size: 15px;color: #gray; font-weight: bolder;" />
+	</h:panelGrid>
+	
+</rich:modalPanel>

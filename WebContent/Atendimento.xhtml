@@ -1,0 +1,91 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:s="http://jboss.com/products/seam/taglib"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:a="http://richfaces.org/a4j"
+    xmlns:rich="http://richfaces.org/rich"
+    template="layout/template.xhtml">
+
+<ui:define name="head">
+	<style>
+        .painelEditor {
+            width:600px;
+            height:300px;
+        }        
+    </style>
+</ui:define>
+
+<ui:define name="body">
+
+        <rich:panel>
+            <f:facet name="header">Atendimento</f:facet>
+            
+            <s:decorate template="layout/display.xhtml">
+                <ui:define name="label">Código Atendimento</ui:define>                
+                <h:outputText value="#{atendimentoHome.instance.codAtendimento}"  styleClass="textoGrande" />
+            </s:decorate>
+		                               
+            <s:decorate template="layout/display.xhtml">
+                <ui:define name="label">Funcionário</ui:define>                
+                <h:outputText value="#{atendimentoHome.instance.usuario.nomeUsuario}"/>
+            </s:decorate>
+            
+            <s:decorate id="clienteField" template="layout/display.xhtml">
+				<ui:define name="label">Cliente</ui:define>	
+				<h:outputText value="#{atendimentoHome.instance.cliente.nome}"/>				
+			</s:decorate>
+		
+		    <s:decorate template="layout/display.xhtml">
+                <ui:define name="label">Tipo Atendimento</ui:define>         
+                <h:outputText value="Ativo" rendered="#{atendimentoHome.instance.codTipoAtendimento == 1}"/>
+                <h:outputText value="Receptivo" rendered="#{atendimentoHome.instance.codTipoAtendimento == 2}"/>
+                <h:outputText value="Revenda" rendered="#{atendimentoHome.instance.codTipoAtendimento == 3}"/>
+                <h:outputText value="Cotação" rendered="#{atendimentoHome.instance.codTipoAtendimento == 4}"/>
+            </s:decorate>
+
+ 			<s:decorate template="layout/display.xhtml">
+                <ui:define name="label">Descrição Atendimento</ui:define>    
+                
+                <rich:panel id="panel" styleClass="painelEditor" >
+		            <h:outputText escape="false" value="#{atendimentoHome.instance.descAtendimento}" />
+		        </rich:panel>                 
+            </s:decorate>
+						
+            <s:decorate template="layout/display.xhtml">
+                <ui:define name="label">Situação Atendimento</ui:define>      
+                <h:outputText value="Pendente" rendered="#{atendimentoHome.instance.statusAtendimento == 0}"/>
+                <h:outputText value="Concluído" rendered="#{atendimentoHome.instance.statusAtendimento == 1}"/>
+            </s:decorate>
+            
+             <s:decorate template="layout/display.xhtml">
+                <ui:define name="label">Obtenção de Êxito</ui:define>                
+                <h:outputText value="Sim" rendered="#{atendimentoHome.instance.inObtencaoExito}"/>
+                <h:outputText value="Não" rendered="#{!atendimentoHome.instance.inObtencaoExito}"/>                				
+            </s:decorate>                               
+
+			<div style="clear:both"/>
+        </rich:panel>
+        
+        <div style="clear:both"/>
+        
+        <div class="actionButtons">
+
+			<s:button view="/AtendimentoEdit.xhtml" id="edit" value="Editar" rendered="#{identity.hasRole(transacoes.transacaoAtendimentoEditar)}" />
+
+			<s:button view="/#{empty atendimentoFrom ? 'AtendimentoList' : atendimentoFrom}.xhtml"
+				includePageParams="true" propagation="join" id="done" value="Voltar" />
+				
+			<s:button view="/AtendimentoEdit.xhtml" rendered="#{identity.hasRole(transacoes.transacaoAtendimentoInserir)}"
+				                    id="create"
+				           propagation="none"
+				                 value="Novo Atendimento">
+				           
+			</s:button>
+		</div>
+	   <div style="clear:both"/>
+</ui:define>
+
+</ui:composition>

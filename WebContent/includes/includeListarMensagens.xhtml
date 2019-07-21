@@ -1,0 +1,218 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:s="http://jboss.com/products/seam/taglib"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:a="http://richfaces.org/a4j"
+    xmlns:rich="http://richfaces.org/rich">
+     
+    <!-- possui form proprio, por isso está fora do h:form  -->
+    <a:outputPanel id="novaMesagemPopUpID" ajaxRendered="true">
+			<ui:include src="/includes/includeMensagemNovaPopUp.xhtml"/>
+	</a:outputPanel>
+     
+     <h:form id="listarMensagemForm" styleClass="edit">
+     
+     	<a:outputPanel id="lerMesagemPopUpID" ajaxRendered="true" >
+			<ui:include src="/includes/includeMensagemLerPopup.xhtml"/>
+		</a:outputPanel>
+			
+     	<h:graphicImage value="/img/mensagem.gif" styleClass="msg"/>
+	    <rich:panel header="Mensagens de usuários" styleClass="panelHeightHome"  >
+	     	
+		    <!-- Menu mensagens -->
+			<div>
+			 <table border="0" style="height: 15px;">
+		      	 <tr>
+			      	 <td valign="middle" >
+			      	 	<a:commandLink id="novaVenda"
+			      	 		ajaxSingle="true"
+			      	 		process="novaVenda" limitToList="true"
+							action="#{mensagemUsuarioHome.criarNovaMensagem()}"
+							reRender="novaMesagemPopUpID"
+							oncomplete="#{rich:component('novaMensagemPopUp')}.show();" >
+			      	 			<h:graphicImage id="novaMsg" value="/img/email_add.png" title="Nova Mensagem"  styleClass="imgLink" />
+			      	 	</a:commandLink>
+			      	 </td>
+			      	 <td valign="middle" >
+			      	 	<a:commandLink id="novaVendaTexto" value=" Nova Mensagem " styleClass="textoMedioCinza5 nounderline"
+			      	 		ajaxSingle="true"
+			      	 		process="novaVendaTexto" limitToList="true"
+							action="#{mensagemUsuarioHome.criarNovaMensagem()}"
+							reRender="novaMesagemPopUpID"
+							oncomplete="#{rich:component('novaMensagemPopUp')}.show();"/>
+			      	 </td>
+			      	
+			      	 <td valign="middle">&nbsp;</td>
+<!-- Mensagens Recebidas -->			      	
+			      	 <td valign="middle" >
+			      	 	<a:commandLink id="recebidos"  action="#{mensagemUsuarioList.listarMensagensRecebidas()}"
+			      	 		ajaxSingle="true"
+			      	 		process="recebidos" limitToList="true"
+							reRender="listaMensagensPanel">
+			      	 			<h:graphicImage id="recebidoMsg" value="/img/email_recebidos.jpg" title="Mensagens Recebidas"  styleClass="imgLink" />
+			      	 	</a:commandLink>
+			      	 </td>
+			      	 <td valign="middle" >
+			      	 	<a:commandLink id="recebidosTexto"	 action="#{mensagemUsuarioList.listarMensagensRecebidas()}" 
+			      	 		value=" Mensagens Recebidas " styleClass="textoMedioCinza5 nounderline"
+			      	 		ajaxSingle="true"
+			      	 		process="recebidosTexto" limitToList="true"
+							reRender="listaMensagensPanel"/>
+			      	 </td>
+			      	
+			      	<td valign="middle">&nbsp;</td>
+<!-- Mensagens Enviadas -->
+			      	  <td valign="middle" >
+			      	 	<a:commandLink id="enviados" action="#{mensagemUsuarioList.listarMensagensEnviadas()}"
+			      	 		ajaxSingle="true"
+			      	 		process="enviados" limitToList="true"
+							reRender="listaMensagensPanel">
+			      	 			<h:graphicImage id="enviadasMsg" value="/img/email_enviados.png" title="Últimas Mensagens Enviadas"  styleClass="imgLink" />
+			      	 	</a:commandLink>
+			      	 </td>
+			      	 <td valign="middle" >
+			      	 	<a:commandLink id="enviadosTexto"	 action="#{mensagemUsuarioList.listarMensagensEnviadas()}" 
+			      	 		value=" Últimas Mensagens Enviadas " styleClass="textoMedioCinza5 nounderline"
+			      	 		ajaxSingle="true"
+			      	 		process="enviadosTexto" limitToList="true"
+							reRender="listaMensagensPanel"/>
+			      	 </td>
+			     </tr>
+			</table>
+			<rich:componentControl operation="show" attachTo="novaMsg, novaMsgTxt" for="novaMensagemPopUp"  event="onclick" />
+			
+			</div> 
+			
+			<a:outputPanel id="listaMensagensPanel" ajaxRendered="false">
+			
+			<h:outputText value="Usuário não possui mensagens." rendered="#{empty mensagemUsuarioList.listarMensagensRecebidas()}" styleClass="textoMedioCinza5" />
+
+<!-- Mensagens Recebidas -->			
+			<rich:dataTable id="resultadoList" var="_mensagem"
+				value="#{mensagemUsuarioList.listarMensagensRecebidas()}"
+				onRowMouseOver="this.style.backgroundColor='#F0F0F0'"
+				onRowMouseOut="this.style.backgroundColor='#{a4jSkin.rowBackgroundColor}'"
+				columnClasses="center" 
+				rows="8"
+				rendered="#{not empty mensagemUsuarioList.mensagensList and !mensagemUsuarioList.mensagesnEnviadas}"
+				columnsWidth="*,*,0*,0*"
+				headerClass="tableHeaderHome"
+				rowClasses="tableRowOne,tableRowTwo"
+				styleClass="tableHeightHome"> 
+	
+				<rich:column styleClass="left semQuebra">
+					<f:facet name="header">Quem (Remetente)</f:facet>
+										
+					<a:commandLink id="lerMsgLink" ajaxSingle="true" styleClass="nounderline"  rendered="#{!mensagemUsuarioList.mensagesnEnviadas}"
+							process="lerMsgLink" limitToList="true"
+							reRender="listaMensagensPanel, lerMesagemPopUpID"
+							action="#{mensagemUsuarioHome.lerMensagem(_mensagem)}"
+							oncomplete="#{rich:component('lerMensagemPopUp')}.show();">
+							
+							<h:graphicImage id="lerMsgID" value="/img/email-fechado.png"  rendered="#{!_mensagem.inLeitura}" styleClass="imgLink"/>
+							<h:graphicImage id="lerMsgID2" value="/img/email-aberto.png" rendered="#{_mensagem.inLeitura}" styleClass="imgLink"/>  
+							<h:outputText value="  #{_mensagem.nomeUsuarioRemetente}" styleClass="#{_mensagem.inLeitura? 'left textoMedioCinza5': 'left textoNegrito8'}"/>
+														
+					</a:commandLink>
+											
+				</rich:column>
+				
+				<rich:column styleClass="left">
+					<f:facet name="header">Assunto</f:facet>
+					
+					
+					<a:commandLink id="lerMsgAssuntoLink" ajaxSingle="true" styleClass="nounderline"
+							process="lerMsgAssuntoLink" limitToList="true"
+							reRender="listaMensagensPanel, lerMesagemPopUpID"
+							action="#{mensagemUsuarioHome.lerMensagem(_mensagem)}"
+							oncomplete="#{rich:component('lerMensagemPopUp')}.show();">
+						
+							<h:outputText value="#{_mensagem.assuntoResumido}" title="#{_mensagem.assunto}" styleClass="#{_mensagem.inLeitura? 'left textoMedioCinza5': 'left textoNegrito8'}"/>
+														
+					</a:commandLink>
+					
+				</rich:column>
+				
+				<rich:column styleClass="#{_mensagem.inLeitura? 'left semQuebra textoMedioCinza5': 'left semQuebra textoNegrito8'}">
+					<f:facet name="header">Data</f:facet>
+					<h:outputText value="#{_mensagem.dataEnvio}">
+						<s:convertDateTime type="date" pattern="dd/MM/yyyy HH:mm"/>
+					</h:outputText>
+				</rich:column>
+				
+				<rich:column styleClass="right">
+		            
+		            <a:commandLink ajaxSingle="true" reRender="listaMensagensPanel"  onclick="if (!confirm('Excluir mensagem?')) return false"
+		                 		actionListener="#{mensagemUsuarioList.excluirMensagem}" limitToList="true"  >
+		                 		
+						<h:graphicImage url="/img/lixeira.gif" style="border:0" title="Excluir"/>
+		                <rich:toolTip value="Excluir mensagem" direction="top-left"/>
+		                <f:attribute name="mensagem" value="#{_mensagem}" />
+		            </a:commandLink>
+		                 
+		        </rich:column>
+				
+				
+			</rich:dataTable>
+			<rich:datascroller align="center" rendered="#{not empty mensagemUsuarioList.mensagensList and !mensagemUsuarioList.mensagesnEnviadas}" renderIfSinglePage="false" for="resultadoList" maxPages="10" id="sc"/>
+			
+<!-- Mensagens Enviadas -->
+
+			<rich:dataTable id="resultadoList2" var="_mensagem"
+				value="#{mensagemUsuarioList.listarMensagensEnviadas()}"
+				onRowMouseOver="this.style.backgroundColor='#F0F0F0'"
+				onRowMouseOut="this.style.backgroundColor='#{a4jSkin.rowBackgroundColor}'"
+				columnClasses="center" 
+				rows="8"
+				rendered="#{not empty mensagemUsuarioList.mensagensList and mensagemUsuarioList.mensagesnEnviadas}"
+				columnsWidth="*,*,0*"
+				headerClass="tableHeaderHome"
+				rowClasses="tableRowOne,tableRowTwo"
+				styleClass="tableHeightHome"> 
+	
+				<rich:column styleClass="left semQuebra">
+					<f:facet name="header">Quem (Destinatário)</f:facet>
+										
+					<a:commandLink id="lerMsgLink2" ajaxSingle="true" styleClass="nounderline"  
+							process="lerMsgLink2" limitToList="true"
+							reRender="listaMensagensPanel, lerMesagemPopUpID"
+							action="#{mensagemUsuarioHome.lerMensagem(_mensagem)}"
+							oncomplete="#{rich:component('lerMensagemPopUp')}.show();">
+							
+							<h:graphicImage id="lerMsgID2" value="/img/email-aberto.png" styleClass="imgLink"/>  
+							<h:outputText value="  #{_mensagem.nomeUsuarioRemetente}" styleClass="left textoMedioCinza5"/>
+					</a:commandLink>
+											
+				</rich:column>
+				
+				<rich:column styleClass="left">
+					<f:facet name="header">Assunto</f:facet>
+					
+					<a:commandLink id="lerMsgAssuntoLink2" ajaxSingle="true" styleClass="nounderline"
+							process="lerMsgAssuntoLink2" limitToList="true"
+							reRender="listaMensagensPanel, lerMesagemPopUpID"
+							action="#{mensagemUsuarioHome.lerMensagem(_mensagem)}"
+							oncomplete="#{rich:component('lerMensagemPopUp')}.show();">
+						
+							<h:outputText value="#{_mensagem.assuntoResumido}" title="#{_mensagem.assunto}" styleClass="#{_mensagem.inLeitura? 'left textoMedioCinza5': 'left textoNegrito8'}"/>
+					</a:commandLink>
+				</rich:column>
+				
+				<rich:column styleClass="#{_mensagem.inLeitura? 'left semQuebra textoMedioCinza5': 'left semQuebra textoNegrito8'}">
+					<f:facet name="header">Data</f:facet>
+					<h:outputText value="#{_mensagem.dataEnvio}">
+						<s:convertDateTime type="date" pattern="dd/MM/yyyy HH:mm"/>
+					</h:outputText>
+				</rich:column>
+											
+				
+			</rich:dataTable>
+			
+			</a:outputPanel>
+		</rich:panel>
+	</h:form>
+</ui:composition>

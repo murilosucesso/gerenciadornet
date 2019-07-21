@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<page xmlns="http://jboss.com/products/seam/pages" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://jboss.com/products/seam/pages http://jboss.com/products/seam/pages-2.2.xsd"
+	login-required="true">
+	
+	<restrict>#{identity.hasRole(transacoes.transacaoEstoqueBalancete)}</restrict>
+
+	<param name="firstResult" value="#{loteProdutoList.firstResult}" />
+	<param name="sort" value="#{loteProdutoList.orderColumn}" />
+	<param name="dir" value="#{loteProdutoList.orderDirection}" />
+	<param name="logic" value="#{loteProdutoList.restrictionLogicOperator}" />
+
+	<param name="from" />
+	<param name="identificacaoLote" value="#{loteProdutoList.loteProduto.identificacaoLote}" />
+	<param name="codProdutoExterno" value="#{loteProdutoList.loteProduto.produto.codProdutoExterno}" />
+	<param name="codigoBarrasProduto" value="#{loteProdutoList.loteProduto.produto.codigoBarrasProduto}" />
+	<param name="nomeProduto" value="#{loteProdutoList.loteProduto.produto.nomeProduto}" />
+
+	<param name="marca" value="#{loteProdutoList.codMarca}" />
+	<param name="produtoSelecionado" value="#{loteProdutoList.loteProduto.produto.codProduto}" />
+
+	<param name="qtdEstoque" value="#{loteProdutoList.loteProduto.qtdEstoque}" />
+	<param name="qtdMinimaEstoque" value="#{loteProdutoList.loteProduto.qtdMinimaEstoque}" />
+
+</page>

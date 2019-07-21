@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<page xmlns="http://jboss.com/products/seam/pages"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://jboss.com/products/seam/pages http://jboss.com/products/seam/pages-2.2.xsd"
+      login-required="true">
+      
+   	<restrict>#{identity.hasRole(transacoes.transacaoAcessoPerfil)}</restrict>
+	
+	<begin-conversation join="true" flush-mode="MANUAL"/>
+	
+   	<param name="firstResult" value="#{acessoDefaultList.firstResult}"/>
+   	<param name="sort" value="#{acessoDefaultList.orderColumn}"/>
+   	<param name="dir" value="#{acessoDefaultList.orderDirection}"/>
+   	<param name="logic" value="#{acessoDefaultList.restrictionLogicOperator}"/>
+   
+   	<param name="perfil" value="#{acessoDefaultList.acessoDefault.perfil.codPerfil}"/>
+   	<param name="transacao" value="#{acessoDefaultList.acessoDefault.transacao.codTransacao}"/>
+
+   	<param name="from"/>
+
+</page>

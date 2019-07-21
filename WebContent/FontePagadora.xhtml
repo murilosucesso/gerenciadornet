@@ -1,0 +1,43 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:s="http://jboss.com/products/seam/taglib"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:rich="http://richfaces.org/rich"
+    template="layout/template.xhtml">
+
+<ui:define name="body">
+
+    <rich:panel>
+        <f:facet name="header">Detalhes do Fonte Pagadora</f:facet>
+
+        <s:decorate id="descFontePagadora" template="layout/display.xhtml">
+            <ui:define name="label">Fonte Pagadora</ui:define>
+            <h:outputText value="#{fontePagadoraHome.instance.descFontePagadora}"/>
+        </s:decorate>
+                     
+        <s:decorate id="descFontePagadora" template="layout/display.xhtml">
+           <ui:define name="label">Fonte Pagadora Ativa</ui:define>              
+           <h:outputText value="SIM" rendered="#{!fontePagadoraHome.instance.inExclusao}"/>
+           <h:outputText value="NÃO" rendered="#{fontePagadoraHome.instance.inExclusao}"/>
+         </s:decorate> 
+
+        <div style="clear:both"/>
+
+    </rich:panel>
+
+    <div class="actionButtons">
+
+        <s:button view="/FontePagadoraEdit.xhtml"  rendered="#{identity.hasRole(transacoes.transacaoAdminFontePagadora)}"
+                    id="edit"
+                 value="Editar"/>
+                
+        <s:button view="/FontePagadoraList.xhtml" 
+        	includePageParams="true" propagation="join" id="done" value="Voltar" />
+    </div>
+    
+</ui:define>
+
+</ui:composition>

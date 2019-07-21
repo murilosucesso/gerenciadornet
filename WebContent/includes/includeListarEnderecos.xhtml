@@ -1,0 +1,49 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:s="http://jboss.com/products/seam/taglib"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:easy="http://easyfaces.com.br/easyfaces"  
+    xmlns:rich="http://richfaces.org/rich">
+     
+		  <rich:column>
+              <f:facet name="header">Endereço</f:facet>
+              <h:outputText value="#{_endereco.endereco}"/>
+          </rich:column>
+          <rich:column>
+              <f:facet name="header">Número</f:facet>
+              <h:outputText value="#{_endereco.numero}"/>
+          </rich:column>
+          <rich:column>
+              <f:facet name="header">Complemento</f:facet>
+              <h:outputText value="#{_endereco.complemento}"/>
+          </rich:column>
+          <rich:column>
+              <f:facet name="header">Bairro</f:facet>
+              <h:outputText value="#{_endereco.bairro}"/>
+          </rich:column>
+          <rich:column>
+              <f:facet name="header">Cidade</f:facet>
+              <h:outputText value="#{_endereco.cidade}"/>
+          </rich:column>
+          <rich:column>
+              <f:facet name="header">UF</f:facet>
+              <h:outputText value="#{_endereco.uf}"/>
+          </rich:column>
+          <rich:column>
+              <f:facet name="header">CEP</f:facet>
+              <h:outputText value="#{_endereco.cep}"/>
+          </rich:column>
+          <rich:column>
+              <f:facet name="header">Telefone</f:facet>
+              <h:outputText value="#{_endereco.telefone1}"/>
+          </rich:column>
+          <rich:column>
+              <f:facet name="header">Tefefone</f:facet>
+              <h:outputText value="#{_endereco.tefefone2}"/>
+          </rich:column>
+
+</ui:composition>

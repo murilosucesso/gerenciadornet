@@ -1,0 +1,136 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:s="http://jboss.com/products/seam/taglib"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:rich="http://richfaces.org/rich"
+    xmlns:a="http://richfaces.org/a4j"
+    template="layout/template.xhtml">
+
+<ui:define name="body">
+
+    <a:form id="historicoSearch" styleClass="edit">
+
+		<div>
+			<a:commandLink>
+				<h:graphicImage value="/img/help.png" styleClass="help" id="helplink"/>
+				<rich:toolTip direction="bottom-left" attachTo="helplink" followMouse="true">
+		            <s:span styleClass="helpFont">
+		                 --------------------------------------- Ajuda, Dicas e Procedimentos para Pesquisa  ------------------------------------<br/><br/>
+		                 - Preencha os campos do Filtro de Pesquisa conforme desejar<br/>
+		                 - Clique no botão Pesquisar para que a pesquisa seja executada <br/>
+		                 - Serão listados 15 registros como resultado por página<br/>
+		                 - Clique no botão >> para avançar um página ou no botão >> >> para ir para última página<br/>
+		                 - Clique no botão &#60;&#60; para voltar uma página ou no botão &#60;&#60; &#60;&#60; para ir para primeira página<br/>
+		                 - Caso queira ir para uma página específica, clique no número da página<br/>
+		                 - Caso queira ordernar sua pesquisa, basta clicar no cabeçalho da coluna pela qual deseja ordenar,<br/>
+		                   um clique na coluna ordena de forma crescente e um outro clique ordena decrescente <br/><br/>
+					     - Caso queira realizar uma nova pesquisa, clique no botão limpar e reinicie o processo<br/>
+					     - Serão retornados no máximo 1.000 registros pesquisados. Refine a pesquisa se necessário.<br/>
+		            </s:span>
+		       	</rich:toolTip>
+	      	</a:commandLink>
+	   	</div>
+   	
+        <rich:simpleTogglePanel label="Filtro de pesquisa de Histórico" switchType="client">
+
+            <s:decorate id="usuarioField"	template="layout/display.xhtml">
+				<ui:define name="label">Usuário</ui:define>
+			  	
+				<h:selectOneMenu id="usuario" value="#{historicoList.historico.usuario}" styleClass="defaultInput">		
+				   <s:selectItems value="#{usuarioList.resultList}" 
+				   				  var="usuario" 		
+				   				  noSelectionLabel="Selecione.."				   				  		
+				                  label="#{usuario.nomeUsuario}"/>				   					   							       	
+				   <s:convertEntity />			
+				</h:selectOneMenu>										
+			</s:decorate>    
+			
+			<s:decorate template="layout/display.xhtml">
+				<ui:define name="label">Descrição</ui:define>
+			  	<h:inputText id="descHistorico" value="#{historicoList.historico.descHistorico}" styleClass="defaultInput" maxlength="100"/>
+			</s:decorate>    
+			
+			 <s:decorate template="layout/display.xhtml">
+                <ui:define name="label">Data Inicial</ui:define>                
+                 <rich:calendar id="dataInicial" required="true" value="#{historicoList.dataInicial}" defaultTime="00:00" resetTimeOnDateSelect="true" datePattern="dd/MM/yyyy">
+                	<f:convertDateTime pattern="yyyy-MM-dd HH:mm"/>
+                </rich:calendar>
+            </s:decorate>
+            
+            <s:decorate template="layout/display.xhtml">
+                <ui:define name="label">Data Final</ui:define>
+                <rich:calendar id="dataFinal" required="true" value="#{historicoList.dataFinal}" defaultTime="23:59" resetTimeOnDateSelect="true" datePattern="dd/MM/yyyy">
+                	<f:convertDateTime pattern="yyyy-MM-dd HH:mm"/>
+                </rich:calendar>
+            </s:decorate>
+
+        </rich:simpleTogglePanel>
+        
+        <table border="0" width="10%">
+			<tr>
+				<td nowrap="nowrap">
+					 <div class="actionButtons">
+				          <a:commandButton id="search" type="button" ajaxSingle="true" limitToList="true" process="usuario, descHistorico, dataInicial, dataFinal" 
+				          	value="Pesquisar" action="#{historicoList.setMostrarResultados(true)}" actionListener="#{historicoList.listarHistorico()}" reRender="panelResultado, resultadoList, sc"/>
+				           
+				          <s:button id="reset" value="Limpar" includePageParams="false"/>   
+				   		  <rich:hotKey key="return" handler="#{rich:element('search')}.click()"/>
+				   	 </div>
+				</td>
+			</tr>
+		</table>
+	</a:form>
+	
+	<h:form>
+	<a:outputPanel id="panelResultado" ajaxRendered="true">
+    <rich:panel  rendered="#{historicoList.mostrarResultados}">
+ 
+    <f:facet name="header">
+		<a:outputPanel  id="panelDiv" ajaxRendered="true">
+	    	<h:outputText value=" Resultado da pesquisa de Histórico (#{historicoList.qtdResultados})"/>
+	    </a:outputPanel>
+    </f:facet>
+    	    
+   	<h:outputText value="#{messages['mensagem.pesquisa.vazia']}" rendered="#{empty historicoList.historicoList}"/>
+  
+	<rich:dataTable value="#{historicoList.historicoList}"
+                      var="_historico"
+                       id="resultadoList"
+                     rows="15"
+           onRowMouseOver="this.style.backgroundColor='#F0F0F0'"
+          	 onRowMouseOut="this.style.backgroundColor='#{a4jSkin.rowBackgroundColor}'"
+          	 columnClasses="center, left, center"
+          	      rendered="#{not historicoList.pesquisaVazia}"
+          	    rowClasses="tableRowOne,tableRowTwo">
+        
+        	<rich:column sortBy="#{_historico.usuario.nomeUsuario}">
+               <f:facet name="header">Usuário</f:facet> 
+               <h:outputText value="#{_historico.usuario.nomeUsuario}"/>
+           </rich:column>
+        
+           <rich:column sortBy="#{_historico.descHistorico}">
+               <f:facet name="header">Descrição histórico</f:facet>
+               <h:outputText value="#{_historico.descHistorico}"/>
+           </rich:column>
+           
+           <rich:column sortBy="#{_historico.dataHistorico}">
+               <f:facet name="header">Data histórico</f:facet>
+                <h:outputText value="#{_historico.dataHistorico}">
+                <s:convertDateTime type="date" pattern="dd/MM/yyyy HH:mm:ss"/>
+            </h:outputText>         
+           </rich:column>
+        	
+	</rich:dataTable>
+		
+		<ui:include src="/includes/includeDataScroller.xhtml"/>
+    
+    </rich:panel>
+    </a:outputPanel>
+    </h:form>
+
+</ui:define>
+
+</ui:composition>

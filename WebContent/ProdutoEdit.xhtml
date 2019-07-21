@@ -1,0 +1,360 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:s="http://jboss.com/products/seam/taglib"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:a="http://richfaces.org/a4j"
+    xmlns:rich="http://richfaces.org/rich"
+    xmlns:easy="http://easyfaces.com.br/easyfaces"
+    template="layout/template.xhtml">
+
+<ui:define name="body">
+
+    <h:form id="produto" styleClass="edit" enctype="multipart/form-data">
+		<ui:include src="/paginas/help/GenericEditHelp.xhtml"/>
+        <rich:panel>
+            <f:facet name="header">#{produtoHome.managed ? 'Editar' : 'Adicionar'} Produto</f:facet>
+			
+			<s:decorate id="imagemField" template="layout/display.xhtml">
+                <h:graphicImage value="/img/produtos/#{produtoHome.instance.marca.nomeMarca}/#{produtoHome.instance.nomeImagem}" rendered="#{!empty produtoHome.instance.nomeImagem }"/>
+                <h:graphicImage value="/img/produtos/imagem_indisponivel.jpg" rendered="#{empty produtoHome.instance.nomeImagem }"/>
+             </s:decorate> 
+			
+			<s:decorate template="layout/display.xhtml">
+                <ui:define name="label">Código Interno Sistema</ui:define>
+                <h:outputText value="#{produtoHome.instance.codProduto}" />
+             </s:decorate> 
+             
+			 <s:decorate id="nomeProdutoField" template="layout/edit.xhtml">
+                <ui:define name="label">Nome Produto</ui:define>
+                <h:inputText id="nomeProduto"
+                       required="true"
+                     styleClass="defaultInput"
+                      maxlength="120"
+                          value="#{produtoHome.instance.nomeProduto}" >
+                </h:inputText>
+             </s:decorate> 
+
+			 <s:decorate id="codProdutoExternoField" template="layout/edit.xhtml">
+                <ui:define name="label">Código Produto</ui:define>
+                <h:inputText id="codProdutoExterno"
+                           size="20"
+                      maxlength="20"
+                     styleClass="defaultInput"
+                          value="#{produtoHome.instance.codProdutoExterno}">
+                </h:inputText>
+            </s:decorate>
+            
+            <s:decorate id="ncmField" template="layout/edit.xhtml">
+                <ui:define name="label">NCM</ui:define>
+                <h:inputText id="ncm"
+                           size="20"                           
+                      maxlength="8"
+                     styleClass="defaultInput"
+                          value="#{produtoHome.instance.ncm}">
+                </h:inputText>
+            </s:decorate>
+            
+            <s:decorate id="codigoBarrasProdutoField" template="layout/edit.xhtml">
+                <ui:define name="label">Código Barras</ui:define>
+                <h:inputText id="codigoBarrasProduto"
+                           size="40"
+                      maxlength="40"
+                     styleClass="defaultInput"
+                          value="#{produtoHome.instance.codigoBarrasProduto}">
+                </h:inputText>
+            </s:decorate>
+
+           <s:decorate id="descProdutoField" template="layout/edit.xhtml">
+                <ui:define name="label">Descrição Produto</ui:define>
+                <h:inputText id="descProduto"
+                     styleClass="defaultInput"
+                      maxlength="60"
+                          value="#{produtoHome.instance.descProduto}">
+                </h:inputText>
+            </s:decorate>
+            
+            <s:decorate id="produtoMarcaField" template="layout/edit.xhtml">
+            	<ui:define name="label">Marca</ui:define>
+	            <h:selectOneMenu value="#{produtoHome.instance.marca}" required="true" styleClass="defaultInput">		
+				   <s:selectItems value="#{marcaList.resultList}" 
+				   				  var="marca" 			
+				                  label="#{marca.nomeMarca}"				                  
+				                  noSelectionLabel="Selecione.."/>			
+				   <s:convertEntity />			
+				</h:selectOneMenu>
+			</s:decorate>
+			
+			 <s:decorate id="produtoCategoriaField" template="layout/edit.xhtml">
+            	<ui:define name="label">Categoria</ui:define>
+	            <h:selectOneMenu value="#{produtoHome.instance.categoria}" required="false" styleClass="defaultInput">		
+				   <s:selectItems value="#{categoriaList.resultList}" 
+				   				  var="categoria" 			
+				                  label="#{categoria.nomeCategoria}"
+				                  noSelectionLabel="Selecione.."/>			
+				   <s:convertEntity />			
+				</h:selectOneMenu>
+			</s:decorate>
+			
+			 <s:decorate id="precoCompraField" template="layout/edit.xhtml">
+            	<ui:define name="label">Preço Compra (R$)</ui:define>
+            	<easy:inputCurrency id="precoCompra" 
+									value="#{produtoHome.instance.precoCompraDefault}" 
+									required="false"
+									decimalSeparator="," 
+									groupSeparator="." 
+									useValidate="false"
+									returnDecimal="true" 
+									size="10">
+				</easy:inputCurrency>	
+			</s:decorate>
+			
+			<s:decorate id="precoVendaField" template="layout/edit.xhtml">
+            	<ui:define name="label">Preço Venda (R$)</ui:define>
+            	<easy:inputCurrency id="precoVenda" 
+									value="#{produtoHome.instance.precoVendaDefault}" 
+									required="false"
+									decimalSeparator="," 
+									groupSeparator="." 
+									useValidate="false"
+									returnDecimal="true" 
+									size="10">
+				</easy:inputCurrency>	
+				#{' '}
+				 <a:commandButton value="Atualizar Todos os Lotes" ajaxSingle="true" limitToList="true" process="precoVenda"
+                         action="#{produtoHome.atualizarPrecoTodosLotes()}" reRender="panelGlobalMessages" oncomplete="alert('Preços atualizados com sucesso.')"
+                       rendered="#{identity.hasRole(transacoes.transacaoProdutoAtualizarTodosLotes)}"/>
+			</s:decorate>
+			
+			 <s:decorate id="valorComissaoField" template="layout/edit.xhtml">
+            	<ui:define name="label">Valor Comissão</ui:define>
+            	<easy:inputCurrency id="valorComissao" 
+									value="#{produtoHome.instance.valorComissao}" 
+									required="false"
+									decimalSeparator="," 
+									groupSeparator="." 
+									useValidate="false"
+									returnDecimal="true" 
+									size="10">
+				</easy:inputCurrency>	
+			</s:decorate>
+			
+			
+			<s:decorate id="localizadorField" template="layout/edit.xhtml">
+                <ui:define name="label">Localizador</ui:define>
+                <h:inputText id="localizador"
+                     styleClass="defaultInput"
+                      maxlength="20"
+                          value="#{produtoHome.instance.localizadorDefault}">
+                </h:inputText>
+            </s:decorate>
+            
+            <s:decorate id="larguraField" template="layout/edit.xhtml">
+                <ui:define name="label">Largura (cm)</ui:define>
+				<rich:inputNumberSpinner id="largura"
+									value="#{produtoHome.instance.largura}"
+									minValue="0"
+									maxValue="99999"
+									step="5" inputSize="5" />
+            </s:decorate>
+            
+            <s:decorate id="comprimentoField" template="layout/edit.xhtml">
+                <ui:define name="label">Comprimento (cm)</ui:define>
+				<rich:inputNumberSpinner id="comprimento"
+									value="#{produtoHome.instance.comprimento}"
+									minValue="0"
+									maxValue="99999"
+									step="5" inputSize="5" />
+            </s:decorate>
+            
+            <s:decorate id="alturaField" template="layout/edit.xhtml">
+                <ui:define name="label">Altura (cm)</ui:define>
+				<rich:inputNumberSpinner id="altura"
+									value="#{produtoHome.instance.altura}"
+									minValue="0"
+									maxValue="99999"
+									step="5" inputSize="5" />	
+            </s:decorate>
+            
+			  
+            <s:decorate id="pesoField" template="layout/edit.xhtml">
+                <ui:define name="label">Peso (Kg)</ui:define>
+                <easy:inputCurrency id="peso" 
+									value="#{produtoHome.instance.peso}" 
+									required="false" 
+									decimalSeparator="," 
+									groupSeparator="." 
+									useValidate="false"
+									returnDecimal="true" 
+									size="8">
+				</easy:inputCurrency>
+            </s:decorate>
+            
+             <s:decorate id="unidadeField" template="layout/edit.xhtml">
+                <ui:define name="label">Unidade</ui:define>
+				<h:selectOneMenu id="unidadeField" value="#{produtoHome.instance.unidade}" styleClass="defaultInput">
+					<f:selectItem itemValue="Un" itemLabel="Unidade"/>
+					<f:selectItem itemValue="Cx" itemLabel="Caixa"/>
+					<f:selectItem itemValue="Gr" itemLabel="Grama"/>
+					<f:selectItem itemValue="Kg" itemLabel="Kilograma"/>
+					<f:selectItem itemValue="Pc" itemLabel="Pacote"/>
+					<f:selectItem itemValue="Lt" itemLabel="Litro"/>
+					<f:selectItem itemValue="Pt" itemLabel="Pote"/>
+				</h:selectOneMenu>	
+            </s:decorate>
+            
+            <s:decorate id="temperaturaField" template="layout/edit.xhtml">
+                <ui:define name="label">Temperatura</ui:define>
+                <h:inputText id="temperatura"
+                     styleClass="defaultInput"
+                      maxlength="15"
+                          value="#{produtoHome.instance.temperatura}">
+                </h:inputText>
+            </s:decorate>
+            
+            <s:decorate id="nomeImagemField" template="layout/edit.xhtml">
+                <ui:define name="label">Nome Imagem</ui:define>
+                <h:inputText id="nomeImagem"
+                     styleClass="defaultInput"
+                      maxlength="70"
+                          value="#{produtoHome.instance.nomeImagem}">
+                </h:inputText>
+            </s:decorate>
+			
+			<s:decorate id="produtoImagem" template="layout/edit.xhtml">
+			 	<ui:define name="label">Imagens do Produto</ui:define>
+				<rich:fileUpload
+					fileUploadListener="#{produtoHome.adicionarImagemListener}"
+	                id="upload"
+	                immediateUpload="true"
+	                allowFlash="false"
+	                ajaxSingle="true"
+	                noDuplicate="true"
+	                disabled="#{produtoHome.imagensProduto.size>=3}"
+	                maxFilesQuantity="3"
+	               	listHeight="55"
+	               	autoclear="true"
+	               	acceptedTypes="jpg, gif, png, bmp">
+	                <a:support event="onfileuploadcomplete" reRender="panelImagens,upload" ajaxSingle="true"/>
+           	 	</rich:fileUpload>
+			</s:decorate>
+			
+            <div style="clear:both">
+                <span class="required">*</span>
+                Campos obrigatórios
+            </div>
+
+        </rich:panel>
+
+        <div class="actionButtons">
+
+            <h:commandButton id="save"
+                          value="Salvar"
+                         action="#{produtoHome.persist}"
+                       disabled="#{!produtoHome.wired}"
+                       rendered="#{!produtoHome.managed and identity.hasRole(transacoes.transacaoProdutoInserir)}"/>
+
+            <h:commandButton id="update"
+                          value="Salvar"
+                         action="#{produtoHome.update}"
+                       rendered="#{produtoHome.managed and identity.hasRole(transacoes.transacaoProdutoEditar)}"/>
+
+            <h:commandButton id="delete"
+                          value="Excluir"
+                         action="#{produtoHome.remove}"
+                         onclick="if (!confirm('Tem certeza que deseja Excluir este registro?')) return false"
+                      immediate="true"
+                       rendered="#{produtoHome.managed and identity.hasRole(transacoes.transacaoProdutoExcluir)}"/>
+
+            <s:button id="cancelEdit"
+                   value="Voltar"
+             propagation="end"
+                    view="/Produto.xhtml"
+                rendered="#{produtoHome.managed}"/>
+
+            <s:button id="cancelAdd"
+                   value="Voltar"
+             propagation="end"
+                    view="/#{empty produtoFrom ? 'ProdutoList' : produtoFrom}.xhtml"
+                rendered="#{!produtoHome.managed}"/>
+        </div>
+        
+        <a:outputPanel id="panelImagens">
+			<rich:dataTable 
+				value="#{produtoHome.imagensProduto}"
+				var="_imagem"
+				rendered="#{!empty produtoHome.imagensProduto}"
+				rowKeyVar="row">
+				<f:facet name="header">
+                	<h:outputText value="Imagens cadastradas para o Produto" />
+        		</f:facet>
+				<rich:column>
+					<f:facet name="header">Nome Imagem</f:facet>
+					<h:outputText value="#{_imagem.nome}"/>
+				</rich:column>
+				<rich:column rendered="#{produtoHome.idDefined}">
+					<f:facet name="header">Visualizar</f:facet>
+					<center>
+						<a:commandLink 
+							ajaxSingle="true"
+							action="#{produtoHome.selecionarImagemToShow(_imagem)}"
+							reRender="outModalPanelId">
+        					 <h:graphicImage url="/img/binoculo.jpg"/> 
+						</a:commandLink>
+					</center>
+				</rich:column>
+				<rich:column rendered="#{!produtoHome.idDefined}">
+					<f:facet name="header">Remover</f:facet>
+					<center>
+						<a:commandButton image="/img/lixeira.gif"
+							ajaxSingle="true"
+							action="#{produtoHome.removerImagem(_imagem)}"
+							reRender="panelImagens"/>
+					</center>
+				</rich:column>
+			</rich:dataTable>
+		</a:outputPanel>
+    </h:form>
+    	<a:outputPanel id="outModalPanelId">
+		 	<rich:modalPanel id="mostarImagemModal" width="200" height="200" showWhenRendered="true" rendered="#{!empty imagemToShow}">
+		        <rich:jQuery name="enlargePic" timing="onJScall" query="animate({width:param.pwidth,height:param.pwidth})" />
+				<rich:jQuery name="releasePic" timing="onJScall" query="animate({width:'100px',height:'100px'})"/> 
+		        <f:facet name="header">
+		            <h:panelGroup>
+		                <h:outputText value="Imagem do Produto"></h:outputText>
+		            </h:panelGroup>
+		        </f:facet>
+		        <f:facet name="controls">
+		            <h:panelGroup>
+		                <h:graphicImage value="/img/close.png" styleClass="hidelink" id="modalCloseId"/>
+		                <rich:componentControl for="mostarImagemModal" attachTo="modalCloseId" operation="hide" event="onclick"/>
+		            </h:panelGroup>
+		        </f:facet>
+		        <center>
+			        <a:mediaOutput 
+			        	element="img"
+			        	mimeType="#{imagemToShow.mime}"
+			            createContent="#{produtoHome.mostrarImagem}" 
+			            value="#{imagemToShow}"
+			            style="width:100px; height:100px;" 
+			            cacheable="false"
+			            onmouseover="enlargePic(this, {pwidth:'120px'})"
+			            onmouseout="releasePic(this)">
+			        </a:mediaOutput>
+			        <h:form>
+			        	<a:commandButton 
+			        		value="Remover"
+			        		action="#{produtoHome.removerImagem(imagemToShow)}"
+			        		id="buttonRemoverImagemId"
+			        		reRender="panelImagens,outModalPanelId"
+			        		rendered="#{!empty imagemToShow}">
+		                	<rich:componentControl for="mostarImagemModal" attachTo="buttonRemoverImagemId" operation="hide" event="oncomplete"/>
+		                </a:commandButton>
+			        </h:form>
+		        </center>
+		    </rich:modalPanel>
+	    </a:outputPanel>
+</ui:define>
+</ui:composition>

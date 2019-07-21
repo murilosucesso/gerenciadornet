@@ -1,0 +1,106 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:s="http://jboss.com/products/seam/taglib"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:a="http://richfaces.org/a4j"
+    xmlns:rich="http://richfaces.org/rich"
+    template="layout/template.xhtml">
+
+<ui:define name="body">
+
+    <h:form id="categoriaSearch" styleClass="edit">
+
+		<ui:include src="/paginas/help/GenericListHelp.xhtml"/>
+    	
+        <rich:simpleTogglePanel label="Filtro de pesquisa de Categoria" switchType="client">
+
+            <s:decorate template="layout/display.xhtml">
+                <ui:define name="label">Nome Categoria</ui:define>
+                <h:inputText id="nomeCategoria" value="#{categoriaList.categoria.nomeCategoria}" size="50"/>
+            </s:decorate>
+
+        </rich:simpleTogglePanel>
+
+        <table border="0" width="10%">
+			<tr>
+				<td nowrap="nowrap">
+		        	<ui:include src="/includes/includeBotoesPesquisarLimpar.xhtml" />
+				</td>
+				<td nowrap="nowrap">    
+				    <s:div styleClass="actionButtons" rendered="#{identity.hasRole(transacoes.transacaoCategoriaInserir)}">
+				        <s:button view="/CategoriaEdit.xhtml"
+				                    id="create"
+				           propagation="none"
+				                 value="Nova Categoria">
+				            <f:param name="categoriaCodCategoria"/>
+				        </s:button>
+				    </s:div>
+			   	</td>
+	    	</tr>
+		</table>
+        
+
+    </h:form>
+	<h:form>
+    <rich:panel>
+    
+    <f:facet name="header">
+		<a:outputPanel  id="panelDiv" ajaxRendered="true">
+	    	Resultado da Pesquisa de Categoria(#{empty categoriaList.resultList ? 0 : (categoriaList.paginated ? categoriaList.resultCount : categoriaList.resultList.size)})
+	    </a:outputPanel>
+    </f:facet>
+    
+	<a:outputPanel id="msnListaVazia" ajaxRendered="true">
+   	
+   	<h:outputText value="#{messages['mensagem.pesquisa.vazia']}" rendered="#{empty categoriaList.resultList}"/>
+   	
+    <rich:dataTable id="resultadoList"
+                var="_categoria"
+              value="#{categoriaList.resultList}"
+           rendered="#{not empty categoriaList.resultList}"
+           onRowMouseOver="this.style.backgroundColor='#F0F0F0'"
+           onRowMouseOut="this.style.backgroundColor='#{a4jSkin.rowBackgroundColor}'"
+           columnClasses="center"  
+		   rows="15" 
+           rowClasses="tableRowOne,tableRowTwo">
+
+         <rich:column sortBy="#{_categoria.nomeCategoria}" styleClass="left"> 
+           <f:facet name="header">
+               <h:outputText value="Nome categoria"/> 
+           </f:facet> 
+           <h:outputText value="#{_categoria.nomeCategoria}"/>
+         </rich:column>  
+         
+        <rich:column styleClass="action">
+            <f:facet name="header">Visualizar/Editar</f:facet>
+            <s:link view="/#{empty from ? 'Categoria' : from}.xhtml"
+             propagation="#{empty from ? 'none' : 'default'}" id="categoriaViewId">
+                
+                <h:graphicImage url="/img/binoculo.jpg"/>
+                <f:param name="categoriaCodCategoria" value="#{_categoria.codCategoria}"/>
+            </s:link>
+            <rich:toolTip for="categoriaViewId" value="Visualizar Categoria" direction="top-left"/>
+            
+            #{' '}
+            
+            <s:link view="/CategoriaEdit.xhtml" propagation="none" id="categoriaEdit"  rendered="#{identity.hasRole(transacoes.transacaoCategoriaEditar)}">
+            	<h:graphicImage url="/img/editar.jpg"/>
+                <f:param name="categoriaCodCategoria" value="#{_categoria.codCategoria}"/>
+            </s:link>
+            <rich:toolTip for="categoriaEdit" value="Editar Categoria" direction="top-left"/>
+            
+        </rich:column>
+    </rich:dataTable>
+    
+	<ui:include src="/includes/includeDataScroller.xhtml"/>
+	
+    </a:outputPanel>
+    </rich:panel>
+	</h:form>
+
+</ui:define>
+
+</ui:composition>

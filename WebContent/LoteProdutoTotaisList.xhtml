@@ -1,0 +1,179 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:s="http://jboss.com/products/seam/taglib"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:rich="http://richfaces.org/rich"
+    xmlns:a="http://richfaces.org/a4j"
+    template="layout/template.xhtml">
+
+<ui:define name="body">
+	
+    
+    	<table border="0" width="100%"><tr><td align="center">
+       	<h:panelGrid width="100%" border="0" styleClass="painelGridCinza" columns="4" headerClass="textoMedioCinza3 dr-table-subheader">
+       		<f:facet name="header">
+        		<h:outputText value="Valor Total do Estoque" />
+       		</f:facet>
+       		
+       		<h:outputText value="Quantidade" styleClass="textoMedioCinza3"/>
+       		<h:outputText value="Total Preço Custo" styleClass="textoMedioCinza3"/>
+       		<h:outputText value="Total Preço Venda" styleClass="textoMedioCinza3"/>
+       		<h:outputText value="Lucro" styleClass="textoMedioCinza3"/>
+       		
+       		<h:outputText value="#{loteProdutoTotaisList.totaisEstoqueDTO.qtdTotalEstoque}" styleClass="textoNegrito4">
+       			<f:convertNumber  type="number" locale="pt_BR"/>
+       		</h:outputText>
+       		<h:outputText value="#{loteProdutoTotaisList.totaisEstoqueDTO.totalEstoquePrecoCusto}" styleClass="textoNegrito4">
+              		<f:convertNumber currencySymbol="R$"  type="currency"  locale="pt_BR"/>
+           	</h:outputText>
+           	<h:outputText value="#{loteProdutoTotaisList.totaisEstoqueDTO.totalEstoquePrecoVenda}" styleClass="textoNegrito4">
+            	<f:convertNumber currencySymbol="R$"  type="currency"  locale="pt_BR"/>
+            </h:outputText>
+            <h:outputText value="#{loteProdutoTotaisList.totaisEstoqueDTO.totalEstoquePrecoVenda - loteProdutoTotaisList.totaisEstoqueDTO.totalEstoquePrecoCusto}" styleClass="textoNegrito4">
+            	<f:convertNumber currencySymbol="R$"  type="currency"  locale="pt_BR"/>
+            </h:outputText>
+       	</h:panelGrid>
+       	</td>
+       	</tr> 
+    	</table>
+       	<!-- region para não chamar o aguarde... e ficar subindo e descondo a tela -->
+		<a:region>
+       	<a:form>
+       	<rich:spacer height="7px"/>
+    	<fieldset>
+			<legend>Valores em estoque por Marca</legend>
+			
+		    	<h:outputText value="#{messages['mensagem.pesquisa.vazia']}" rendered="#{empty loteProdutoTotaisList.totaisEstoqueDTOListMarca}"/>
+		    
+				<rich:dataTable id="resultadoList"
+					                var="_totaisEstoqueDTO"
+					              	value="#{loteProdutoTotaisList.totaisEstoqueDTOListMarca}"			           	
+						           	onRowMouseOver="this.style.backgroundColor='#F0F0F0'"
+						           	onRowMouseOut="this.style.backgroundColor='#{a4jSkin.rowBackgroundColor}'"
+						           	rendered="#{not empty loteProdutoTotaisList.totaisEstoqueDTOListMarca}"
+						           	rows="10"
+						           	columnsWidth="30%, 16%, 18%, 18%, 18%"
+						           	rowClasses="tableRowOne,tableRowTwo">
+			
+			         
+			         <rich:column sortBy="#{_totaisEstoqueDTO.marca}" styleClass="left"> 
+			           <f:facet name="header">
+			               <h:outputText value="Marca"/>
+			           </f:facet> 
+			           <h:outputText value="#{_totaisEstoqueDTO.marca}" styleClass="textoNegrito4"/>
+			         </rich:column> 
+			         
+			         <rich:column sortBy="#{_totaisEstoqueDTO.qtdTotalEstoque}"  styleClass="center"> 
+			           <f:facet name="header">
+			               <h:outputText value="Quantidade"/>
+			           </f:facet> 
+			           <h:outputText value="#{_totaisEstoqueDTO.qtdTotalEstoque}" styleClass="textoNegrito4">
+			           		<f:convertNumber  type="number" locale="pt_BR"/>
+			           </h:outputText>
+			         </rich:column> 
+			         
+			         <rich:column sortBy="#{_totaisEstoqueDTO.totalEstoquePrecoCusto}"  styleClass="right"> 
+			           <f:facet name="header">
+			               <h:outputText value="Total Preço Custo"/>
+			           </f:facet> 
+			           <h:outputText value="#{_totaisEstoqueDTO.totalEstoquePrecoCusto}" styleClass="textoNegrito4">
+			           		<f:convertNumber currencySymbol="R$"  type="currency"  locale="pt_BR"/>
+			           </h:outputText>
+			         </rich:column> 
+			
+			         <rich:column sortBy="#{_totaisEstoqueDTO.totalEstoquePrecoVenda}"  styleClass="right"> 
+			           <f:facet name="header">
+			                <h:outputText value="Total Preço Venda"/>
+			           </f:facet> 
+			           <h:outputText value="#{_totaisEstoqueDTO.totalEstoquePrecoVenda}" styleClass="textoNegrito4">
+			           		<f:convertNumber currencySymbol="R$"  type="currency"  locale="pt_BR"/>
+			           </h:outputText>
+			         </rich:column>  
+			         
+			         <rich:column sortBy="#{_totaisEstoqueDTO.totalEstoquePrecoVenda - _totaisEstoqueDTO.totalEstoquePrecoCusto}"  styleClass="right"> 
+			           <f:facet name="header">
+			                <h:outputText value="Lucro"/>
+			           </f:facet> 
+			           <h:outputText value="#{_totaisEstoqueDTO.totalEstoquePrecoVenda - _totaisEstoqueDTO.totalEstoquePrecoCusto}" styleClass="textoNegrito4">
+		               		<f:convertNumber currencySymbol="R$"  type="currency"  locale="pt_BR"/>
+		               </h:outputText>
+			         </rich:column>
+			           
+			    </rich:dataTable>
+			    <ui:include src="/includes/includeDataScroller.xhtml"/>
+		</fieldset>
+		</a:form>
+		</a:region>
+		
+		<rich:spacer height="7px"/>
+		
+		<a:region>
+		<a:form>
+		<fieldset>
+			<legend>Valores em estoque por Categoria do Produto</legend>
+			
+		    	<h:outputText value="#{messages['mensagem.pesquisa.vazia']}" rendered="#{empty loteProdutoTotaisList.totaisEstoqueDTOListCategoria}"/>
+		    
+				<rich:dataTable id="resultadoList2"
+					                var="_totaisEstoqueDTO"
+					              	value="#{loteProdutoTotaisList.totaisEstoqueDTOListCategoria}"			           	
+						           	onRowMouseOver="this.style.backgroundColor='#F0F0F0'"
+						           	onRowMouseOut="this.style.backgroundColor='#{a4jSkin.rowBackgroundColor}'"
+						           	rendered="#{not empty loteProdutoTotaisList.totaisEstoqueDTOListCategoria}"
+						           	rows="10"
+						           	columnsWidth="30%, 16%, 18%, 18%, 18%"
+						           	rowClasses="tableRowOne,tableRowTwo">
+			         
+			         <rich:column sortBy="#{_totaisEstoqueDTO.marca}" styleClass="left"> 
+			           <f:facet name="header">
+			               <h:outputText value="Categoria"/>
+			           </f:facet> 
+			           <h:outputText value="#{_totaisEstoqueDTO.marca}" styleClass="textoNegrito4"/>
+			         </rich:column> 
+			         
+			         <rich:column sortBy="#{_totaisEstoqueDTO.qtdTotalEstoque}"  styleClass="center"> 
+			           <f:facet name="header">
+			               <h:outputText value="Quantidade"/>
+			           </f:facet> 
+			           <h:outputText value="#{_totaisEstoqueDTO.qtdTotalEstoque}" styleClass="textoNegrito4">
+			           		<f:convertNumber  type="number" locale="pt_BR"/>
+			           </h:outputText>
+			         </rich:column> 
+			         
+			         <rich:column sortBy="#{_totaisEstoqueDTO.totalEstoquePrecoCusto}"  styleClass="right"> 
+			           <f:facet name="header">
+			               <h:outputText value="Total Preço Custo"/>
+			           </f:facet> 
+			           <h:outputText value="#{_totaisEstoqueDTO.totalEstoquePrecoCusto}" styleClass="textoNegrito4">
+			           		<f:convertNumber currencySymbol="R$"  type="currency"  locale="pt_BR"/>
+			           </h:outputText>
+			         </rich:column> 
+			
+			         <rich:column sortBy="#{_totaisEstoqueDTO.totalEstoquePrecoVenda}"  styleClass="right"> 
+			           <f:facet name="header">
+			                <h:outputText value="Total Preço Venda"/>
+			           </f:facet> 
+			           <h:outputText value="#{_totaisEstoqueDTO.totalEstoquePrecoVenda}" styleClass="textoNegrito4">
+			           		<f:convertNumber currencySymbol="R$"  type="currency"  locale="pt_BR"/>
+			           </h:outputText>
+			         </rich:column>  
+			         
+			         <rich:column sortBy="#{_totaisEstoqueDTO.totalEstoquePrecoVenda - _totaisEstoqueDTO.totalEstoquePrecoCusto}"  styleClass="right"> 
+			           <f:facet name="header">
+			                <h:outputText value="Lucro"/>
+			           </f:facet> 
+			           <h:outputText value="#{_totaisEstoqueDTO.totalEstoquePrecoVenda - _totaisEstoqueDTO.totalEstoquePrecoCusto}" styleClass="textoNegrito4">
+		               		<f:convertNumber currencySymbol="R$"  type="currency"  locale="pt_BR"/>
+		               </h:outputText>
+			         </rich:column>
+			           
+			    </rich:dataTable>
+			    <rich:datascroller align="center" renderIfSinglePage="false" for="resultadoList2" maxPages="10" id="sc2"/>
+		</fieldset>
+    </a:form>
+    </a:region>
+</ui:define>
+</ui:composition>

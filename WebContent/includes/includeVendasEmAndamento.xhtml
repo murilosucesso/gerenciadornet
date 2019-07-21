@@ -1,0 +1,52 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:s="http://jboss.com/products/seam/taglib"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:a="http://richfaces.org/a4j"
+    xmlns:rich="http://richfaces.org/rich">
+     
+     
+     <h:form id="vendasEmAndamento">
+    			
+	    <rich:panel header="Vendas em Andamento" styleClass="panelHeightHome">
+	     	
+			<rich:dataGrid value="#{vendaList.listarVendasEmAndamento()}" var="venda" columns="3" elements="6" width="600px">
+            <rich:panel bodyClass="pbody">
+                <f:facet name="header">
+                	  <s:link view="/VendaEdit.xhtml" propagation="#{empty from ? 'none' : 'default'}">
+                	  		<h:outputText value="Código da Venda: #{venda.codVenda}"></h:outputText>
+			                <f:param name="vendaCodVenda" value="#{venda.codVenda}"/>
+			          </s:link>
+                   
+                </f:facet>
+                <h:panelGrid columns="2" width="150">
+                 	
+	                    <h:outputText value="Cliente:" styleClass="label textoNegrito"/>
+	                    <h:outputText value="#{venda.cliente.nome}" />
+	                    
+	                    <h:outputText value="Prof.:" styleClass="label textoNegrito" title="Profissional" />
+	                    <h:outputText value="#{venda.usuario.nomeUsuario}" />
+	                    
+	                    <h:outputText value="Obs:" styleClass="label textoNegrito" title="Observação"/>
+	                    <h:outputText value="#{venda.obsVenda}" />
+	                    
+	                    <h:outputText value="Valor:" styleClass="label textoNegrito"/>
+	                    <h:outputText value="#{venda.valorTotalVenda}">
+	                    	<f:convertNumber currencySymbol="R$"  type="currency"  locale="pt_BR"/>
+	                    </h:outputText>
+                 
+                </h:panelGrid>
+            </rich:panel>
+            <f:facet name="footer">
+                <rich:datascroller rendered="vendaList.listarVendasEmAndamento() != null"></rich:datascroller>
+                <h:outputText value="NÃO EXISTEM VENDAS EM ANDAMENTO."  rendered="vendaList.listarVendasEmAndamento() == null"/>
+            </f:facet>
+        </rich:dataGrid>
+			
+		</rich:panel>
+	</h:form>
+</ui:composition>

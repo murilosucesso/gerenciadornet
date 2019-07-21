@@ -1,0 +1,402 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:s="http://jboss.com/products/seam/taglib"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:a="http://richfaces.org/a4j" template="layout/template.xhtml">
+
+	<ui:define name="head">
+		<style type="text/css">
+			.tableColumn {
+				background-color: #FFFFBB;
+				text-align: center;
+			}
+			.tableColumn1 {
+				background-color: #FFFFBB;
+				text-align: left;
+			}
+			.tableColumn2 {
+				background-color: #FCFCFC;
+				text-align: center;
+			}
+			.tableColumn3 {
+				background-color: #FFFFBB;
+				text-align: right;
+			}
+			.headRelatorio{
+				background-color: #DCDCDC;
+				border: 1px solid #A0A0A0;
+				text-align: center;
+				font-family: Verdana, Arial, Helvetica, sans-serif;
+				font-size: 17px;
+				color: #000000;
+				font-weight: bold;
+				padding: 0px;
+				
+			}
+			.tooltip {
+				white-space:nowrap; 
+				font-family: Verdana, Arial, Helvetica, sans-serif;
+				font-size: 12px;
+			}
+			.PainelColuna1 {
+				text-align: right;
+				width: 30%;
+			}
+			.PainelColuna2 {
+				font-weight: normal;
+				text-align: left;
+				font-size: 15px;
+				font-color: #404040;
+				width: 20%;
+			}
+			.PainelColuna3 { 
+				text-align: right;
+				width: 20%;
+			}
+			.PainelColuna4 {
+				font-weight: normal;
+				text-align: left;
+				font-size: 15px;
+				font-color: #404040;
+				width: 30%;
+			}
+		</style>
+		
+	</ui:define>
+	
+	<ui:define name="body">
+		
+		<a:form id="vendaSearch">
+
+			<rich:simpleTogglePanel label="Filtro Relatório Clientes X Vendas X Ano"
+				switchType="client">
+				
+				<s:decorate template="layout/display.xhtml">
+	                <ui:define name="label"><h:outputText value="Responsável" title="Vendedor responsável pelo cliente." /></ui:define>                
+	                <h:selectOneMenu id="usuario" value="#{relatorioClienteVendasList.usuario}" styleClass="defaultInput">		
+					   <s:selectItems value="#{usuarioList.resultList}" 
+					   				  var="usuario" 			
+					                  label="#{usuario.nomeUsuario}"
+					                  required="false"
+					                  noSelectionLabel="Selecione.." />							       		
+					   <s:convertEntity />			
+					</h:selectOneMenu>		
+	            </s:decorate>
+
+				<s:decorate template="layout/display.xhtml">
+					<ui:define name="label">Cliente</ui:define>
+					<h:selectOneMenu id="cliente"
+						value="#{relatorioClienteVendasList.cliente}"
+						required="false"
+						styleClass="defaultInput">
+
+						<s:selectItems value="#{clienteList.resultList}" var="cliente"
+							label="#{cliente.nome}" noSelectionLabel="Selecione.." />
+						<s:convertEntity />
+					</h:selectOneMenu>
+				</s:decorate>
+
+				<s:decorate template="layout/display.xhtml">
+					<ui:define name="label"><h:outputLabel value="Ano*"/></ui:define>
+					<rich:inputNumberSpinner id="ano"
+						value="#{relatorioClienteVendasList.ano}"
+						minValue="2010"
+						maxValue="2030" step="1" inputSize="5" />
+				</s:decorate>
+
+				<s:decorate template="layout/display.xhtml">
+					<ui:define name="label">
+						<h:outputText value="Qtd. Linhas" title="Quantidade de linhas que serão exibidas na consulta" />
+					</ui:define>
+					<rich:inputNumberSpinner id="numeroLinhasDT"
+						value="#{relatorioClienteVendasList.numeroLinhasDT}" step="10" inputSize="5"
+						maxValue="1000" styleClass="inputDefault" />
+				</s:decorate>
+
+				<div style="clear: both">
+					<span class="required">*</span> Campos obrigatórios
+				</div>
+ 
+			</rich:simpleTogglePanel>
+
+			<div class="actionButtons">
+				<a:commandButton id="search" value="Pesquisar" ajaxSingle="true" limitToList="true" 
+					process="usuario, cliente, ano, numeroLinhasDT"
+					action="#{relatorioClienteVendasList.setMostrarResultados(true)}"
+					reRender="resultadoList, panelResultado, sc" />
+
+				<s:button id="reset" value="Limpar" includePageParams="false" />
+				<rich:hotKey key="return" handler="#{rich:element('search')}.click()" />
+			</div>
+
+		</a:form>
+
+		<h:form>
+			<a:outputPanel id="panelResultado" ajaxRendered="true">
+		    <rich:panel rendered="#{relatorioClienteVendasList.mostrarResultados}">
+
+					<h:outputText value="Não houve vendas para os clientes pesquisados neste ano. Verifique o Filtro Responsável x Cliente." rendered="#{empty relatorioClienteVendasList.resultList2}" styleClass="textoGrandeVermelho"/>
+					
+					<f:facet name="header">
+		    			<h:outputText value="Relatório Clientes X Vendas X Ano"/>
+					</f:facet>
+					
+					<h:panelGrid border="0" width="100%" columns="4" columnClasses="PainelColuna1,PainelColuna2,PainelColuna3,PainelColuna4" 
+							styleClass="headRelatorio" rendered="#{relatorioClienteVendasList.cliente.usuario.codUsuario != null}" >
+						<h:outputText value="Cliente:"/>
+						<h:outputText value="#{relatorioClienteVendasList.cliente.nome}"/>
+						<h:outputText value="Responsável:"/>
+						<h:outputText value="#{relatorioClienteVendasList.cliente.usuario.nomeUsuario}"/>
+					</h:panelGrid>
+					
+					<h:panelGrid border="0" width="100%" styleClass="headRelatorio" >
+						<h:outputText value="ANO: #{relatorioClienteVendasList.ano}"/>
+					</h:panelGrid>
+					
+					<rich:dataTable id="resultadoList" width="100%" var="_cliente"
+						value="#{relatorioClienteVendasList.resultList2}"
+						rows="#{relatorioClienteVendasList.numeroLinhasDT}"
+						onRowMouseOver="this.style.backgroundColor='#F0F0F0'"
+						onRowMouseOut="this.style.backgroundColor='#{a4jSkin.rowBackgroundColor}'"
+						columnClasses="tableColumn, tableColumn1, tableColumn2, tableColumn2, tableColumn2, tableColumn2, tableColumn2, tableColumn2, tableColumn2, tableColumn2, tableColumn2, tableColumn2, tableColumn2, tableColumn2, tableColumn3, tableColumn3" 
+						footerClass="center"
+						rendered="#{not empty relatorioClienteVendasList.resultList2}"
+						rowClasses="tableRowOne,tableRowTwo">
+						
+						<rich:column sortBy="#{_cliente.codigoCliente}">
+							<f:facet name="header">
+								<h:outputText value="Código" title="Código do Cliente"/>
+							</f:facet>
+							<h:outputText value="#{_cliente.codigoCliente}"/>
+						</rich:column>
+						
+						<rich:column sortBy="#{_cliente.nome}">
+							<f:facet name="header">
+								<h:outputText value="Cliente"/>
+							</f:facet>
+							<h:outputText value="#{_cliente.nome}"/>
+						</rich:column>
+						
+						<rich:column sortBy="#{_cliente.vwclienteVendas[0].numeroVendas}">
+							<f:facet name="header">
+								<h:outputText value="Jan" title="Janeiro"/>
+							</f:facet>
+							<h:outputText id="janeiro" value="#{_cliente.vwclienteVendas[0].numeroVendas}" rendered="#{_cliente.vwclienteVendas[0].numeroVendas != 0}"/>
+							<h:graphicImage url="/img/cancelada.jpg" rendered="#{_cliente.vwclienteVendas[0].numeroVendas == 0}"  />
+							<rich:toolTip direction="bottom-left" attachTo="janeiro" followMouse="true">
+					            <s:span styleClass="tooltip">
+					                 ----- TOTAIS DO MÊS ----<br/><br/>
+					                 - Número de Vendas: #{_cliente.vwclienteVendas[0].numeroVendas}<br/>
+					                 - Valor Total Vendido no mês: R$ #{_cliente.vwclienteVendas[0].valorTotalMes} <br/>
+					                 - Valor Lucro Total no mês: R$ #{_cliente.vwclienteVendas[0].lucroTotalMes} <br/>
+					            </s:span>
+					       	</rich:toolTip>   
+						</rich:column>
+						
+						<rich:column sortBy="#{_cliente.vwclienteVendas[1].numeroVendas}">
+							<f:facet name="header">
+								<h:outputText value="Fev" title="Fevereiro"/>
+							</f:facet>
+							<h:outputText id="fevereiro" value="#{_cliente.vwclienteVendas[1].numeroVendas}" rendered="#{_cliente.vwclienteVendas[1].numeroVendas != 0}"/>
+							<h:graphicImage url="/img/cancelada.jpg" rendered="#{_cliente.vwclienteVendas[1].numeroVendas == 0}" />
+							<rich:toolTip direction="bottom-left" attachTo="fevereiro" followMouse="true">
+					            <s:span styleClass="tooltip">
+					                 ----- TOTAIS DO MÊS ----<br/><br/>
+					                 - Número de Vendas: #{_cliente.vwclienteVendas[1].numeroVendas}<br/>
+					                 - Valor Total Vendido no mês: R$ #{_cliente.vwclienteVendas[1].valorTotalMes} <br/>
+					                 - Valor Lucro Total no mês: R$ #{_cliente.vwclienteVendas[1].lucroTotalMes} <br/>
+					            </s:span>
+					       	</rich:toolTip>         
+						</rich:column>
+						
+						<rich:column sortBy="#{_cliente.vwclienteVendas[2].numeroVendas}">
+							<f:facet name="header">
+								<h:outputText value="Mar" title="Março"/>
+							</f:facet>
+							<h:outputText id="marco" value="#{_cliente.vwclienteVendas[2].numeroVendas}" rendered="#{_cliente.vwclienteVendas[2].numeroVendas != 0}" />
+							<h:graphicImage url="/img/cancelada.jpg" rendered="#{_cliente.vwclienteVendas[2].numeroVendas == 0}" />
+							<rich:toolTip direction="bottom-left" attachTo="marco" followMouse="true">
+					            <s:span styleClass="tooltip">
+					                 ----- TOTAIS DO MÊS ----<br/><br/>
+					                  - Número de Vendas: #{_cliente.vwclienteVendas[2].numeroVendas}<br/>
+					                 - Valor Total Vendido no mês: R$ #{_cliente.vwclienteVendas[2].valorTotalMes} <br/>
+					                 - Valor Lucro Total no mês: R$ #{_cliente.vwclienteVendas[2].lucroTotalMes} <br/>
+					            </s:span>
+					       	</rich:toolTip>       
+						</rich:column>
+						
+						<rich:column sortBy="#{_cliente.vwclienteVendas[3].numeroVendas}">
+							<f:facet name="header">
+								<h:outputText value="Abr"  title="Abril"/>
+							</f:facet>
+							<h:outputText id="abril" value="#{_cliente.vwclienteVendas[3].numeroVendas}" rendered="#{_cliente.vwclienteVendas[3].numeroVendas != 0}"/>
+							<h:graphicImage url="/img/cancelada.jpg" rendered="#{_cliente.vwclienteVendas[3].numeroVendas == 0}" />
+							<rich:toolTip direction="bottom-left" attachTo="abril" followMouse="true">
+					            <s:span styleClass="tooltip">
+					                 ----- TOTAIS DO MÊS ----<br/><br/>
+					                  - Número de Vendas: #{_cliente.vwclienteVendas[3].numeroVendas}<br/>
+					                 - Valor Total Vendido no mês: R$ #{_cliente.vwclienteVendas[3].valorTotalMes} <br/>
+					                 - Valor Lucro Total no mês: R$ #{_cliente.vwclienteVendas[3].lucroTotalMes} <br/>
+					            </s:span>
+					       	</rich:toolTip>         
+						</rich:column>
+						
+						<rich:column sortBy="#{_cliente.vwclienteVendas[4].numeroVendas}">
+							<f:facet name="header">
+								<h:outputText value="Mai" title="Maio"/>
+							</f:facet>
+							<h:outputText id="maio" value="#{_cliente.vwclienteVendas[4].numeroVendas}" rendered="#{_cliente.vwclienteVendas[4].numeroVendas != 0}"/>
+							<h:graphicImage url="/img/cancelada.jpg" rendered="#{_cliente.vwclienteVendas[4].numeroVendas == 0}" />
+							<rich:toolTip direction="bottom-left" attachTo="maio" followMouse="true">
+					            <s:span styleClass="tooltip">
+					                 ----- TOTAIS DO MÊS ----<br/><br/>
+					                  - Número de Vendas: #{_cliente.vwclienteVendas[4].numeroVendas}<br/>
+					                 - Valor Total Vendido no mês: R$ #{_cliente.vwclienteVendas[4].valorTotalMes} <br/>
+					                 - Valor Lucro Total no mês: R$ #{_cliente.vwclienteVendas[4].lucroTotalMes} <br/>
+					            </s:span>
+					       	</rich:toolTip>       
+						</rich:column>
+						
+						<rich:column sortBy="#{_cliente.vwclienteVendas[5].numeroVendas}">
+							<f:facet name="header">
+								<h:outputText value="Jun" title="Junho"/>
+							</f:facet>
+							<h:outputText id="junho" value="#{_cliente.vwclienteVendas[5].numeroVendas}" rendered="#{_cliente.vwclienteVendas[5].numeroVendas != 0}"/>
+							<h:graphicImage url="/img/cancelada.jpg" rendered="#{_cliente.vwclienteVendas[5].numeroVendas == 0}" />
+							<rich:toolTip direction="bottom-left" attachTo="junho" followMouse="true">
+					            <s:span styleClass="tooltip">
+					                 ----- TOTAIS DO MÊS ----<br/><br/>
+					                  - Número de Vendas: #{_cliente.vwclienteVendas[5].numeroVendas}<br/>
+					                 - Valor Total Vendido no mês: R$ #{_cliente.vwclienteVendas[5].valorTotalMes} <br/>
+					                 - Valor Lucro Total no mês: R$ #{_cliente.vwclienteVendas[5].lucroTotalMes} <br/>
+					            </s:span>
+					       	</rich:toolTip>         
+						</rich:column>
+						
+						<rich:column sortBy="#{_cliente.vwclienteVendas[6].numeroVendas}">
+							<f:facet name="header">
+								<h:outputText value="Jul" title="Julho"/>
+							</f:facet>
+							<h:outputText id="julho" value="#{_cliente.vwclienteVendas[6].numeroVendas}" rendered="#{_cliente.vwclienteVendas[6].numeroVendas != 0}"/>
+							<h:graphicImage url="/img/cancelada.jpg" rendered="#{_cliente.vwclienteVendas[6].numeroVendas == 0}"/>
+							<rich:toolTip direction="bottom-left" attachTo="julho" followMouse="true">
+					            <s:span styleClass="tooltip">
+					                 ----- TOTAIS DO MÊS ----<br/><br/>
+					                  - Número de Vendas: #{_cliente.vwclienteVendas[6].numeroVendas}<br/>
+					                 - Valor Total Vendido no mês: R$ #{_cliente.vwclienteVendas[6].valorTotalMes} <br/>
+					                 - Valor Lucro Total no mês: R$ #{_cliente.vwclienteVendas[6].lucroTotalMes} <br/>
+					            </s:span>
+					       	</rich:toolTip>   
+						</rich:column>
+						
+						<rich:column sortBy="#{_cliente.vwclienteVendas[7].numeroVendas}">
+							<f:facet name="header">
+								<h:outputText value="Ago" title="Agosto"/>
+							</f:facet>
+							<h:outputText id="agosto" value="#{_cliente.vwclienteVendas[7].numeroVendas}" rendered="#{_cliente.vwclienteVendas[7].numeroVendas != 0}"/>
+							<h:graphicImage url="/img/cancelada.jpg" rendered="#{_cliente.vwclienteVendas[7].numeroVendas == 0}" />
+							<rich:toolTip direction="bottom-left" attachTo="agosto" followMouse="true">
+					            <s:span styleClass="tooltip">
+					                 ----- TOTAIS DO MÊS ----<br/><br/>
+					                  - Número de Vendas: #{_cliente.vwclienteVendas[8].numeroVendas}<br/>
+					                 - Valor Total Vendido no mês: R$ #{_cliente.vwclienteVendas[7].valorTotalMes} <br/>
+					                 - Valor Lucro Total no mês  : R$ #{_cliente.vwclienteVendas[7].lucroTotalMes} <br/>
+					            </s:span>
+					       	</rich:toolTip>         
+						</rich:column>
+						
+						<rich:column sortBy="#{_cliente.vwclienteVendas[8].numeroVendas}">
+							<f:facet name="header">
+								<h:outputText value="Set" title="Setembro"/>
+							</f:facet>
+							<h:outputText id="setembro" value="#{_cliente.vwclienteVendas[8].numeroVendas}" rendered="#{_cliente.vwclienteVendas[8].numeroVendas != 0}"/>
+							<h:graphicImage url="/img/cancelada.jpg" rendered="#{_cliente.vwclienteVendas[8].numeroVendas == 0}" />
+							<rich:toolTip direction="bottom-left" attachTo="setembro" followMouse="true">
+					            <s:span styleClass="tooltip">
+					                 ----- TOTAIS DO MÊS ----<br/><br/>
+					                  - Número de Vendas: #{_cliente.vwclienteVendas[8].numeroVendas} <br/>
+					                 - Valor Total Vendido no mês: R$ #{_cliente.vwclienteVendas[8].valorTotalMes} <br/>
+					                 - Valor Lucro Total no mês: R$ #{_cliente.vwclienteVendas[8].lucroTotalMes} <br/>
+					            </s:span>
+					       	</rich:toolTip>            
+						</rich:column>
+						
+						<rich:column sortBy="#{_cliente.vwclienteVendas[9].numeroVendas}">
+							<f:facet name="header">
+								<h:outputText value="Out" title="Outubro"/>
+							</f:facet>
+							<h:outputText id="outubro" value="#{_cliente.vwclienteVendas[9].numeroVendas}" rendered="#{_cliente.vwclienteVendas[9].numeroVendas != 0}"/>
+							<h:graphicImage url="/img/cancelada.jpg" rendered="#{_cliente.vwclienteVendas[9].numeroVendas == 0}" />
+							<rich:toolTip direction="bottom-left" attachTo="outubro" followMouse="true">
+					            <s:span styleClass="tooltip">
+					                 ----- TOTAIS DO MÊS ----<br/><br/>
+					                 - Número de Vendas: #{_cliente.vwclienteVendas[9].numeroVendas} <br/>
+					                 - Valor Total Vendido no mês: R$ #{_cliente.vwclienteVendas[9].valorTotalMes} <br/>
+					                 - Valor Lucro Total no mês: R$ #{_cliente.vwclienteVendas[9].lucroTotalMes} <br/>
+					            </s:span>
+					       	</rich:toolTip>         
+						</rich:column>
+						
+						<rich:column sortBy="#{_cliente.vwclienteVendas[10].numeroVendas}">
+							<f:facet name="header">
+								<h:outputText value="Nov" title="Novembro"/>
+							</f:facet>
+							<h:outputText id="novembro" value="#{_cliente.vwclienteVendas[10].numeroVendas}" rendered="#{_cliente.vwclienteVendas[10].numeroVendas != 0}"/>
+							<h:graphicImage url="/img/cancelada.jpg" rendered="#{_cliente.vwclienteVendas[10].numeroVendas == 0}" />
+							<rich:toolTip direction="bottom-left" attachTo="novembro" followMouse="true">
+					            <s:span styleClass="tooltip">
+					                 ----- TOTAIS DO MÊS ----<br/><br/>
+					                 - Número de Vendas: #{_cliente.vwclienteVendas[10].numeroVendas}<br/>
+					                 - Valor Total Vendido no mês: R$ #{_cliente.vwclienteVendas[10].valorTotalMes} <br/>
+					                 - Valor Lucro Total no mês: R$ #{_cliente.vwclienteVendas[10].lucroTotalMes} <br/>
+					            </s:span>
+					       	</rich:toolTip>      
+						</rich:column>
+						
+						<rich:column sortBy="#{_cliente.vwclienteVendas[11].numeroVendas}">
+							<f:facet name="header">
+								<h:outputText value="Dez" title="Dezembro"/>
+							</f:facet>
+							<h:outputText id="dezembro" value="#{_cliente.vwclienteVendas[11].numeroVendas}" rendered="#{_cliente.vwclienteVendas[11].numeroVendas != 0}"/>
+							<h:graphicImage url="/img/cancelada.jpg" rendered="#{_cliente.vwclienteVendas[11].numeroVendas == 0}" />
+							<rich:toolTip direction="bottom-left" attachTo="dezembro" followMouse="true">
+					            <s:span styleClass="tooltip">
+					                 ----- TOTAIS DO MÊS ----<br/><br/>
+					                 - Número de Vendas:#{_cliente.vwclienteVendas[11].numeroVendas}<br/>
+					                 - Valor Total Vendido no mês: R$ #{_cliente.vwclienteVendas[11].valorTotalMes} <br/>
+					                 - Valor Lucro Total no mês: R$ #{_cliente.vwclienteVendas[11].lucroTotalMes} <br/>
+					            </s:span>
+					       	</rich:toolTip>       
+						</rich:column>
+						
+						<rich:column sortBy="#{_cliente.valorTotalAno}">
+							<f:facet name="header">
+								<h:outputText value="Total" title="Total do Ano"/>
+							</f:facet>
+							<h:outputText value="#{_cliente.valorTotalAno}">
+								<f:convertNumber currencySymbol="R$"  type="currency"  locale="pt_BR"/>
+							</h:outputText>
+						</rich:column>
+						
+						<rich:column sortBy="#{_cliente.lucroTotalAno}">
+							<f:facet name="header">
+								<h:outputText value="Lucro" title="Lucro do Ano"/>
+							</f:facet>
+							<h:outputText value="#{_cliente.lucroTotalAno}">
+								<f:convertNumber currencySymbol="R$"  type="currency"  locale="pt_BR"/>
+							</h:outputText>
+						</rich:column>
+					</rich:dataTable>
+					<ui:include src="/includes/includeDataScroller.xhtml"/>
+				</rich:panel> 
+			</a:outputPanel>
+			<rich:jQuery selector="#usuario" timing="onload" query="focus()" />
+		</h:form>
+		
+	</ui:define>
+
+</ui:composition>

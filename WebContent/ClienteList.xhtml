@@ -1,0 +1,264 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:s="http://jboss.com/products/seam/taglib"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:a="http://richfaces.org/a4j"
+    xmlns:rich="http://richfaces.org/rich"
+    xmlns:easy="http://easyfaces.com.br/easyfaces"
+    template="layout/template.xhtml">
+
+<ui:define name="head">
+	<a:loadScript src="/javascript/maskCpfCnpj.js"/>
+	<a:loadScript src="javascript/util.js"/>
+</ui:define>
+
+<ui:define name="body">
+
+    <h:form id="clienteSearch" styleClass="edit">
+		
+		<ui:include src="/paginas/help/GenericListHelp.xhtml"/>	
+		
+        <rich:simpleTogglePanel label="Filtro de pesquisa de Cliente" switchType="client">
+
+			<s:decorate template="layout/display.xhtml">
+                <ui:define name="label">Código Cliente</ui:define>
+                <h:inputText id="codCliente" value="#{clienteList.cliente.codCliente}" maxlength="10" />
+            </s:decorate>
+            
+              
+            <s:decorate template="layout/display.xhtml">
+                <ui:define name="label">CPF/CNPJ</ui:define>
+                <h:inputText id="cpfCnpj" value="#{clienteList.cliente.cpfCnpj}" maxlength="18" onkeyup="mascaraTexto(event)"/>
+            </s:decorate>  
+            
+            <s:decorate template="layout/display.xhtml">
+                <ui:define name="label">Nome</ui:define>
+                <h:inputText id="nome" value="#{clienteList.cliente.nome}" size="50" maxlength="100"/>
+            </s:decorate>
+            
+			<s:decorate template="layout/display.xhtml">
+                <ui:define name="label">Email</ui:define>
+                <h:inputText id="email" value="#{clienteList.cliente.email}" size="50" maxlength="100"/>               
+            </s:decorate>
+            
+            <s:decorate template="layout/display.xhtml">
+                <ui:define name="label">Observação</ui:define>
+                <h:inputText id="observacao" value="#{clienteList.cliente.observacao}" size="50" maxlength="50"/>               
+            </s:decorate>
+
+			<s:decorate id="telefoneField" template="layout/display.xhtml">
+                <ui:define name="label">Telefone</ui:define>
+				<h:inputText id="telefone" required="false" maxlength="15" onkeypress="mascara( this, mtel )" value="#{clienteList.cliente.telefone}"/>               
+            </s:decorate>
+			
+			<s:decorate template="layout/display.xhtml">
+                <ui:define name="label">Vendedor(Responsável)</ui:define>                
+                <h:selectOneMenu id="usuario" value="#{clienteList.cliente.usuario}" styleClass="defaultInput">		
+				   <s:selectItems value="#{usuarioList.resultList}" 
+				   				  var="usuario" 			
+				                  label="#{usuario.nomeUsuario}"
+				                  required="false"
+				                  noSelectionLabel="Selecione.." />							       		
+				   <s:convertEntity />			
+				</h:selectOneMenu>		
+            </s:decorate>
+            
+            <s:decorate template="layout/display.xhtml">
+                <ui:define name="label">Situação Financeira</ui:define>                
+                <h:selectOneMenu id="usuario" value="#{clienteList.situacaoFinanceira}" styleClass="defaultInput">		
+				  	<f:selectItem itemLabel="Todas"/>
+				  	<f:selectItem itemLabel="Adimplentes" itemValue="true" />
+					<f:selectItem itemLabel="Inadimplentes" itemValue="false" />
+				</h:selectOneMenu>		
+            </s:decorate>
+            
+            <s:decorate template="layout/display.xhtml">
+                <ui:define name="label">Grupo(Carteira)</ui:define>                
+                <h:selectOneMenu id="grupo" value="#{clienteList.cliente.grupo}" styleClass="defaultInput">		
+				   <s:selectItems value="#{grupoList.resultList}" 
+				   				  var="grupo" 			
+				                  label="#{grupo.nomeGrupo}"
+				                  required="false"
+				                  noSelectionLabel="Selecione.." />							       		
+				   <s:convertEntity />			
+				</h:selectOneMenu>		
+            </s:decorate>
+            
+            <s:decorate template="layout/display.xhtml">
+                <ui:define name="label">Ativos/Inativos</ui:define>                
+                <h:selectOneMenu id="usuario" value="#{clienteList.cliente.inExclusao}" styleClass="defaultInput">		
+				  	<f:selectItem itemLabel="Ativos" itemValue="false" />
+					<f:selectItem itemLabel="Inativos" itemValue="true" />
+				</h:selectOneMenu>		
+            </s:decorate>
+            
+            <s:decorate template="layout/display.xhtml"> 
+                <ui:define name="label"><h:outputText value="Qtd. Linhas" title="Quantidade de linhas que serão exibidas na consulta" /></ui:define>                                
+				<rich:inputNumberSpinner id="numeroLinhasDT" value="#{clienteList.numeroLinhasDT}" step="10" inputSize="8" maxValue="1000" styleClass="inputDefault"/>				
+            </s:decorate> 
+                
+		</rich:simpleTogglePanel>
+		
+		<table border="0" width="10%">
+			<tr>
+				<td nowrap="nowrap">
+		        	<div class="actionButtons">
+						<a:commandButton id="search" type="submit" value="Pesquisar"
+							action="#{clienteList.setMostrarResultados(true)}" actionListener="#{clienteList.setRestriction()}"
+							reRender="panelResultado, resultadoList, sc"/>
+						<s:button id="reset" value="Limpar" includePageParams="true" action="#{clienteList.limpar()}"/>
+						<rich:hotKey key="return"
+							handler="#{rich:element('search')}.click()" />
+					</div>
+				</td>
+				<td nowrap="nowrap">    
+				    <s:div styleClass="actionButtons">
+				        <s:button view="/ClienteEdit.xhtml"
+				                    id="create"
+				           propagation="none"
+				                 value="Novo Cliente">
+				           <f:param name="clienteCodCliente" />
+				        </s:button>
+				    </s:div>
+			   	</td>
+	    	</tr>
+		</table>
+    </h:form>
+    
+	<h:form>
+		<a:outputPanel id="panelResultado" ajaxRendered="true">
+		    <rich:panel rendered="#{clienteList.mostrarResultados}">
+		        
+		    <f:facet name="header">
+			    	Resultado da Consulta de Clientes(#{empty clienteList.resultList ? 0 : (clienteList.paginated ? clienteList.resultCount : clienteList.resultList.size)})
+		    </f:facet>
+			
+			<h:outputText value="#{messages['mensagem.pesquisa.vazia']}" rendered="#{empty clienteList.resultList}"/>
+			
+		    <rich:dataTable  id="resultadoList"
+		                	var="_cliente"
+		               	  value="#{clienteList.resultList}"
+		         onRowMouseOver="this.style.backgroundColor='#F0F0F0'"
+		          onRowMouseOut="this.style.backgroundColor='#{a4jSkin.rowBackgroundColor}'"
+		          columnClasses="center"  
+		           		   rows="#{clienteList.numeroLinhasDT }"
+		           columnsWidth="5%,25%,25%,20%,10%,10%,5%"
+		               rendered="#{not empty clienteList.resultList}"
+		             rowClasses="tableRowOne,tableRowTwo">
+		             
+		        <rich:column sortBy="#{_cliente.codCliente}" styleClass="center"> 
+		           <f:facet name="header">
+		               <h:outputText value="Código"/>
+		           </f:facet> 
+		           <h:outputText value="#{_cliente.codCliente}"/>
+		         </rich:column> 
+		
+		        <rich:column sortBy="#{_cliente.nome}" styleClass="left"> 
+		           <f:facet name="header">
+		               <h:outputText value="Nome / Razão Social"/>
+		           </f:facet> 
+		           <h:outputText value="#{_cliente.nome}" title="#{_cliente.nomeFantasiaApelido}"/>
+		         </rich:column> 
+		         
+		         <rich:column sortBy="#{_cliente.cpfCnpj}" > 
+		           <f:facet name="header">
+		               <h:outputText value="CPF / CNPJ"/>
+		           </f:facet> 
+		           <h:outputText value="#{_cliente.cpfCnpj}"/>
+		         </rich:column>     
+		         
+		         <rich:column sortBy="#{_cliente.telefone}"  styleClass="center"> 
+		           <f:facet name="header">
+		               <h:outputText value="Telefone"/>		              
+		           </f:facet> 
+		           <a target="_blank" href="https://api.whatsapp.com/send?phone=#{_cliente.telefoneWhatsapp}">
+		           	<h:outputText id="telefone" value="#{_cliente.telefone}"/>
+		           	<rich:toolTip for="telefone" direction="top-left" rendered="#{not empty _cliente.telefone}" >
+		           		Enviar mensagem Whattsapp <h:graphicImage url="/img/whatsapp.png"/>
+		           	</rich:toolTip>
+		           </a>		 					
+		         </rich:column>  
+		         
+		      	 <rich:column sortBy="#{_cliente.email}" styleClass="left"> 
+		           <f:facet name="header">
+		               <h:outputText value="Email"/>
+		           </f:facet> 
+		           <h:outputText value="#{_cliente.email}"/>
+		         </rich:column> 
+		         
+		          <rich:column sortBy="#{_cliente.grupo.nomeGrupo}" styleClass="center"> 
+		           <f:facet name="header">
+		               <h:outputText value="Grupo(Carteira)"/>
+		           </f:facet> 
+		           <h:outputText value="#{_cliente.grupo.nomeGrupo}"/>
+		         </rich:column>      
+		         
+		         <rich:column sortBy="#{_cliente.dtCadastro}" > 
+		           <f:facet name="header">
+		               <h:outputText value="Data Cadastro"/>
+		           </f:facet>            
+		           <h:outputText value="#{_cliente.dtCadastro}">
+		                <s:convertDateTime type="both" dateStyle="short" pattern="dd/MM/yyyy"/>
+		           </h:outputText>
+		         </rich:column>  
+		         
+		         <rich:column sortBy="#{_cliente.usuario.nomeUsuario}" styleClass="left"> 
+		           <f:facet name="header">
+		               <h:outputText value="Vendedor(Responsável)" title="Funcionário/Vendedor responsável pelo cliente"/>
+		           </f:facet> 
+		           <h:outputText value="#{_cliente.usuario.nomeUsuario}"/>
+		         </rich:column>
+		         
+		         <rich:column sortBy="#{_cliente.inAdimplente}"> 
+		           <f:facet name="header">
+		               <h:outputText value="Situação Financeira" title="Situação Financeira - Adimplente ou Inadimplente"/>
+		           </f:facet> 
+		           <h:outputText value="Adimplente" rendered="#{_cliente.inAdimplente}"/>
+		           <h:outputText value="Inadimplente" rendered="#{!_cliente.inAdimplente}" styleClass="textoMedioVermelho"/>
+		         </rich:column>
+		         
+		         <!-- 
+		         
+		          <rich:column sortBy="#{_cliente.situacaoFinanceira}"> 
+		           <f:facet name="header">
+		               <h:outputText value="Situação Vendas" title="Situação das Vendas do Cliente - Dias em aberto"/>
+		           </f:facet> 
+		           <h:outputText value="#{_cliente.situacaoFinanceira}"/>
+		         </rich:column>
+		                         
+		        -->
+		        
+		        <rich:column styleClass="action" > 
+		            <f:facet name="header">Ver/Editar</f:facet>
+		            
+		            <s:link view="/Cliente.xhtml" id="clienteViewId"  propagation="default">
+		                <h:graphicImage url="/img/binoculo.jpg"/>
+		                <f:param name="clienteCodCliente" value="#{_cliente.codCliente}"/>
+		                <f:param name="clienteFrom" value="ClienteList"/>
+		            </s:link>
+		            <rich:toolTip for="clienteViewId" value="Visualizar Cliente" direction="top-left"/>
+		            
+		            #{' '}
+		            
+		            <s:link view="/ClienteEdit.xhtml" propagation="default" id="clienteEdit" rendered="#{identity.hasRole(transacoes.transacaoClienteEditar)}">
+		                <h:graphicImage url="/img/editar.jpg"/> 
+		                <f:param name="clienteCodCliente" value="#{_cliente.codCliente}"/>
+		                <f:param name="clienteFrom" value="ClienteList"/>
+		            </s:link>
+		            <rich:toolTip for="clienteEdit" value="Editar Cliente" direction="top-left"/>
+		        </rich:column>
+		    </rich:dataTable>
+		
+			<ui:include src="/includes/includeDataScroller.xhtml"/>
+		    
+		    </rich:panel>
+		</a:outputPanel>
+	</h:form> 
+	    
+<rich:jQuery selector="#codCliente" timing="onload" query="focus()" />
+</ui:define>
+
+</ui:composition>

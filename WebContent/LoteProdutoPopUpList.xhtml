@@ -1,0 +1,156 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<rich:modalPanel id="panelPopUp" minWidth="800" minHeight="450" autosized="true" top="15px" onhide="focarBotaoAdd()"
+	xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:s="http://jboss.com/products/seam/taglib"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html" 
+    xmlns:a="http://richfaces.org/a4j"
+    xmlns:rich="http://richfaces.org/rich">
+ 
+	<script>
+   		function focar(){
+    		document.getElementById("listaLotesProduto:0:selecionarLink2").focus();
+      	}
+   		function focarBotaoAdd(){
+   			document.getElementById('venda:addLoteProduto').focus();
+
+   		}
+   	</script>
+
+	<f:facet name="header">
+        <h:panelGroup>
+            <h:outputText value="Pesquisa de produtos em estoque"></h:outputText>
+        </h:panelGroup>
+    </f:facet>
+    
+	<f:facet name="controls">
+		<h:panelGroup>		
+			<a:commandLink>
+				<h:graphicImage value="/img/help.png" id="helplink"/>
+				<rich:toolTip direction="bottom-left" followMouse="true">
+		            <span style="white-space:nowrap">
+		                Serão listados apenas 100 lotes de produtos. Use o filtro para refinar sua busca.
+		            </span>
+	        	</rich:toolTip>
+        	</a:commandLink>	
+			#{' '}
+			<h:graphicImage value="/img/close.png" id="hidelink" style="cursor:pointer;"/>
+            <rich:componentControl for="panelPopUp" attachTo="hidelink" operation="hide" event="onclick"/>
+		</h:panelGroup>		       
+	</f:facet>
+	<rich:spacer height="5"/>	
+	
+    
+    <a:outputPanel ajaxRendered="true"> 
+   
+     <h:outputText value="Produto pesquisado: "/>
+     <h:outputText id="textoPesquisado" value=" #{loteProdutoPopUpList.pesquisaGeral}" styleClass="textoNegrito" />          
+    
+    <h:form prependId="false" id="listForm">
+    
+    <rich:panel style="height:360px" >
+     
+    <f:facet name="header">
+    	<h:outputText id="labelHeader">
+    		Resultado da Pesquisa de Lotes de Produto
+    	</h:outputText>
+    </f:facet>
+        
+    <rich:dataTable id="listaLotesProduto"  
+           var="_loteProduto" rowKeyVar="row"                     
+           value="#{loteProdutoPopUpList.pesquisarLotesProdutos()}"                   
+           onRowMouseOver="this.style.backgroundColor='#F0F0F0'"
+           onRowMouseOut="this.style.backgroundColor='#{a4jSkin.rowBackgroundColor}'"
+           columnsWidth="0*, *, *, *, *, *, 0*"           
+           columnClasses="center" 
+           footerClass="tableRowTwo"
+           rowClasses="tableRowOne,tableRowTwo"
+           rows="7"> 
+    
+         <rich:column> 
+           <f:facet name="header">
+               <h:outputText value="Código Produto"/>
+           </f:facet> 
+           <h:outputText value="#{_loteProduto.produto.codProdutoExterno}"/>                     
+         </rich:column>  
+               
+         <rich:column styleClass="left"> 
+           <f:facet name="header">
+               <h:outputText value="Nome produto"/>
+           </f:facet> 
+           <h:outputText value="#{_loteProduto.produto.nomeProduto}"/>
+         </rich:column>   
+        
+         <rich:column> 
+           <f:facet name="header">
+               <h:outputText value="Marca"/>
+           </f:facet> 
+           <h:outputText value="#{_loteProduto.produto.marca.nomeMarca}"/>
+         </rich:column>                   
+         
+         <rich:column> 
+           <f:facet name="header">
+               <h:outputText value="Lote"/>
+           </f:facet> 
+           <h:outputText value="#{_loteProduto.identificacaoLote}"/>
+         </rich:column>
+         
+          <rich:column> 
+           <f:facet name="header">
+               <h:outputText value="Data Validade" title="Data de validade do lote."/>
+           </f:facet> 
+            <h:outputText value="#{_loteProduto.dataValidade}" rendered="#{not empty _loteProduto.dataValidade}">
+         	<s:convertDateTime type="date" pattern="dd/MM/yyyy"/>
+           </h:outputText>
+           <h:outputText value="Indeterminada" rendered="#{empty _loteProduto.dataValidade}"/>
+         </rich:column>
+         
+         <rich:column> 
+           <f:facet name="header">
+               <h:outputText value="Preço unit." title="Preço unitário de Venda"/>
+           </f:facet> 
+           <h:outputText value="#{_loteProduto.precoVendaUnidade}">
+           		<f:convertNumber currencySymbol="R$"  type="currency"  locale="pt_BR"/>
+           </h:outputText>
+         </rich:column>
+       
+         <rich:column> 
+           <f:facet name="header">
+               <h:outputText value="Qtd.Estoque" title="Quantidade disponível em estoque" /> 
+           </f:facet> 
+           <h:outputText value="#{_loteProduto.qtdEstoque}"/>
+         </rich:column>
+        
+        <rich:column>
+            <f:facet name="header">Selecionar</f:facet>          									
+				<a:commandButton id="selecionarLink2"  value="Adicionar"     		 
+					reRender="nomeProdutoField, preco_loteProdutoVendidoSelected, qtd_loteProdutoVendidoSelected, desc_loteProdutoVendidoSelected, qtd_loteProdutoVendidoSelected"
+					ajaxSingle="true" tabindex="#{vendaHome.tabIndex}" 
+					eventsQueue="selecionarQueue" ignoreDupResponses="true"
+					process="descontoTotalField, valorPago"
+					action="#{vendaHome.selectedLoteProduto(_loteProduto)}">
+				
+					 <rich:toolTip for="selecionarLink2" direction="top-left" followMouse="true">
+			            <span style="white-space:nowrap">
+			                <strong>Adicionar produto</strong>
+			            </span>
+			       	 </rich:toolTip>
+			       
+				</a:commandButton>
+				  	
+				<rich:componentControl for="panelPopUp" attachTo="selecionarLink2" operation="hide" event="onclick"/>					
+        </rich:column>
+        
+        <f:facet name="footer">
+           <h:outputText value="Produto não localizado ou não foram encontrados lotes para o produto pesquisado." styleClass="textoMedioVermelho" rendered="#{loteProdutoPopUpList.listaVazia}"/>           
+        </f:facet>        
+       	</rich:dataTable>
+    	
+    	<rich:datascroller align="center" for="listaLotesProduto" maxPages="10" id="sc"/>
+    	
+    </rich:panel>
+	</h:form>	
+    </a:outputPanel>
+</rich:modalPanel>

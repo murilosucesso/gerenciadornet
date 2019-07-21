@@ -1,0 +1,356 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:s="http://jboss.com/products/seam/taglib"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:rich="http://richfaces.org/rich"
+    template="layout/template.xhtml">
+
+<ui:define name="body">
+    <rich:panel>
+        <f:facet name="header">Detalhes do Usuário</f:facet>
+       
+        <s:decorate id="loginUsuario" template="layout/display.xhtml">
+            <ui:define name="label">Login</ui:define>
+            <h:outputText value="#{usuarioHome.instance.loginUsuario}"/>
+        </s:decorate>
+
+        <s:decorate id="nomeUsuario" template="layout/display.xhtml">
+            <ui:define name="label">Nome</ui:define>
+            <h:outputText value="#{usuarioHome.instance.nomeUsuario}"/>
+        </s:decorate>
+        
+        <s:decorate id="perfilUsuario" template="layout/display.xhtml">
+            <ui:define name="label">Perfil</ui:define>
+            <h:outputText value="#{usuarioHome.instance.perfil.nomePerfil}"/>
+        </s:decorate>
+
+        <s:decorate id="cpf" template="layout/display.xhtml">
+            <ui:define name="label">CPF</ui:define>
+            <h:outputText value="#{usuarioHome.instance.cpf}"/>
+        </s:decorate>
+
+        <s:decorate id="numRg" template="layout/display.xhtml">
+            <ui:define name="label">Número RG</ui:define>
+            <h:outputText value="#{usuarioHome.instance.numRg}"/>
+        </s:decorate>
+
+        <s:decorate id="dataNasc" template="layout/display.xhtml">
+            <ui:define name="label">Data Nascimento</ui:define>
+            <h:outputText value="#{usuarioHome.instance.dataNasc}">
+                <s:convertDateTime type="date" pattern="dd/MM/yyyy"/>
+            </h:outputText>
+        </s:decorate>
+                
+        <s:decorate  template="layout/display.xhtml">
+            <ui:define name="label">E-mail</ui:define>
+            <h:outputText value="#{usuarioHome.instance.email}"/>
+        </s:decorate>
+        
+        <s:decorate  template="layout/display.xhtml">
+            <ui:define name="label">Dados Bancários</ui:define>
+            <h:outputText value="#{usuarioHome.instance.dadosBancarios}"/>
+        </s:decorate>        
+        
+		<s:decorate id="inVendedorAtivo" template="layout/display.xhtml">
+			<ui:define name="label">Vendedor Ativo</ui:define>
+				<h:outputText value="Não" rendered="#{!usuarioHome.instance.inVendedorAtivo}" style="valign:middle"/>				
+				<h:outputText value="Sim" rendered="#{usuarioHome.instance.inVendedorAtivo}" style="valign:middle" />						
+		</s:decorate>
+
+        <div style="clear:both"/>
+
+    </rich:panel>
+
+    <div class="actionButtons">
+
+        <s:button view="/UsuarioEdit.xhtml"  rendered="#{identity.hasRole(transacoes.transacaoUsuarioEditar)}"
+                    id="edit"
+                 value="Editar"/>
+
+        <s:button view="/#{empty usuarioFrom ? 'UsuarioList' : usuarioFrom}.xhtml"
+                    id="done"
+                 value="Voltar"/>
+
+    </div>
+
+    <rich:tabPanel switchType="ajax">
+
+    <rich:tab>
+        <f:facet name="label">
+            <h:panelGroup><h:graphicImage value="/img/onetomany.gif" style="vertical-align: middle; padding-right: 4px;"/>Endereços</h:panelGroup>
+        </f:facet>
+    <h:form styleClass="association" id="enderecosChildren">
+
+        <h:outputText value="Nao existem enderecos associados com este usuario."
+                   rendered="#{empty usuarioHome.enderecos}"/>
+
+        <rich:dataTable value="#{usuarioHome.enderecos}"
+                       var="_endereco"
+                  rendered="#{not empty usuarioHome.enderecos}"
+                        id="enderecosTable"
+			onRowMouseOver="this.style.backgroundColor='#F0F0F0'"
+           	 onRowMouseOut="this.style.backgroundColor='#{a4jSkin.rowBackgroundColor}'"
+           	 columnClasses="center" 
+           	    rowClasses="tableRowOne,tableRowTwo">
+            
+            <ui:include src="/includes/includeListarEnderecos.xhtml"/>
+            
+            <h:column>
+                <f:facet name="header">Visualizar</f:facet>
+                <s:link id="selectendereco" view="/Endereco.xhtml">
+               		<h:graphicImage url="/img/binoculo.jpg"/>
+                    <f:param name="enderecoCodEndereco" value="#{_endereco.codEndereco}"/>
+                    <f:param name="enderecoFrom" value="Usuario"/>
+               	</s:link>	  
+               	<rich:toolTip for="selectendereco" value="Visualizar Endereço" direction="top-left"/>
+            </h:column>
+        </rich:dataTable>
+
+    </h:form>
+
+    <div class="actionButtons">
+        <s:button
+               value="Adicionar endereco"
+                view="/EnderecoEdit.xhtml">
+            <f:param name="usuarioCodUsuario"
+                    value="#{usuarioHome.instance.codUsuario}"/>
+            <f:param name="enderecoFrom" value="Usuario"/>
+        </s:button>
+    </div>
+
+    
+    </rich:tab>
+
+    <rich:tab>
+        <f:facet name="label">
+            <h:panelGroup><h:graphicImage value="/img/onetomany.gif" style="vertical-align: middle; padding-right: 4px;"/>Últimas Vendas</h:panelGroup>
+        </f:facet>
+    <h:form styleClass="association" id="vendasChildren">
+
+        <h:outputText value="Nao existe venda associada a este usuario."
+                   rendered="#{empty usuarioHome.vendas}"/>
+
+        <rich:dataTable value="#{usuarioHome.vendas}"
+                       var="_venda"
+                  rendered="#{not empty usuarioHome.vendas}"
+                        id="vendasTable"
+           onRowMouseOver="this.style.backgroundColor='#F0F0F0'"
+           	 onRowMouseOut="this.style.backgroundColor='#{a4jSkin.rowBackgroundColor}'"
+           	 columnClasses="center" 
+           	   		  rows="15"
+           	    rowClasses="tableRowOne,tableRowTwo">
+           
+            <rich:column sortBy="#{_venda.codVenda}">
+                <f:facet name="header">Venda</f:facet>
+                <h:outputText value="#{_venda.codVenda}"/>
+            </rich:column>
+            
+             <rich:column sortBy="#{_venda.cliente.nome}">
+                <f:facet name="header">Cliente</f:facet>
+                <h:outputText value="#{_venda.cliente.nome}"/>
+            </rich:column>
+            
+            <rich:column sortBy="#{_venda.dataInicioVenda}">
+                <f:facet name="header">Data início venda</f:facet>
+                 <h:outputText value="#{_venda.dataInicioVenda}">
+	                <s:convertDateTime type="date" pattern="dd/MM/yyyy HH:mm:ss"/>
+	            </h:outputText>
+            </rich:column>
+            
+            <rich:column sortBy="#{_venda.dataFimVenda}">
+                <f:facet name="header">Data fim venda</f:facet>               
+                <h:outputText value="#{_venda.dataFimVenda}">
+	                <s:convertDateTime type="date" pattern="dd/MM/yyyy HH:mm:ss"/>
+	            </h:outputText>
+            </rich:column>
+            
+            <rich:column sortBy="#{_venda.tipoPagamento.descTipoPagamento}">
+                <f:facet name="header">Tipo Pagamento</f:facet>
+                <h:outputText value="#{_venda.tipoPagamento.descTipoPagamento}"/>
+            </rich:column>
+                   
+            
+            <rich:column sortBy="#{_venda.inOrcamento}">
+                <f:facet name="header">Venda/Orçamento</f:facet>                
+                <h:outputText value="Orcamento" rendered="#{_venda.inOrcamento}"/>
+                <h:outputText value="Venda" rendered="#{!_venda.inOrcamento}"/>
+            </rich:column>
+            
+            <h:column>
+                <f:facet name="header">Action</f:facet>
+                <s:link id="selectvenda"
+                     value="Select"
+                      view="/Venda.xhtml">
+                    <f:param name="vendaCodVenda"
+                            value="#{_venda.codVenda}"/>
+                    <f:param name="vendaFrom" value="Usuario"/>
+                </s:link>
+            </h:column>
+        </rich:dataTable>
+		<rich:datascroller align="center" for="vendasTable" maxPages="10" id="sc"/>
+    </h:form>
+
+    </rich:tab>
+
+    <rich:tab>
+        <f:facet name="label">
+            <h:panelGroup><h:graphicImage value="/img/onetomany.gif" style="vertical-align: middle; padding-right: 4px;"/>Últimas Compras</h:panelGroup>
+        </f:facet>
+    <h:form styleClass="association" id="comprasChildren">
+
+        <h:outputText value="Nao existe compra associada a este usuario."
+                   rendered="#{empty usuarioHome.compras}"/>
+
+        <rich:dataTable value="#{usuarioHome.compras}"
+                       var="_compra"
+                  rendered="#{not empty usuarioHome.compras}"
+                        id="comprasTable"
+			onRowMouseOver="this.style.backgroundColor='#F0F0F0'"
+           	 onRowMouseOut="this.style.backgroundColor='#{a4jSkin.rowBackgroundColor}'"
+           	 columnClasses="center" 
+           	   		  rows="15"
+           	    rowClasses="tableRowOne,tableRowTwo">
+           
+            <rich:column sortBy="#{_compra.codCompra}">
+                <f:facet name="header">Compra</f:facet>
+                <h:outputText value="#{_compra.codCompra}"/>
+            </rich:column>
+            
+             <rich:column sortBy="#{_compra.vendedor.fornecedor.nomeFantasia}">
+                <f:facet name="header">Fornecedor</f:facet>
+                <h:outputText value="#{_compra.vendedor.fornecedor.nomeFantasia}"/>
+            </rich:column>
+            
+            <rich:column sortBy="#{_compra.vendedor.nomeVendedor}">
+                <f:facet name="header">Vendedor</f:facet>
+                <h:outputText value="#{_compra.vendedor.nomeVendedor}"/>
+            </rich:column>
+            
+            <rich:column sortBy="#{_compra.numeroNotaFiscal}">
+                <f:facet name="header">Nota fiscal</f:facet>
+                <h:outputText value="#{_compra.numeroNotaFiscal}"/>
+            </rich:column>
+            
+            <rich:column sortBy="#{_compra.dataCompra}">
+                <f:facet name="header">Data compra</f:facet>
+                 <h:outputText value="#{_compra.dataCompra}">
+	                <s:convertDateTime type="date" pattern="dd/MM/yyyy"/>
+	            </h:outputText>
+            </rich:column>
+            
+            <rich:column sortBy="#{_compra.precoTotal}">
+                <f:facet name="header">Preço total</f:facet>
+                <h:outputText value="#{_compra.precoTotal}">
+                	<f:convertNumber currencySymbol="R$"  type="currency"  locale="pt_BR"/>
+                </h:outputText>
+            </rich:column>
+                        
+            <h:column>
+                <f:facet name="header">Action</f:facet>
+                <s:link id="selectcompra"
+                     value="Select"
+                      view="/Compra.xhtml">
+                    <f:param name="compraCodCompra"
+                            value="#{_compra.codCompra}"/>
+                    <f:param name="compraFrom" value="Usuario"/>
+                </s:link>
+            </h:column>
+        </rich:dataTable>
+		<rich:datascroller align="center" for="comprasTable" maxPages="10" id="sc"/>
+    </h:form>
+
+    </rich:tab>
+
+  
+	<rich:tab>
+	       <f:facet name="label">
+	           <h:panelGroup><h:graphicImage value="/img/onetomany.gif" style="vertical-align: middle; padding-right: 4px;"/>Acessos</h:panelGroup>
+	       </f:facet>
+    
+		    <h:form styleClass="association" id="acessosChildren">
+		
+		        <h:outputText value="There are no acessos associated with this usuario."
+		                   rendered="#{empty usuarioHome.historicos}"/>
+		
+		        <rich:dataTable value="#{usuarioHome.acessos}"
+		                       var="acesso"
+		                  rendered="#{not empty usuarioHome.acessos}"
+		                        id="acessosTable"
+		            onRowMouseOver="this.style.backgroundColor='#F0F0F0'"
+		           	 onRowMouseOut="this.style.backgroundColor='#{a4jSkin.rowBackgroundColor}'"
+		           	 columnClasses="center" 
+		           	 		  rows="15"
+		           	  columnsWidth="15*, 35%, 50%"            	  
+		           	    rowClasses="tableRowOne,tableRowTwo">
+		         
+		             <rich:column sortBy="#{acesso.transacao.siglaTransacao}"> 
+			           <f:facet name="header">
+			               <h:outputText value="Sigla Transação"/>
+			           </f:facet> 
+			           <h:outputText value="#{acesso.transacao.siglaTransacao}"/>
+			        </rich:column> 
+			        
+			        <rich:column sortBy="#{acesso.transacao.nome}"> 
+			           <f:facet name="header">
+			               <h:outputText value="Nome Transação"/>
+			           </f:facet> 
+			           <h:outputText value="#{acesso.transacao.nome}"/>
+			        </rich:column> 
+			        
+			        <rich:column sortBy="#{acesso.transacao.descTransacao}"> 
+			           <f:facet name="header">
+			               <h:outputText value="Descricao Transação"/>
+			           </f:facet> 
+			           <h:outputText value="#{acesso.transacao.descTransacao}"/>
+			        </rich:column> 
+			
+				</rich:dataTable>
+				<rich:datascroller align="center" for="acessosTable" maxPages="10" id="sc"/>
+		    </h:form>
+
+    </rich:tab>
+	
+	
+    <rich:tab>
+        <f:facet name="label">
+            <h:panelGroup><h:graphicImage value="/img/onetomany.gif" style="vertical-align: middle; padding-right: 4px;"/>Histórico</h:panelGroup>
+        </f:facet>
+    <h:form styleClass="association" id="historicosChildren">
+
+        <h:outputText value="Não existem histórico associado a este usuário."
+                   rendered="#{empty usuarioHome.historicos}"/>
+
+        <rich:dataTable value="#{usuarioHome.historicos}"
+                       var="_historico"
+                  rendered="#{not empty usuarioHome.historicos}"
+                        id="historicosTable"
+            onRowMouseOver="this.style.backgroundColor='#F0F0F0'"
+           	 onRowMouseOut="this.style.backgroundColor='#{a4jSkin.rowBackgroundColor}'"
+           	 columnClasses="center" 
+           	 		  rows="15"
+           	    rowClasses="tableRowOne,tableRowTwo">
+         
+            <rich:column sortBy="#{_historico.descHistorico}">
+                <f:facet name="header">Descricao histórico</f:facet>
+                <h:outputText value="#{_historico.descHistorico}"/>
+            </rich:column>
+            
+            <rich:column sortBy="#{_historico.dataHistorico}">
+                <f:facet name="header">Data histórico</f:facet>
+                 <h:outputText value="#{_historico.dataHistorico}">
+	                <s:convertDateTime type="date" pattern="dd/MM/yyyy HH:mm:ss"/>
+	            </h:outputText>         
+            </rich:column>
+	
+		</rich:dataTable>
+		<rich:datascroller align="center" for="historicosTable" maxPages="10" id="sc"/>
+    </h:form>
+
+    </rich:tab>
+</rich:tabPanel>
+</ui:define>
+
+</ui:composition>

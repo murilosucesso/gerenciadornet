@@ -1,0 +1,275 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:s="http://jboss.com/products/seam/taglib"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:a="http://richfaces.org/a4j"
+    xmlns:rich="http://richfaces.org/rich"
+    xmlns:easy="http://easyfaces.com.br/easyfaces"
+    template="layout/template.xhtml">
+
+<ui:define name="head">
+	<a:loadScript src="javascript/util.js"/>
+	<a:loadScript src="/javascript/maskCpfCnpj.js"/>
+</ui:define>
+
+<ui:define name="body">
+
+    <h:form id="fornecedor" styleClass="edit">
+		
+		<ui:include src="/paginas/help/GenericEditHelp.xhtml"/>	
+        <rich:panel>
+            <f:facet name="header">#{fornecedorHome.managed ? 'Editar' : 'Adicionar'} Fornecedor</f:facet>
+
+            <s:decorate id="nomeFantasiaField" template="layout/edit.xhtml">
+                <ui:define name="label">Nome Fantasia</ui:define>
+                <h:inputText id="nomeFantasia"
+                       required="true"
+                     styleClass="defaultInput"
+                      maxlength="100"
+                          value="#{fornecedorHome.instance.nomeFantasia}">
+                </h:inputText>
+            </s:decorate>
+
+
+            <s:decorate id="razaoSocialField" template="layout/edit.xhtml">
+                <ui:define name="label">Razão Social</ui:define>               
+                 <h:inputText id="razaoSocial"                           
+                      maxlength="100"
+                     styleClass="defaultInput"
+                          value="#{fornecedorHome.instance.razaoSocial}">
+                </h:inputText>
+            </s:decorate>
+
+
+            <s:decorate id="descFornecedorField" template="layout/edit.xhtml">
+                <ui:define name="label">Descrição</ui:define>
+                <h:inputText id="descFornecedor"
+                     styleClass="defaultInput"
+                      maxlength="100"
+                          value="#{fornecedorHome.instance.descFornecedor}">
+                </h:inputText>
+            </s:decorate>
+
+
+            <s:decorate id="cpjCnpjField" template="layout/edit.xhtml">
+                <ui:define name="label">CNPJ</ui:define>      
+                <h:inputText id="cpfCnpj" required="false" value="#{fornecedorHome.instance.cpjCnpj}" maxlength="18" onkeyup="mascaraTexto(event)"/>
+            </s:decorate>
+
+
+            <s:decorate id="inscricaoEstadualField" template="layout/edit.xhtml">
+                <ui:define name="label">Inscrição Estadual</ui:define>
+                <h:inputText id="inscricaoEstadual"
+                           size="20"
+                      maxlength="20"
+                          value="#{fornecedorHome.instance.inscricaoEstadual}">
+                </h:inputText>
+            </s:decorate>
+
+
+            <s:decorate id="faxField" template="layout/edit.xhtml">
+                <ui:define name="label">Telefone/Fax</ui:define>                               
+                <h:inputText id="inputPhone" required="false" maxlength="15" onkeypress="mascara( this, mtel )" value="#{fornecedorHome.instance.fax}"/>
+            </s:decorate>
+            
+             <s:decorate id="afeFuncionamento" template="layout/edit.xhtml">
+                <ui:define name="label">AFE-Funcionamento</ui:define>
+                <h:selectOneRadio id="afeFuncionemto" value="#{fornecedorHome.instance.inAfeFuncionamento}" styleClass="textoNegrito">
+					<f:selectItem itemLabel="Ativo" itemValue="true" />
+					<f:selectItem itemLabel="Inativo" itemValue="false" />
+				</h:selectOneRadio>
+            </s:decorate>
+            
+            <s:decorate id="contaFixa" template="layout/edit.xhtml">
+                <ui:define name="label">Conta Fixa</ui:define>
+                <h:selectOneRadio id="inOrcamento" value="#{fornecedorHome.instance.inContaFixa}" styleClass="textoNegrito">
+					<f:selectItem itemLabel="Sim" itemValue="true" />
+					<f:selectItem itemLabel="Não" itemValue="false" />
+				</h:selectOneRadio>
+            </s:decorate>
+
+            <s:decorate id="observacaoField" template="layout/edit.xhtml">
+                <ui:define name="label">Observação</ui:define>
+                 <h:inputText id="observacao"
+                      styleClass="defaultInput"
+                      maxlength="100"
+                          value="#{fornecedorHome.instance.observacao}">  
+                </h:inputText>               
+            </s:decorate>
+
+            <div style="clear:both">
+                <span class="required">*</span>
+                Campos obrigatórios
+            </div>
+
+        </rich:panel>
+
+        <div class="actionButtons">
+
+            <h:commandButton id="save"
+                          value="Salvar"
+                         action="#{fornecedorHome.persist}"
+                       disabled="#{!fornecedorHome.wired}"
+                       rendered="#{!fornecedorHome.managed}"/>
+
+            <h:commandButton id="update"
+                          value="Salvar"
+                         action="#{fornecedorHome.update}"
+                       rendered="#{fornecedorHome.managed}"/>
+
+            <h:commandButton id="delete"
+                          value="Desativar"
+                         action="#{fornecedorHome.remove}"
+                         onclick="if (!confirm('Tem certeza que deseja excluir este registro? Ao se desabilitar um Forncedor, todos os seus vendedores serão desabilitados.')) return false"
+                      immediate="true"
+                       rendered="#{fornecedorHome.managed  and identity.hasRole(transacoes.transacaoFornecedorExcluir) and !fornecedorHome.instance.inExclusao }"/>
+                       
+            <h:commandButton id="ativar"
+                          value="Ativar"
+                         action="#{fornecedorHome.ativar}"
+                         onclick="if (!confirm('Ativar fornecedor?')) return false"
+                      immediate="true"                      
+                       rendered="#{fornecedorHome.managed  and identity.hasRole(transacoes.transacaoFornecedorExcluir) and fornecedorHome.instance.inExclusao }"/>
+
+            <s:button id="cancelEdit"
+                   value="Voltar"
+             propagation="end"
+                    view="/Fornecedor.xhtml"
+                rendered="#{fornecedorHome.managed}"/>
+
+            <s:button id="cancelAdd"
+                   value="Voltar"
+             propagation="end"
+                    view="/#{empty fornecedorFrom ? 'FornecedorList' : fornecedorFrom}.xhtml"
+                rendered="#{!fornecedorHome.managed}"/>
+
+        </div>
+    </h:form>
+
+<rich:tabPanel switchType="ajax">
+
+	 <rich:tab label="Vendedores">
+        <h:form styleClass="association" id="vendedorsChildren">
+			<h:panelGroup id="out">
+            <h:outputText value="There are no vendedors associated with this fornecedor."
+                       rendered="#{empty fornecedorHome.vendedors}"/>
+
+            <rich:dataTable value="#{fornecedorHome.vendedors}"
+                           var="_vendedor"
+                      rendered="#{not empty fornecedorHome.vendedors}"
+                            id="vendedorsTable"
+                onRowMouseOver="this.style.backgroundColor='#F1F1F1'"
+           		 onRowMouseOut="this.style.backgroundColor='#{a4jSkin.rowBackgroundColor}'"
+           		 columnClasses="center"  
+           			rowClasses="tableRowOne,tableRowTwo">
+                
+                <rich:column sortBy="#{_vendedor.nomeVendedor}">
+                    <f:facet name="header">Nome vendedor</f:facet>
+                    <h:outputText value="#{_vendedor.nomeVendedor}"/>
+                </rich:column>
+                <rich:column sortBy="#{_vendedor.emailVendedor}">
+                    <f:facet name="header">Email vendedor</f:facet>
+                    <h:outputText value="#{_vendedor.emailVendedor}"/>
+                </rich:column>
+                <rich:column sortBy="#{_vendedor.telefoneVendedor}">
+                    <f:facet name="header">Telefone vendedor</f:facet>
+                    <h:outputText value="#{_vendedor.telefoneVendedor}"/>
+                </rich:column>
+               
+                
+                 <h:column>              
+	            	<f:facet name="header">Excluir</f:facet>
+	              	
+                	<a:commandLink id="delete" action="#{fornecedorHome.removeVendedor}" value="Delete" reRender="out" >
+	                	<f:param name="vendedorCodVendedor" value="#{_vendedor.id.codVendedor}"/>
+	                	<f:param name="vendedorCodFornecedor" value="#{_vendedor.id.codFornecedor}"/>                           	 	                   
+                	</a:commandLink>                	                	                                       	
+	            </h:column>
+                
+            </rich:dataTable>
+			</h:panelGroup>
+        </h:form>
+
+        <f:subview rendered="#{fornecedorHome.managed}" id="vendedors">
+        <div class="actionButtons">
+            <s:button id="addvendedor"
+                   value="Adicionar Vendedor"
+                    view="/VendedorEdit.xhtml"
+             propagation="none">
+                 <f:param name="fornecedorCodFornecedor"
+                         value="#{fornecedorHome.instance.codFornecedor}"/>                 
+                 <f:param name="vendedorFrom" value="Fornecedor"/>
+            </s:button>
+        </div>
+        </f:subview>
+    </rich:tab>
+    
+
+    <rich:tab label="Endereços">
+         <a:form styleClass="association" id="enderecosChildren">
+			<h:panelGroup id="out">
+
+            <h:outputText value="Não existe endereço associado a este fornecedor."
+                       rendered="#{empty fornecedorHome.enderecos}"/>
+
+            <rich:dataTable value="#{fornecedorHome.enderecos}"
+                           var="_endereco"
+                      rendered="#{not empty fornecedorHome.enderecos}"
+                            id="enderecosTable"
+                onRowMouseOver="this.style.backgroundColor='#F1F1F1'"
+           		 onRowMouseOut="this.style.backgroundColor='#{a4jSkin.rowBackgroundColor}'"
+          		 columnClasses="center"  
+           			rowClasses="tableRowOne,tableRowTwo">
+               
+                <ui:include src="/includes/includeListarEnderecos.xhtml"/>
+                
+	            <rich:column styleClass="action" > 
+		            <f:facet name="header">Visualizar/Excluir</f:facet>
+		            <s:link view="/Endereco.xhtml" id="selectEndereco">
+		                <h:graphicImage url="/img/binoculo.jpg"/>
+		                <f:param name="enderecoCodEndereco" value="#{_endereco.codEndereco}"/>
+	                    <f:param name="enderecoFrom" value="Fornecedor"/>
+		            </s:link>
+		            <rich:toolTip for="selectEndereco" value="Visualizar Endereço" direction="top-left"/>
+		            
+		            #{' '}
+		            
+		            <a:commandLink id="delete" action="#{usuarioHome.removeEndereco}" reRender="out" >
+		                <h:graphicImage url="/img/lixeira.gif"/> 
+		                <f:param name="enderecoCodEndereco" value="#{_endereco.codEndereco}"/>
+		            </a:commandLink>
+		            <rich:toolTip for="delete" value="Excluir Endereço" direction="top-left"/>
+		        </rich:column>
+            </rich:dataTable>
+
+        	</h:panelGroup>
+        </a:form>
+
+        <f:subview rendered="#{fornecedorHome.managed}" id="enderecos">
+        <div class="actionButtons">
+            <s:button id="addendereco"
+                   value="Adicionar endereço"
+                    view="/EnderecoEdit.xhtml"
+             propagation="none">
+                 <f:param name="fornecedorCodFornecedor"
+                         value="#{fornecedorHome.instance.codFornecedor}"/>
+                 <f:param name="enderecoFrom" value="Fornecedor"/>
+            </s:button>
+        </div>
+        </f:subview>
+    </rich:tab>
+   
+   
+    <a:outputPanel ajaxRendered="true">					
+		<h:messages  globalOnly="true" styleClass="message"
+         		errorClass="errormsg" infoClass="infomsg" warnClass="warnmsg" rendered="true"/>           		           		
+	</a:outputPanel>
+    
+</rich:tabPanel>
+<rich:jQuery selector="#nomeFantasia" timing="onload" query="focus()" />
+</ui:define>
+
+</ui:composition>

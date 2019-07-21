@@ -1,0 +1,546 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:s="http://jboss.com/products/seam/taglib"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:a="http://richfaces.org/a4j"
+	xmlns:easy="http://easyfaces.com.br/easyfaces"
+	template="layout/template.xhtml">
+
+	<ui:define name="body">
+	
+		<a:form id="pagamentoSearch" styleClass="edit">
+
+			<ui:include src="/paginas/help/GenericListHelp.xhtml" />
+
+			<rich:simpleTogglePanel label="Filtro de pesquisa de Pagamentos"
+				switchType="client">
+
+				<h:panelGrid columns="2" width="80%" rowClasses="prop" columnClasses="name,value">
+			
+					<h:outputLabel for="codigoCompra" value="Compra"/>
+					<h:inputText id="codigoCompra" value="#{pagamentoList.codigoCompra}" size="8" />
+					
+					<h:outputLabel for="valor" value="valor"/>
+					<easy:inputCurrency id="valor"
+									value="#{pagamentoList.pagamento.valor}"
+									required="false" decimalSeparator="," groupSeparator="."
+									useValidate="false" returnDecimal="true" size="10" />
+					
+					<h:outputLabel for="fornecedor" value="Fornecedor" title="Fornecedor do serviço ou produto."/>
+					<h:selectOneMenu id="fornecedor"
+								value="#{pagamentoList.pagamento.fornecedor}"
+								title="Fornecedor da compra" styleClass="defaultInput">
+								<s:selectItems value="#{pagamentoHome.fornecedores}" var="fornecedor"
+									label="#{fornecedor.nomeFantasia} #{fornecedor.inContaFixa == true ? '(Conta Fixa)': ''}" required="false"
+									noSelectionLabel="Selecione.." />
+								<s:convertEntity />
+					</h:selectOneMenu>
+					
+					<h:outputLabel for="tipoDebito" value="Tipo de Débito"/>					
+					<h:selectOneMenu id="tipoDebito" value="#{pagamentoList.tipoDebito}" styleClass="defaultInput">																	
+							   <s:selectItems value="#{tipoDebitoList.resultList}" 
+							   				    var="tipoDebito" 									
+							                  label="#{tipoDebito.descTipoDebito}"
+							                  required="false"
+							                  noSelectionLabel="Selecione.." />	
+								<s:convertEntity />						       									
+					</h:selectOneMenu>
+					
+					<h:outputLabel for="fontePagadora" value="Fonte Pagadora"/>					
+					<h:selectOneMenu id="fontePagadora" value="#{pagamentoList.fontePagadora}" styleClass="defaultInput">																	
+							   <s:selectItems value="#{fontePagadoraList.resultList}" 
+							   				    var="fontePagadora" 									
+							                  label="#{fontePagadora.descFontePagadora}"
+							                  required="false"
+							                  noSelectionLabel="Selecione.." />	
+								<s:convertEntity />						       									
+					</h:selectOneMenu>
+					
+					<h:outputLabel for="tipoData" value="Tipo de Data"/>
+					<h:selectOneMenu id="tipoData"
+									value="#{pagamentoList.tipoData}" styleClass="defaultInput">
+									<f:selectItem itemLabel="Data de Vencimento" itemValue="1" />
+									<f:selectItem itemLabel="Data de Compra" itemValue="2" />
+									<f:selectItem itemLabel="Data de Balancete" itemValue="3" />
+								</h:selectOneMenu>
+
+					<h:outputLabel for="observacao" value="Observação"/>
+					<h:inputText id="observacao" value="#{pagamentoList.pagamento.observacao}"  styleClass="defaultInput" size="50" />
+					
+					<h:outputLabel for="dataInicio" value="Data Início*"/>
+					<rich:calendar id="dataInicio" required="true" onchanged="document.getElementById('pagamentoSearch:search').focus()"
+									value="#{pagamentoList.dataInicio}" defaultTime="00:00"
+									resetTimeOnDateSelect="true" datePattern="dd/MM/yyyy">
+										<f:convertDateTime pattern="yyyy-MM-dd HH:mm" />
+								</rich:calendar> 
+					
+					<h:outputLabel for="dataFim" value="Data Fim*"/>
+					<rich:calendar	id="dataFim" required="true" value="#{pagamentoList.dataFim}"  
+									onchanged="document.getElementById('pagamentoSearch:search').focus()"
+									defaultTime="23:59" resetTimeOnDateSelect="false"
+									datePattern="dd/MM/yyyy">
+										<f:convertDateTime pattern="yyyy-MM-dd HH:mm" />
+					</rich:calendar>
+					
+	                <h:outputLabel for="inContaFixaAux" value="Conta Fixa"/>
+	                <h:selectOneRadio id="inContaFixaAux" value="#{pagamentoList.inContaFixaAux}" styleClass="textoNegrito">
+	                	<f:selectItem itemLabel="Todos" itemValue="2"/>
+						<f:selectItem itemLabel="Sim" itemValue="1" />
+						<f:selectItem itemLabel="Não" itemValue="0" />
+					</h:selectOneRadio>
+					
+					<h:outputLabel for="inConferencia" value="Conferidos"/>
+	                <h:selectOneRadio id="inConferencia" value="#{pagamentoList.inConferencia}" styleClass="textoNegrito">
+	                	<f:selectItem itemLabel="Todos" itemValue="2" />
+						<f:selectItem itemLabel="Sim" itemValue="1" />
+						<f:selectItem itemLabel="Não" itemValue="0" />
+					</h:selectOneRadio>
+					
+					<h:outputText value="Qtd. Linhas" title="Quantidade de linhas que serão exibidas na consulta" />
+					<rich:inputNumberSpinner id="numeroLinhasDT" value="#{pagamentoList.numeroLinhasDT}" step="10" inputSize="8" maxValue="1000" styleClass="inputDefault"/>
+					
+				</h:panelGrid>
+			
+				<div style="clear: both">
+					<span class="required">*</span> Campos obrigatórios
+				</div>
+
+			</rich:simpleTogglePanel>
+
+			<div class="actionButtons">
+				<a:commandButton id="search" type="submit" value="Pesquisar" 
+					action="#{pagamentoList.setMostrarResultados(true)}" actionListener="#{pagamentoList.listarPagamentos()}"
+					reRender="panelResultado, panelResultado2"  />
+					
+				
+				<h:commandButton type="reset" value="Limpar" />
+				
+				<a:commandButton value="Novo Pagamento" type="button" reRender="panelEditPagamento" 
+					action="#{pagamentoHome.novoPagamento()}" 
+					ajaxSingle="true"
+					limitToList="true"
+					oncomplete="#{rich:component('editPanel')}.show()"/>
+				
+				<rich:hotKey key="return" selector="#codigoCompra, #valor, #observacao, #fornecedor, #tipoData"
+					handler="#{rich:element('search')}.click()" />
+			</div>
+
+		</a:form>
+
+		<h:form id="resultadoForm">
+
+			<a:outputPanel id="panelResultado" ajaxRendered="true">
+
+				<rich:panel rendered="#{pagamentoList.mostrarResultados}">
+
+					<f:facet name="header">
+			    	Resultado da pesquisa por Pagamento(#{pagamentoList.qtdResultados})
+		    		</f:facet>
+
+					<h:outputText value="#{messages['mensagem.pesquisa.vazia']}" rendered="#{empty pagamentoList.pagamentosList}" />
+					
+					<rich:dataTable id="resultadoList" var="_pagamento"
+						value="#{pagamentoList.pagamentosList}"
+						onRowMouseOver="this.style.backgroundColor='#F0F0F0'"
+						onRowMouseOut="this.style.backgroundColor='#{a4jSkin.rowBackgroundColor}'"
+						footerClass="center"
+						rows="#{pagamentoList.numeroLinhasDT}" 
+						columnsWidth="0,*,*,*,*,*,*,*,*,*,0"
+						rowClasses="tableRowOne,tableRowTwo"
+						rowKeyVar="row">
+
+						<rich:column sortBy="#{_pagamento.compra.codCompra}"
+							styleClass="#{_pagamento.inConferencia ? 'tableRowSelecionada center': 'center'}">
+							<f:facet name="header">
+								<h:outputText value="Compra" />
+							</f:facet>
+							<h:outputText value="#{_pagamento.compra.codCompra}" styleClass="#{_pagamento.dataBalancete == null ? 'textoMedioVermelho': ''}" />
+						</rich:column>
+						
+						<rich:column sortBy="#{_pagamento.fontePagadora.descFontePagadora}"
+							styleClass="#{_pagamento.inConferencia ? 'tableRowSelecionada center': 'center'}">
+							<f:facet name="header">
+								<h:outputText value="Fonte Pagadora" title="Origem do recurso que originou o pagamento" />
+							</f:facet>
+							<h:outputText value="#{_pagamento.fontePagadora.descFontePagadora}" styleClass="#{_pagamento.dataBalancete == null ? 'textoMedioVermelho': ''}"/>							
+						</rich:column>
+
+						<rich:column sortBy="#{_pagamento.fornecedor.nomeFantasia}"
+							styleClass="#{_pagamento.inConferencia ? 'tableRowSelecionada left': 'left'}">
+							<f:facet name="header">
+								<h:outputText value="Fornecedor" />
+							</f:facet>
+							<s:link view="/#{empty from ? 'Fornecedor' : from}.xhtml" propagation="#{empty from ? 'none' : 'default'}"
+				                      id="fornecedorViewId">                
+				                <h:outputText value="#{_pagamento.fornecedor.nomeFantasia}" title="#{_pagamento.fornecedor.razaoSocial} - #{_pagamento.fornecedor.observacao}" id="fornecedor" styleClass="#{_pagamento.dataBalancete == null ? 'textoMedioVermelho': ''}"/>    
+				                <f:param name="fornecedorCodFornecedor" value="#{_fornecedor.codFornecedor}"/>
+				            </s:link>							
+						</rich:column>
+<!-- 						
+						<rich:column sortBy="#{_pagamento.fornecedor.nomeFantasia}"
+							styleClass="#{_pagamento.inConferencia ? 'tableRowSelecionada center': 'center'}">
+							<f:facet name="header">
+								<h:outputText value="Fonte Pagadora" title="Fonte Pagadora da despesa" />
+							</f:facet>
+							<h:outputText value="Caixa" id="fornecedor2" styleClass="#{_pagamento.dataBalancete == null ? 'textoMedioVermelho': ''}"/>
+						</rich:column>
+-->				
+						<rich:column sortBy="#{_pagamento.usuarioCadastramento}"
+							styleClass="#{_pagamento.inConferencia ? 'tableRowSelecionada center': 'center'}">
+							<f:facet name="header">
+								<h:outputText value="Cadastrado por"
+									title="Usuário do Cadastramento do Pagamento" />
+							</f:facet>
+							<h:outputText value="#{_pagamento.usuarioCadastramento.nomeUsuario}" id="usuarioCadastramento" styleClass="#{_pagamento.dataBalancete == null ? 'textoMedioVermelho': ''}"/>
+						</rich:column>
+					
+						<rich:column sortBy="#{_pagamento.dataCadastramento}"
+							styleClass="#{_pagamento.inConferencia ? 'tableRowSelecionada center': 'center'}">
+							<f:facet name="header">
+								<h:outputText value="Data Cadastramento"
+									title="Data do Cadastramento do Pagamento" />
+							</f:facet>
+							<h:outputText value="#{_pagamento.dataCadastramento}" id="dataCadastramento" styleClass="#{_pagamento.dataBalancete == null ? 'textoMedioVermelho': ''}">
+								<s:convertDateTime type="date" pattern="dd/MM/yyyy HH:mm"/>
+							</h:outputText>
+						</rich:column>
+						 
+						<rich:column sortBy="#{_pagamento.dataVencimento}"
+							styleClass="#{_pagamento.inConferencia ? 'tableRowSelecionada center': 'center'}">
+							<f:facet name="header">
+								<h:outputText value="Data Vencimento"
+									title="Data vencimento" />
+							</f:facet>
+							<h:outputText value="#{_pagamento.dataVencimento}" id="dataVencimento" styleClass="#{_pagamento.dataBalancete == null ? 'textoMedioVermelho': ''}">
+								<s:convertDateTime type="date" pattern="dd/MM/yyyy"/>
+							</h:outputText>
+						</rich:column>
+						
+						<rich:column sortBy="#{_pagamento.dataBalancete}"
+							styleClass="#{_pagamento.inConferencia ? 'tableRowSelecionada center': 'center'}">
+							<f:facet name="header">
+								<h:outputText value="Data Balancete"
+									title="Data em que o pagamento foi realmente efetivado" id="dataBalancete"/>
+							</f:facet>
+
+							<h:outputText value="#{_pagamento.dataBalancete}" rendered="true" styleClass="#{_pagamento.dataBalancete == null ? 'textoMedioVermelho': ''}">
+								<s:convertDateTime type="date" pattern="dd/MM/yyyy"/>
+							</h:outputText>
+						</rich:column>
+					
+						<rich:column sortBy="#{_pagamento.tipoDebito.descTipoDebito}"
+							styleClass="#{_pagamento.inConferencia ? 'tableRowSelecionada center': 'center'}">
+							<f:facet name="header">
+								<h:outputText value="Tipo de Débito"/>
+							</f:facet>
+							<h:outputText value="#{_pagamento.tipoDebito.descTipoDebito}" styleClass="#{_pagamento.dataBalancete == null ? 'textoMedioVermelho': ''}"/>							
+						</rich:column>
+				<!-- 	
+						<rich:column sortBy="#{_pagamento.fornecedor.inContaFixa}"
+							styleClass="#{_pagamento.inConferencia ? 'tableRowSelecionada center': 'center'}">
+							<f:facet name="header">
+								<h:outputText value="Conta Fixa"/>
+							</f:facet>
+							<h:outputText value="SIM"  rendered="#{_pagamento.fornecedor.inContaFixa}" styleClass="#{_pagamento.dataBalancete == null ? 'textoMedioVermelho': ''}"/>
+							<h:outputText value="NAO"  rendered="#{!_pagamento.fornecedor.inContaFixa}" styleClass="#{_pagamento.dataBalancete == null ? 'textoMedioVermelho': ''}"/>
+						</rich:column>
+						 -->	
+						<rich:column sortBy="#{_pagamento.observacao}"
+							styleClass="#{_pagamento.inConferencia ? 'tableRowSelecionada left': 'left'}">
+							<f:facet name="header">
+								<h:outputText value="Observação"/>
+							</f:facet>
+							<h:outputText value="#{_pagamento.observacao}" id="observacao" styleClass="#{_pagamento.dataBalancete == null ? 'textoMedioVermelho': ''}"/>
+						</rich:column>
+						
+						<rich:column sortBy="#{_pagamento.valor}"
+							styleClass="#{_pagamento.inConferencia ? 'tableRowSelecionada center': 'center'}">
+							<f:facet name="header">
+								<h:outputText value="Valor"
+									title="Valor a Receber" />
+							</f:facet>
+
+							<h:outputText value="#{_pagamento.valor}" id="valor" styleClass="#{_pagamento.dataBalancete == null ? 'textoMedioVermelho': ''}">
+								<f:convertNumber currencySymbol="R$" type="currency" locale="pt_BR" />
+							</h:outputText>
+
+							<f:facet name="footer">
+								<h:outputText styleClass="textoNegrito" value="#{pagamentoList.valorTotal}">
+									<f:convertNumber currencySymbol="R$" type="currency" locale="pt_BR" />
+								</h:outputText>
+							</f:facet>
+						</rich:column>
+						
+						<rich:column
+							styleClass="#{_pagamento.inConferencia ? 'tableRowSelecionada center semQuebra': 'center semQuebra'}">
+							<f:facet name="header">
+								<h:outputText value="Editar" title="Alterar ou Excluir um pagamento"/>
+							</f:facet>
+
+<!-- link editar -->
+							<a:commandLink id="editlink" 
+								ajaxSingle="true" 
+								action="#{pagamentoHome.selectedPagamento(_pagamento)}"
+		                        oncomplete="#{rich:component('editPanel')}.show()" 
+		                        rendered="#{!_pagamento.inConferencia}">
+		                        <h:graphicImage url="/img/editar.jpg" style="border:0" title="Alterar"/>
+		                        
+		                        <f:setPropertyActionListener value="#{_pagamento}" target="#{pagamentoHome.instance}" />
+		                        <f:setPropertyActionListener value="#{row}" target="#{pagamentoHome.currentRow}" />
+		                    </a:commandLink>
+<!-- link deletar -->		                    
+		                    <a:commandLink ajaxSingle="true" id="deltelink" action="#{pagamentoHome.selectedPagamento(_pagamento)}"
+		                        oncomplete="#{rich:component('deletePanel')}.show()" rendered="#{!_pagamento.inConferencia}">
+		                        <h:graphicImage url="/img/cancelada.jpg" style="border:0" title="Excluir"/>
+		                        
+		                        <f:setPropertyActionListener value="#{_pagamento}" target="#{pagamentoHome.instance}" />
+		                        <f:setPropertyActionListener value="#{row}" target="#{pagamentoHome.currentRow}" />
+		                    </a:commandLink>
+<!-- img iconBlueCheck -->		           		 
+							<h:graphicImage url="/img/iconBlueCheck.gif" style="border:0" title="Confirmado o Pagamento" rendered="#{_pagamento.inConferencia}"/>                   
+		                    
+						</rich:column>
+
+<!-- checkbox confirmar  -->							
+						<rich:column 
+							rendered="#{identity.hasRole(transacoes.transacaoGerenciarPagamentosConferir)}"
+							sortBy="#{_pagamento.inConferencia}"
+							styleClass="#{_pagamento.inConferencia ? 'tableRowSelecionada center': 'center'}">
+							
+							<h:selectBooleanCheckbox id="op" value="#{_pagamento.inConferencia}" title="Conferir pagamento realizado" >
+								<a:support ajaxSingle="true" event="onclick" action="#{pagamentoHome.conferir(_pagamento)}"
+									reRender="valor, dataBalancete, panelResultado2"/>
+							</h:selectBooleanCheckbox>
+
+						</rich:column>
+
+					</rich:dataTable>
+
+					<ui:include src="/includes/includeDataScroller.xhtml" />
+					
+					<h:outputText value="Obs: Os pagamentos que estão sem data de balancete(Sem confirmação do pagamento) estão em vermelho." 
+					rendered="#{not empty pagamentoList.resultList}"
+					styleClass="textoMedioVermelho"/>
+						
+					<div class="actionButtons right">
+						<a:region>
+							<a:commandButton type="button" id="btnImprimir" ajaxSingle="true" limitToList="true" value="Imprimir" rendered="#{not empty pagamentoList.resultList}">
+								<rich:componentControl for="imprimirPagamentoPopUp" attachTo="btnImprimir"  operation="show" event="onclick"/>								
+							</a:commandButton>
+						</a:region>
+					</div>
+					
+<!-- modal IMPRIMIR -->		
+					<ui:include src="/PagamentoListImprimir.xhtml" />
+					
+				</rich:panel>
+			</a:outputPanel>
+		</h:form>
+		
+<!-- Modal EDIT -->		
+		<a:outputPanel id="panelEditPagamento" ajaxRendered="true"  >
+		<rich:modalPanel id="editPanel" autosized="true" minWidth="520" onshow="document.getElementById('form:compra:inputCodigoCompra').focus()" >
+		        <f:facet name="header">
+		            <h:outputText value="#{pagamentoHome.novoPagamento ? 'Novo Pagamento' : 'Editar Pagamento'}"/>
+		        </f:facet>
+		        <f:facet name="controls">
+		            <h:panelGroup>
+		                <h:graphicImage value="/img/close.png" id="hidelink" style="cursor:pointer;"/>
+		                <rich:componentControl for="editPanel" attachTo="hidelink" operation="hide" event="onclick" />
+		            </h:panelGroup>
+		        </f:facet>
+	            <h:form id="form">
+	            <rich:panel>
+	             <a:outputPanel ajaxRendered="true" id="panelGlobalMessages">
+			         <h:messages id="messages" globalOnly="false" styleClass="message"
+			            errorClass="errormsg" infoClass="infomsg" warnClass="warnmsg"
+			            rendered="#{showGlobalMessages != 'false'}"/>
+			     </a:outputPanel>
+	            
+				<h:panelGrid columns="1">
+
+					<s:decorate id="compra" template="layout/edit.xhtml">
+						<ui:define name="label"><h:outputText value="Código Compra"/></ui:define>
+						<h:inputText maxlength="8" id="inputCodigoCompra" required="false"
+								value="#{pagamentoHome.codigoCompra}"
+								title="Código da Compra para qual será gerado um novo Pagamento"
+								styleClass="defaultInput2" />
+					</s:decorate>
+					
+					<s:decorate id="forn" template="layout/edit.xhtml">
+						<ui:define name="label"><h:outputText value="Nome Cedente"/></ui:define>
+								<h:selectOneMenu id="inputNomeCedente"
+									required="true"
+									requiredMessage="Campo Nome Cedente Obrigatório"
+									value="#{pagamentoHome.instance.fornecedor}"
+									styleClass="defaultInput">
+									
+									<s:selectItems value="#{pagamentoHome.fornecedores}" var="fornecedor"
+										label="#{fornecedor.nomeFantasia}" required="false"/>
+									<s:convertEntity />
+								</h:selectOneMenu>
+					</s:decorate>
+					
+					<s:decorate template="layout/edit.xhtml">
+						<ui:define name="label"><h:outputText value="Data Vencimento"  title="Data do Vencimento do Pagamento"/></ui:define>
+						<rich:calendar required="true" id="inputDataInicial"
+							value="#{pagamentoHome.instance.dataVencimento}" requiredMessage="Campo Data Vencimento Obrigatório" 
+							onchanged="document.getElementById('form:val:inputValor').focus()"
+							defaultTime="00:00" resetTimeOnDateSelect="true"
+							datePattern="dd/MM/yyyy">
+							<f:convertDateTime pattern="yyyy-MM-dd HH:mm" />
+						</rich:calendar>
+					</s:decorate>
+
+					<s:decorate template="layout/edit.xhtml">
+						<ui:define name="label"><h:outputText value="Data Balancete" /></ui:define>
+						<rich:calendar id="inputDataBalancete"
+							value="#{pagamentoHome.instance.dataBalancete}"
+							onchanged="document.getElementById('form:val:inputValor').focus();"
+							defaultTime="00:00" resetTimeOnDateSelect="true"
+							datePattern="dd/MM/yyyy">
+							<f:convertDateTime pattern="yyyy-MM-dd HH:mm" />
+						</rich:calendar>
+					</s:decorate>
+					
+					<s:decorate template="layout/edit.xhtml">
+							<ui:define name="label"><h:outputText value="Tipo de Débito" /></ui:define>
+														
+							<h:selectOneMenu id="inputTipoDebito" value="#{pagamentoHome.instance.tipoDebito}" styleClass="defaultInput">																	
+							   		<s:selectItems value="#{tipoDebitoList.resultList}" 
+							   				    var="tipoDebito" 									
+							                  label="#{tipoDebito.descTipoDebito}"
+							                  required="true"/>	
+									<s:convertEntity />					       									
+							</h:selectOneMenu>
+					</s:decorate>
+					
+					<s:decorate id="tipoPagamentoField" template="layout/display.xhtml" rendered="#{pagamentoHome.novoPagamento}" >
+							<ui:define name="label">Tipo pagamento</ui:define>
+	
+							<h:selectOneMenu value="#{pagamentoHome.tipoPagamento}" styleClass="defaultInput"  >
+								
+								<s:selectItems value="#{pagamentoHome.tipoPagamentos}"
+									var="tipoPagamento" 
+									label="#{tipoPagamento.descTipoPagamento}" 
+									noSelectionLabel="Dinheiro à vista/Parcela única"/>
+									
+									<s:convertEntity />
+									
+									<a:support ajaxSingle="true" event="onchange" bypassUpdates="true" limitToList="true" />
+							</h:selectOneMenu>
+					</s:decorate>
+					
+					<s:decorate template="layout/edit.xhtml">
+							<ui:define name="label"><h:outputText value="Fonte Pagadora" /></ui:define>
+														
+							<h:selectOneMenu id="inputFontePagadora" value="#{pagamentoHome.instance.fontePagadora}" styleClass="defaultInput">																	
+							   		<s:selectItems value="#{fontePagadoraList.resultList}" 
+							   				    var="fontePagadora" 									
+							                  label="#{fontePagadora.descFontePagadora}"
+							                  required="false"/>	
+									<s:convertEntity />					       									
+							</h:selectOneMenu>
+					</s:decorate>
+						
+					<s:decorate id="val" template="layout/edit.xhtml">
+							<ui:define name="label"><h:outputText value="Valor" /></ui:define>
+							<easy:inputCurrency value="#{pagamentoHome.instance.valor}" required="true" requiredMessage="Campo Valor Obrigatório"
+								decimalSeparator="," groupSeparator="." useValidate="false" id="inputValor" styleClass="defaultInput2"
+								returnDecimal="true" size="10">
+							</easy:inputCurrency>
+					</s:decorate>
+					
+					<s:decorate id="obs" template="layout/edit.xhtml">
+							<ui:define name="label">Observação</ui:define>
+							<h:inputText maxlength="100" id="inputObservacao"
+								value="#{pagamentoHome.instance.observacao}"  styleClass="defaultInput" />
+					</s:decorate>
+				
+					<div style="clear: both">
+						<span class="required">*</span> Campos obrigatórios
+					</div>
+				</h:panelGrid>
+				</rich:panel>
+				
+				<table width="100%" border="0" cellspacing="3">
+					<tr>
+						<td class="right" width="50%">
+						
+							<a:commandButton id="btnUpdate" value="Salvar" 
+								actionListener="#{pagamentoHome.persistUpdate()}" 
+								reRender="dataVencimento, valor, observacao, dataBalancete, panelResultado, panelResultado2"
+								oncomplete="#{rich:component('editPanel')}.hide();" 
+								rendered="#{!pagamentoHome.novoPagamento}"/>
+							
+							<rich:hotKey key="return" selector="#inputCodigoCompra, #inputNomeCedente, #inputValor, #inputTipoDebito, #inputObservacao" 
+								handler="#{rich:element('btnUpdate')}.click()" rendered="#{!pagamentoHome.novoPagamento}"/>
+								
+							<a:commandButton id="btnSalvar" value="Salvar" 
+								actionListener="#{pagamentoHome.persistUpdate()}" 
+								action="#{pagamentoList.listarPagamentos()}"
+								reRender="dataVencimento, valor, observacao, dataBalancete, panelResultado, panelResultado2"
+								oncomplete="#{rich:component('editPanel')}.hide();" 
+								rendered="#{pagamentoHome.novoPagamento}"/>
+							
+							<rich:hotKey key="return" selector="#inputCodigoCompra, #inputNomeCedente, #inputValor, #inputTipoDebito, #inputObservacao" 
+								handler="#{rich:element('btnSalvar')}.click()" rendered="#{pagamentoHome.novoPagamento}"/>
+							
+						</td>
+						<td style="align:left">						
+							<input value="Cancelar" type="button" onclick="#{rich:component('editPanel')}.hide();"/>
+						</td>
+					</tr>
+				</table>
+			</h:form>
+	    </rich:modalPanel>
+		</a:outputPanel>
+
+<!-- Modal DELETE -->	    
+	    <rich:modalPanel id="deletePanel" autosized="true" width="200"  onshow="document.getElementById('formDelete:btnSim').focus()">
+        <f:facet name="header">
+            <h:outputText value="Excluir?" style="padding-right:15px;" />
+        </f:facet>
+        
+        <f:facet name="controls">
+            <h:panelGroup>
+                <h:graphicImage value="/img/close.png" id="hidelink2" style="cursor:pointer;"/>
+                <rich:componentControl for="deletePanel" attachTo="hidelink2"
+                    operation="hide" event="onclick" />
+            </h:panelGroup>
+        </f:facet>
+        <h:form id="formDelete">
+            <table width="100%">
+                <tbody>
+                	<tr>
+                        <td align="center" colspan="2">	
+                		<h:outputText value="Tem certeza que deseja deletar este pagamento?" styleClass="textoNegrito" />
+                		</td>
+                	</tr>
+                    <tr>
+                        <td align="right" width="50%">
+                        	<a:commandButton id="btnSim" value="SIM"
+                            ajaxSingle="true" 
+                            actionListener="#{pagamentoHome.remove}"
+                            action="#{pagamentoList.listarPagamentos()}"
+                            oncomplete="#{rich:component('deletePanel')}.hide();"
+                            reRender="panelResultado, panelResultado2" />
+                        </td>
+                            
+                        <td align="left" width="50%">
+                        	<input value="NAO" type="button" onclick="#{rich:component('deletePanel')}.hide();"/>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </h:form>
+    </rich:modalPanel>
+		
+	<rich:jQuery selector="#codigoCompra" timing="onload" query="focus()" />
+	</ui:define>
+
+</ui:composition>

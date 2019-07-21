@@ -1,0 +1,107 @@
+<!-- Modal DELETE -->
+<rich:modalPanel id="autorizacaoPopUp" width="400" height="100" autosized="true" top="150px" onhide="focarBotaoAdd()"
+	xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:s="http://jboss.com/products/seam/taglib"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html" 
+    xmlns:a="http://richfaces.org/a4j"
+    xmlns:rich="http://richfaces.org/rich">
+	
+	<f:facet name="header">
+        <h:panelGroup>
+            <h:outputText value="Confirmar Nova Venda"></h:outputText>
+        </h:panelGroup>
+    </f:facet>
+	
+	<f:facet name="controls">
+		<h:panelGroup>
+			<h:graphicImage value="/img/close.png" id="closePopUp"
+				style="cursor:pointer;" />
+			<rich:componentControl for="autorizacaoPopUp" attachTo="closePopUp"
+				operation="hide" event="onclick" />
+		</h:panelGroup>
+	</f:facet>
+	<h:form>
+		<a:outputPanel id="panelAutorizacaoConfirmacao" ajaxRendered="true">
+			<rich:panel rendered="#{!vendaHome.vendaAprovada}">
+				<table width="100%">
+					<tbody>
+						<tr>
+							<td align="center" colspan="2">
+								<h:outputText 
+									value="O desconto realizado foi maior que o desconto permitido."
+									styleClass="textoNegrito3" rendered="#{!vendaHome.descontoValido}" />
+								<h:outputText 
+									value="Venda não autorizada. O Cliente está com a situação financeira irregular."
+									styleClass="textoNegrito3" rendered="#{!vendaHome.adimplente}" />
+								<h:outputText 
+									value="Administrador deve confirma a inclusão da Venda/Orçamento?"
+									styleClass="textoGrandeVermelho" />
+							</td>
+						</tr>
+						<tr>
+							<td align="center" colspan="2">
+								<h:panelGrid columns="2" rowClasses="prop"
+									columnClasses="name,value">
+				
+									<h:outputLabel for="username">Usuário</h:outputLabel>
+									<h:inputText id="username" value="#{vendaHome.funcAutorizador}" styleClass="defaultInput2" />
+				
+									<h:outputLabel for="password">Senha</h:outputLabel>
+									<h:inputSecret id="password" value="#{vendaHome.senhaAutorizador}" styleClass="defaultInput2" />
+								</h:panelGrid>
+							</td>
+						</tr>
+						
+						<tr>
+							<td align="right" width="50%">
+								<a:commandButton value="Autorizar" id="autorizar"
+									action="#{vendaHome.realizarVendaAutorizada()}"
+									oncomplete="#{rich:component('autorizacaoPopUp')}.hide();"/>		
+								
+								<rich:hotKey key="return" selector="#password" 
+		    						handler="#{rich:element('autorizar')}.click()"/> 							
+							</td>
+		
+							<td align="left" width="50%">
+								<input value="Cancelar" type="button" onclick="#{rich:component('autorizacaoPopUp')}.hide();"/>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</rich:panel> 
+	
+			<rich:panel rendered="#{vendaHome.vendaAprovada}">
+				<table width="100%">
+					<tbody>
+						<tr>
+							<td align="center" colspan="3">
+								<h:outputText value="Confirma a inclusão da Venda/Orçamento? Verifique se os dados estão corretos."/>
+							</td>
+						</tr>
+						<tr>
+							<td align="right" width="45%">
+								<a:commandButton value=" Salvar e Concluir " id="btnSalvar"
+									action="#{vendaHome.saveUpdate}"
+									oncomplete="#{rich:component('autorizacaoPopUp')}.hide();"/>
+							</td>
+							
+							<td align="center">
+								<a:commandButton value=" Salvar e Continuar " title="Salva uma venda para ser alterada posteriormente."
+									rendered="#{(vendaHome.instance.statusVenda.codStatusVenda == constantes.aberta and !vendaHome.managed) or vendaHome.instance.statusVenda.codStatusVenda == constantes.emEdicao }"
+									action="#{vendaHome.saveUpdateEditavel()}"
+									oncomplete="#{rich:component('autorizacaoPopUp')}.hide();"/>
+							</td>
+		
+							<td align="left" width="45%">
+								<input value="  Cancelar  " type="button" onclick="#{rich:component('autorizacaoPopUp')}.hide();"/>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</rich:panel>
+			<rich:hotKey key="return" handler="#{rich:element('btnSalvar')}.click()"/>
+		</a:outputPanel>
+	</h:form>
+</rich:modalPanel>

@@ -1,0 +1,27 @@
+<!-- <Context docBase="gerenciadornet" path="/gerenciadornet" reloadable="true" source="org.eclipse.jst.jee.server:gerenciadornet">       
+      	
+<Resource
+name="jdbc/gerenciadornet"
+url="jdbc:mysql://mysql.dentaldf.com.br:3306/dentalsudoeste"
+username="dentalsudoeste"
+password="dentalsudoeste"
+auth="Container"
+driverClassName="com.mysql.jdbc.Driver"
+initialSize="1"
+logAbandoned="false"
+maxActive="-1"
+maxIdle="4"
+maxWait="2500"
+minEvictableIdleTimeMillis="30000"
+minIdle="2"
+numTestsPerEviction="-1"
+removeAbandoned="true"
+removeAbandonedTimeout="300"
+testOnBorrow="true"
+timeBetweenEvictionRunsMillis="1000"
+type="javax.sql.DataSource"
+validationQuery="Select 1"
+/>
+
+</Context>
+ -->

@@ -1,0 +1,214 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:s="http://jboss.com/products/seam/taglib"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:rich="http://richfaces.org/rich"
+    xmlns:a="http://richfaces.org/a4j"
+    template="layout/template.xhtml">
+
+
+<ui:define name="body">
+
+	<ui:include src="/LoteProdutoVencimentoListPopUp.xhtml" />
+
+    <h:form id="loteProdutoSearch" styleClass="edit">
+
+		<div>
+			<a:commandLink>
+				<h:graphicImage value="/img/help.png" styleClass="help" id="helplink"/>
+				<rich:toolTip direction="bottom-left" attachTo="helplink" followMouse="true">
+		            <span style="white-space:nowrap">
+		              Lista os produtos (lotes) que estao a vencer <br/>
+		              de acordo com o periodo informado.<br/>
+		              Procure nao informar periodos muito longos.<br/>
+		              Os lotes listados na cor vermelha estao vencidos.		              
+		            </span>
+		       	</rich:toolTip>
+	      	</a:commandLink>
+     	</div>
+
+        <rich:simpleTogglePanel label="Estoque em Vencimento" switchType="client">
+     
+     		<s:decorate template="layout/display.xhtml">
+                <ui:define name="label">Marca</ui:define>
+                <h:inputText id="nomeMarca" value="#{loteProdutoVencimentoList.nomeMarca}" styleClass="defaultInput" maxlength="60"/>
+            </s:decorate>      
+            
+            <s:decorate template="layout/display.xhtml">
+                <ui:define name="label">Data Inicial</ui:define>                
+                 <rich:calendar id="dataInicial" required="true" value="#{loteProdutoVencimentoList.dataInicial}" defaultTime="00:00" resetTimeOnDateSelect="true" datePattern="dd/MM/yyyy">
+                	<f:convertDateTime pattern="yyyy-MM-dd HH:mm"/>
+                </rich:calendar>
+            </s:decorate>
+            
+            <s:decorate template="layout/display.xhtml">
+                <ui:define name="label">Data Final</ui:define>
+                <rich:calendar id="dataFinal" required="true" value="#{loteProdutoVencimentoList.dataFinal}" defaultTime="00:00" resetTimeOnDateSelect="true" datePattern="dd/MM/yyyy">
+                	<f:convertDateTime pattern="yyyy-MM-dd HH:mm"/>
+                </rich:calendar>
+            </s:decorate>             
+            
+        </rich:simpleTogglePanel>
+      
+        <ui:include src="/includes/includeBotoesPesquisarLimpar.xhtml" />
+
+    </h:form>
+
+	<a:form>
+
+    <rich:panel id="loteProdutoPanel">
+       
+	    <f:facet name="header">
+			<a:outputPanel  id="panelDiv" ajaxRendered="true">
+        	Lotes em ESTOQUE(#{empty loteProdutoVencimentoList.resultList ? 0 : (loteProdutoVencimentoList.paginated ? loteProdutoVencimentoList.resultCount : loteProdutoVencimentoList.resultList.size)})
+		    </a:outputPanel>
+	    </f:facet>
+    
+    <div class="results">
+
+	<a:outputPanel id="msnListaVazia" ajaxRendered="true">
+   		 <h:outputText value="#{messages['mensagem.pesquisa.vazia']}" rendered="#{empty loteProdutoVencimentoList.resultList}"/>
+	</a:outputPanel>
+
+	<rich:dataTable id="resultadoList"
+		                var="_loteProduto"
+		              	value="#{loteProdutoVencimentoList.resultList}"			           	
+			           	onRowMouseOver="this.style.backgroundColor='#F0F0F0'"
+			           	onRowMouseOut="this.style.backgroundColor='#{a4jSkin.rowBackgroundColor}'"
+			           	columnClasses="center" 
+			           	footerClass="center"	
+			           	rows="15"			           
+			           	rowClasses="tableRowOne,tableRowTwo"> 
+         
+          <rich:column sortBy="#{_loteProduto.dataValidade}" rendered="#{not empty loteProdutoVencimentoList.resultList}"> 
+          
+           	<f:facet name="header"><h:outputText value="Data Validade"/></f:facet> 
+           	<h:outputText value="#{_loteProduto.dataValidade}" styleClass="textoMedioVermelho" rendered="#{loteProdutoVencimentoList.dataAtual >= _loteProduto.dataValidade}">
+           		<s:convertDateTime type="date" pattern="dd/MM/yyyy"/>
+            </h:outputText>
+           
+            <h:outputText value="#{_loteProduto.dataValidade}" rendered="#{_loteProduto.dataValidade > loteProdutoVencimentoList.dataAtual}">
+            	<s:convertDateTime type="date" pattern="dd/MM/yyyy"/>
+            </h:outputText>
+           
+         </rich:column>             
+         
+         <rich:column sortBy="#{_loteProduto.produto.codProdutoExterno}" rendered="#{not empty loteProdutoVencimentoList.resultList}"> 
+           <f:facet name="header">
+               <h:outputText value="Cod. Produto"/>
+           </f:facet> 
+           <h:outputText value="#{_loteProduto.produto.codProdutoExterno}" styleClass="textoMedioVermelho" rendered="#{loteProdutoVencimentoList.dataAtual >= _loteProduto.dataValidade}"/>
+           <h:outputText value="#{_loteProduto.produto.codProdutoExterno}"  rendered="#{_loteProduto.dataValidade > loteProdutoVencimentoList.dataAtual}"/>
+         </rich:column> 
+         
+         <rich:column sortBy="#{_loteProduto.produto.codigoBarrasProduto}" styleClass="left"> 
+           <f:facet name="header">
+               <h:outputText value="Cód.Barras" title="Código de barras do produto"/>
+           </f:facet> 
+           <h:outputText value="#{_loteProduto.produto.codigoBarrasProduto}" styleClass="textoMedioVermelho" rendered="#{loteProdutoVencimentoList.dataAtual >= _loteProduto.dataValidade}"/>
+           <h:outputText value="#{_loteProduto.produto.codigoBarrasProduto}" rendered="#{_loteProduto.dataValidade > loteProdutoVencimentoList.dataAtual}"/>
+         </rich:column> 
+         
+         <rich:column sortBy="#{_loteProduto.produto.nomeProduto}" rendered="#{not empty loteProdutoVencimentoList.resultList}" styleClass="left"> 
+           <f:facet name="header">
+               <h:outputText value="Nome Produto"/>
+           </f:facet> 
+           <h:outputText value="#{_loteProduto.produto.nomeProduto}" styleClass="textoMedioVermelho" rendered="#{loteProdutoVencimentoList.dataAtual >= _loteProduto.dataValidade}"/>
+           <h:outputText value="#{_loteProduto.produto.nomeProduto}"  rendered="#{_loteProduto.dataValidade > loteProdutoVencimentoList.dataAtual}"/>
+         </rich:column> 
+         
+         <rich:column sortBy="#{_loteProduto.produto.marca.nomeMarca}" rendered="#{not empty loteProdutoVencimentoList.resultList}"> 
+           <f:facet name="header">
+               <h:outputText value="Marca"/>
+           </f:facet>            
+           <h:outputText value="#{_loteProduto.produto.marca.nomeMarca}" styleClass="textoMedioVermelho" rendered="#{loteProdutoVencimentoList.dataAtual >= _loteProduto.dataValidade}"/>
+           <h:outputText value="#{_loteProduto.produto.marca.nomeMarca}"  rendered="#{_loteProduto.dataValidade > loteProdutoVencimentoList.dataAtual}"/>
+         </rich:column> 
+         
+          <rich:column sortBy="#{_loteProduto.compra.codCompra}" rendered="#{not empty loteProdutoVencimentoList.resultList}"> 
+           <f:facet name="header">
+               <h:outputText value="Cod. Compra"/>
+           </f:facet> 
+           <h:outputText value="#{_loteProduto.compra.codCompra}" styleClass="textoMedioVermelho" rendered="#{loteProdutoVencimentoList.dataAtual >= _loteProduto.dataValidade}"/>
+           <h:outputText value="#{_loteProduto.compra.codCompra}"  rendered="#{_loteProduto.dataValidade > loteProdutoVencimentoList.dataAtual}"/>
+         </rich:column>  
+         
+         <rich:column sortBy="#{_loteProduto.identificacaoLote}" rendered="#{not empty loteProdutoVencimentoList.resultList}"> 
+           <f:facet name="header">
+               <h:outputText value="Lote"/>
+           </f:facet> 
+           <h:outputText value="#{_loteProduto.identificacaoLote}" styleClass="textoMedioVermelho" rendered="#{loteProdutoVencimentoList.dataAtual >= _loteProduto.dataValidade}"/>
+           <h:outputText value="#{_loteProduto.identificacaoLote}"  rendered="#{_loteProduto.dataValidade > loteProdutoVencimentoList.dataAtual}"/>
+         </rich:column>
+         
+         <rich:column sortBy="#{_loteProduto.produto.localizadorDefault}"> 
+           <f:facet name="header"> 
+               <h:outputText value="Localizador" title="Localizador do Produto"/>
+           </f:facet> 
+           <h:outputText value="#{_loteProduto.produto.localizadorDefault}"  styleClass="textoMedioVermelho" rendered="#{loteProdutoVencimentoList.dataAtual >= _loteProduto.dataValidade}"/>
+           <h:outputText value="#{_loteProduto.produto.localizadorDefault}"  rendered="#{_loteProduto.dataValidade > loteProdutoVencimentoList.dataAtual}"/>
+           
+           <f:facet name="footer">
+               <h:outputText value="Total" styleClass="textoNegrito"/>
+          </f:facet>  
+         </rich:column>   
+                 
+         <rich:column sortBy="#{_loteProduto.precoVendaUnidade}" rendered="#{not empty loteProdutoVencimentoList.resultList}"> 
+           <f:facet name="header">
+               <h:outputText value="Preco Venda Unit."/>
+           </f:facet> 
+           <h:outputText value="#{_loteProduto.precoVendaUnidade}" styleClass="textoMedioVermelho" rendered="#{loteProdutoVencimentoList.dataAtual >= _loteProduto.dataValidade}">
+           		<f:convertNumber currencySymbol="R$"  type="currency"  locale="pt_BR"/>
+           </h:outputText>
+           <h:outputText value="#{_loteProduto.precoVendaUnidade}" rendered="#{_loteProduto.dataValidade > loteProdutoVencimentoList.dataAtual}">
+           		<f:convertNumber currencySymbol="R$"  type="currency"  locale="pt_BR"/>
+           </h:outputText>   
+           <f:facet name="footer">
+               <h:outputText value="#{loteProdutoVencimentoList.valorTotal}" styleClass="textoNegrito" >
+           		<f:convertNumber currencySymbol="R$"  type="currency"  locale="pt_BR"/>
+           		</h:outputText>   
+           </f:facet> 
+         </rich:column>  
+         
+          <rich:column sortBy="#{_loteProduto.qtdEstoque}" rendered="#{not empty loteProdutoVencimentoList.resultList}"> 
+           <f:facet name="header">
+               <h:outputText value="Qtd"/>
+           </f:facet> 
+           <h:outputText value="#{_loteProduto.qtdEstoque}" styleClass="textoMedioVermelho" rendered="#{loteProdutoVencimentoList.dataAtual >= _loteProduto.dataValidade}"/>
+           <h:outputText value="#{_loteProduto.qtdEstoque}"  rendered="#{_loteProduto.dataValidade > loteProdutoVencimentoList.dataAtual}"/>
+           
+           <f:facet name="footer">
+               <h:outputText value="#{loteProdutoVencimentoList.quantidadeTotal}" styleClass="textoNegrito"/>
+           </f:facet> 
+         </rich:column>  
+
+<!-- Link para popup com a lista de quem já comprou este produto -->		
+		 <rich:column>
+		 
+	     	<f:facet name="header">Histórico</f:facet>
+	      
+			<a:commandLink  id="listarCompradores"
+							ajaxSingle="true" limitToList="true"
+							actionListener="#{relatorioProdutoList.gravaNomeProdutoPesquisado(_loteProduto.produto.nomeProduto)}"
+							action="#{relatorioProdutoList.listarProdutosVendidos(_loteProduto.produto.codProduto)}" 
+							reRender="listaLotesProduto, sc2, nomeProdutoPesquisado">
+							<h:graphicImage url="/img/binoculo.jpg"/>    
+							<rich:componentControl operation="show" attachTo="listarCompradores" for="panelPopUp"  event="onclick" />
+			</a:commandLink>
+						
+						
+	        <rich:toolTip for="vendaViewId" value="Visualizar Compradores" direction="top-left"/>            
+		</rich:column>
+        </rich:dataTable>
+
+		<ui:include src="/includes/includeDataScroller.xhtml"/>
+		
+    </div>
+    </rich:panel>
+    </a:form>
+</ui:define>
+
+</ui:composition>

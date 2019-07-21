@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<page xmlns="http://jboss.com/products/seam/pages"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://jboss.com/products/seam/pages http://jboss.com/products/seam/pages-2.2.xsd"
+      login-required="true">
+
+   <param name="firstResult" value="#{enderecoList.firstResult}"/>
+   <param name="sort" value="#{enderecoList.orderColumn}"/>
+   <param name="dir" value="#{enderecoList.orderDirection}"/>
+   <param name="logic" value="#{enderecoList.restrictionLogicOperator}"/>
+
+   <param name="from"/>
+   <param name="endereco" value="#{enderecoList.endereco.endereco}"/>
+   <param name="numero" value="#{enderecoList.endereco.numero}"/>
+   <param name="complemento" value="#{enderecoList.endereco.complemento}"/>
+   <param name="bairro" value="#{enderecoList.endereco.bairro}"/>
+   <param name="cidade" value="#{enderecoList.endereco.cidade}"/>
+   <param name="uf" value="#{enderecoList.endereco.uf}"/>
+   <param name="telefone1" value="#{enderecoList.endereco.telefone1}"/>
+   <param name="tefefone2" value="#{enderecoList.endereco.tefefone2}"/>
+
+</page>

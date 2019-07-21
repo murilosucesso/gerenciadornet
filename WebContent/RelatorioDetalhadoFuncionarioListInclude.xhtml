@@ -1,0 +1,697 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:s="http://jboss.com/products/seam/taglib"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:a="http://richfaces.org/a4j"
+    xmlns:easy="http://easyfaces.com.br/easyfaces"  
+    xmlns:rich="http://richfaces.org/rich">
+     
+		  <h:outputText value="Produtos Vendidos"  styleClass="textoNegrito"/>
+    <br/>
+    
+    <rich:dataTable 
+		                var="_relatorioDetalhadoFuncionarioDTO"
+		              	value="#{relatorioDetalhadoFuncionarioList.listaProdutosVendidos}"			           	
+			           	onRowMouseOver="this.style.backgroundColor='#F0F0F0'"
+			           	onRowMouseOut="this.style.backgroundColor='#{a4jSkin.rowBackgroundColor}'"
+			           	columnsWidth="0*,*,*,*,*,*,*,*,*,0*,0*,0*,0*,0*"
+			           	columnClasses="center" 
+			           	footerClass="center"	
+			           	rowClasses="tableRowOne,tableRowTwo">
+         
+         <rich:column styleClass="#{_relatorioDetalhadoFuncionarioDTO.alteracaoComissao ? 'tableRowSelecionada': ''}"> 
+           <f:facet name="header">
+               <h:outputText value="Venda" title="Codigo da Venda"/>
+           </f:facet> 
+           <h:outputText value="#{_relatorioDetalhadoFuncionarioDTO.codVenda}"/>
+         </rich:column>   
+         
+         <rich:column styleClass="#{_relatorioDetalhadoFuncionarioDTO.alteracaoComissao ? 'tableRowSelecionada': ''}"> 
+           <f:facet name="header">
+               <h:outputText value="Data" title="Data da Venda"/>
+           </f:facet> 
+           <h:outputText value="#{_relatorioDetalhadoFuncionarioDTO.dataVenda}">
+           		<s:convertDateTime type="date" pattern="dd/MM/yyyy HH:mm"/>
+           </h:outputText>
+         </rich:column>      
+         
+          <rich:column styleClass="#{_relatorioDetalhadoFuncionarioDTO.alteracaoComissao ? 'tableRowSelecionada': ''}"> 
+           <f:facet name="header">
+               <h:outputText value="Funcionário" title="Nome do Funcionário"/>
+           </f:facet> 
+           <h:outputText value="#{_relatorioDetalhadoFuncionarioDTO.nomeVendedor}"/>
+         </rich:column>     
+         
+          <rich:column styleClass="#{_relatorioDetalhadoFuncionarioDTO.alteracaoComissao ? 'tableRowSelecionada': ''}"> 
+           <f:facet name="header">
+               <h:outputText value="Cliente" title="Nome do Cliente"/>
+           </f:facet> 
+           <h:outputText value="#{_relatorioDetalhadoFuncionarioDTO.nomeCliente}"/>
+         </rich:column>      
+         
+         <rich:column styleClass="#{_relatorioDetalhadoFuncionarioDTO.alteracaoComissao ? 'tableRowSelecionada': ''}"> 
+           <f:facet name="header">
+               <h:outputText value="Marca" title="Marca do Produto Vendido"/>
+           </f:facet> 
+           <h:outputText value="#{_relatorioDetalhadoFuncionarioDTO.marca}"/>
+         </rich:column>  
+         
+          <rich:column styleClass="#{_relatorioDetalhadoFuncionarioDTO.alteracaoComissao ? 'tableRowSelecionada left': 'left'}"> 
+           <f:facet name="header">
+               <h:outputText value="Produto" title="Nome do Produto Vendido"/>
+           </f:facet> 
+           <h:outputText value="#{_relatorioDetalhadoFuncionarioDTO.nomeProdutoServico}"/>
+         </rich:column>
+         
+         <rich:column styleClass="#{_relatorioDetalhadoFuncionarioDTO.alteracaoComissao ? 'tableRowSelecionada': ''}"  rendered="#{user.perfil.codPerfil != constantes.vendedor}"> 
+           <f:facet name="header">
+               <h:outputText value="Preço Compra" title="Preço de Compra da Unidade do Produto"/>
+           </f:facet> 
+           <h:outputText value="#{_relatorioDetalhadoFuncionarioDTO.precoCustoProdutoServico}">
+           		<f:convertNumber currencySymbol="R$"  type="currency"  locale="pt_BR"/>
+           </h:outputText>
+         </rich:column> 
+         
+         <rich:column styleClass="#{_relatorioDetalhadoFuncionarioDTO.alteracaoComissao ? 'tableRowSelecionada': ''}"> 
+           <f:facet name="header">
+               <h:outputText value="Preço Venda" title="Preço de Venda da Unidade do Produto, já incluído o percentual de desconto."/>
+           </f:facet> 
+           <h:outputText value="#{_relatorioDetalhadoFuncionarioDTO.precoVendaProdutoServico}">
+           		<f:convertNumber currencySymbol="R$"  type="currency"  locale="pt_BR"/>
+           </h:outputText>
+         </rich:column> 
+         
+         <rich:column styleClass="#{_relatorioDetalhadoFuncionarioDTO.alteracaoComissao ? 'tableRowSelecionada': ''}"> 
+           <f:facet name="header">
+               <h:outputText value="Preço Vendido" title="Preço que o produto foi vendido."/>
+           </f:facet> 
+           <h:outputText value="#{_relatorioDetalhadoFuncionarioDTO.precoVendidoProdutoServico}">
+           		<f:convertNumber currencySymbol="R$"  type="currency"  locale="pt_BR"/>
+           </h:outputText>
+         </rich:column> 
+                 
+         <rich:column styleClass="#{_relatorioDetalhadoFuncionarioDTO.alteracaoComissao ? 'tableRowSelecionada': ''}"> 
+           <f:facet name="header">
+               <h:outputText value="Qtd" title="Quantidade Vendida do Produto"/>
+           </f:facet> 
+           <h:outputText value="#{_relatorioDetalhadoFuncionarioDTO.quantidade}"/>
+           
+           <f:facet name="footer">
+               <h:outputText value="#{relatorioDetalhadoFuncionarioList.numeroTotalProdutosVendidos}" title="Quantidade total de produtos vendidos." styleClass="textoNegrito"/>
+           </f:facet>
+         </rich:column>
+         
+          <rich:column styleClass="#{_relatorioDetalhadoFuncionarioDTO.alteracaoComissao ? 'tableRowSelecionada': ''}"> 
+           <f:facet name="header">
+               <h:outputText value="% Desc." title="Percentual de desconto dado na venda"/>
+           </f:facet> 
+           <h:outputText value="#{_relatorioDetalhadoFuncionarioDTO.percDescontoTotalVenda}">
+           </h:outputText>
+         </rich:column>  
+         
+          <rich:column styleClass="#{_relatorioDetalhadoFuncionarioDTO.alteracaoComissao ? 'tableRowSelecionada': ''}"> 
+           <f:facet name="header">
+               <h:outputText value="Valor Total Venda" title="Valor total da venda."/>
+           </f:facet> 
+           <h:outputText value="#{_relatorioDetalhadoFuncionarioDTO.valorTotalVenda}">
+           		<f:convertNumber currencySymbol="R$"  type="currency"  locale="pt_BR"/>
+           </h:outputText>
+         </rich:column> 
+         
+         <rich:column styleClass="#{_relatorioDetalhadoFuncionarioDTO.alteracaoComissao ? 'tableRowSelecionada': ''}"  rendered="#{user.perfil.codPerfil != constantes.vendedor}"> 
+           	<f:facet name="header">
+               	<h:outputText value="Lucro" title="Lucro da venda do produto descontado a comissão."/>
+           	</f:facet>
+           	 
+           	<h:outputText value="#{_relatorioDetalhadoFuncionarioDTO.lucro}">
+           		<f:convertNumber currencySymbol="R$"  type="currency"  locale="pt_BR"/>
+           	</h:outputText>       
+           	
+           	<f:facet name="footer">
+               <h:outputText value="#{relatorioDetalhadoFuncionarioList.valorTotalLucroProdutosVendidos}" styleClass="textoNegrito">
+               		<f:convertNumber currencySymbol="R$"  type="currency"  locale="pt_BR"/>
+               </h:outputText>
+            </f:facet>         	          
+         </rich:column> 
+         
+          <rich:column styleClass="#{_relatorioDetalhadoFuncionarioDTO.alteracaoComissao ? 'tableRowSelecionada': ''}"> 
+           	<f:facet name="header">
+               	<h:outputText value="Comissão" title="Valor pré estipulado da comissão pela venda do produto."/>
+           	</f:facet>
+           	 
+           	<h:outputText value="#{_relatorioDetalhadoFuncionarioDTO.comissaoDefault}">
+           		<f:convertNumber currencySymbol="R$"  type="currency"  locale="pt_BR"/>
+           	</h:outputText>    
+           	
+           	<f:facet name="footer">
+               <h:outputText value="#{relatorioDetalhadoFuncionarioList.valorTotalComissaoProdutosVendidosDefault}" styleClass="textoNegrito">
+               		<f:convertNumber currencySymbol="R$"  type="currency"  locale="pt_BR"/>
+               </h:outputText>
+            </f:facet>        	          
+         </rich:column> 
+         
+          <rich:column styleClass="#{_relatorioDetalhadoFuncionarioDTO.alteracaoComissao ? 'tableRowSelecionada': ''}"> 
+           	<f:facet name="header">
+               	<h:outputText value="Comissão Paga" title="Valor realmente pago de comissão pela venda do produto."/>
+           	</f:facet>
+           	 
+           	<h:outputText value="#{_relatorioDetalhadoFuncionarioDTO.comissaoEfetiva}">
+           		<f:convertNumber currencySymbol="R$"  type="currency"  locale="pt_BR"/>
+           	</h:outputText>    
+           	
+           	<f:facet name="footer">
+               <h:outputText value="#{relatorioDetalhadoFuncionarioList.valorTotalComissaoProdutosVendidosEfetivo}" styleClass="textoNegrito">
+               		<f:convertNumber currencySymbol="R$"  type="currency"  locale="pt_BR"/>
+               </h:outputText>
+            </f:facet>         	          
+         </rich:column> 
+        
+         <rich:column styleClass="#{_relatorioDetalhadoFuncionarioDTO.alteracaoComissao ? 'tableRowSelecionada': ''}">   
+            <s:link view="/Venda.xhtml" propagation="default" id="vendaViewId">
+                <h:graphicImage id="visualizar" url="/img/binoculo.jpg"/>                
+                <f:param name="vendaCodVenda" value="#{_relatorioDetalhadoFuncionarioDTO.codVenda}"/>
+                <f:param name="vendaFrom" value="relatorioDetalhadoFuncionarioList"/>
+            </s:link>
+		</rich:column>
+		
+    </rich:dataTable> 
+    
+    <br/>
+    <br/>
+    <h:outputText value="Serviços Realizados"  styleClass="textoNegrito"/>
+    <br/>
+  
+    <rich:dataTable 
+		                var="_relatorioDetalhadoFuncionarioDTO"
+		              	value="#{relatorioDetalhadoFuncionarioList.listaServicosVendidos}"			           	
+			           	onRowMouseOver="this.style.backgroundColor='#F0F0F0'"
+			           	onRowMouseOut="this.style.backgroundColor='#{a4jSkin.rowBackgroundColor}'"
+			           	columnsWidth="0*,*,*,*,*,0*,0*,0*,0*,0*,0*,0*"
+			           	columnClasses="center" 
+			           	footerClass="center"	
+			           	rowClasses="tableRowOne,tableRowTwo">
+         
+         <rich:column styleClass="#{_relatorioDetalhadoFuncionarioDTO.alteracaoComissao ? 'tableRowSelecionada': ''}"> 
+           <f:facet name="header">
+               <h:outputText value="Venda" title="Codigo da Venda"/>
+           </f:facet> 
+           <h:outputText value="#{_relatorioDetalhadoFuncionarioDTO.codVenda}"/>
+         </rich:column>   
+         
+         <rich:column styleClass="#{_relatorioDetalhadoFuncionarioDTO.alteracaoComissao ? 'tableRowSelecionada nowrap': 'nowrap'}"> 
+           <f:facet name="header">
+               <h:outputText value="Data" title="Data da Venda"/>
+           </f:facet> 
+           <h:outputText value="#{_relatorioDetalhadoFuncionarioDTO.dataVenda}">
+           		<s:convertDateTime type="date" pattern="dd/MM/yyyy HH:mm"/>
+           </h:outputText>
+         </rich:column>      
+         
+          <rich:column styleClass="#{_relatorioDetalhadoFuncionarioDTO.alteracaoComissao ? 'tableRowSelecionada': ''}"> 
+           <f:facet name="header">
+               <h:outputText value="Funcionário" title="Nome do Funcionário"/>
+           </f:facet> 
+           <h:outputText value="#{_relatorioDetalhadoFuncionarioDTO.nomeVendedor}"/>
+         </rich:column>     
+         
+          <rich:column styleClass="#{_relatorioDetalhadoFuncionarioDTO.alteracaoComissao ? 'tableRowSelecionada': ''}"> 
+           <f:facet name="header">
+               <h:outputText value="Cliente" title="Nome do Cliente"/>
+           </f:facet> 
+           <h:outputText value="#{_relatorioDetalhadoFuncionarioDTO.nomeCliente}"/>
+         </rich:column>      
+         
+          <rich:column styleClass="#{_relatorioDetalhadoFuncionarioDTO.alteracaoComissao ? 'tableRowSelecionada left': 'left'}"> 
+           <f:facet name="header">
+               <h:outputText value="Serviço" title="Nome do Serviço Vendido"/>
+           </f:facet> 
+           <h:outputText value="#{_relatorioDetalhadoFuncionarioDTO.nomeProdutoServico}"/>
+         </rich:column>
+         
+         <rich:column styleClass="#{_relatorioDetalhadoFuncionarioDTO.alteracaoComissao ? 'tableRowSelecionada': ''}"  rendered="#{user.perfil.codPerfil != constantes.vendedor}"> 
+           <f:facet name="header">
+               <h:outputText value="Preço Custo" title="Preço de custo do serviço"/>
+           </f:facet> 
+           <h:outputText value="#{_relatorioDetalhadoFuncionarioDTO.precoCustoProdutoServico}">
+           		<f:convertNumber currencySymbol="R$"  type="currency"  locale="pt_BR"/>
+           </h:outputText>
+         </rich:column> 
+         
+         <rich:column styleClass="#{_relatorioDetalhadoFuncionarioDTO.alteracaoComissao ? 'tableRowSelecionada': ''}"> 
+           <f:facet name="header">
+               <h:outputText value="Preço Serviço" title="Preço serviço, já incluído o percentual de desconto."/>
+           </f:facet> 
+           <h:outputText value="#{_relatorioDetalhadoFuncionarioDTO.precoVendaProdutoServico}">
+           		<f:convertNumber currencySymbol="R$"  type="currency"  locale="pt_BR"/>
+           </h:outputText>
+         </rich:column> 
+         
+         <rich:column styleClass="#{_relatorioDetalhadoFuncionarioDTO.alteracaoComissao ? 'tableRowSelecionada': ''}"> 
+           <f:facet name="header">
+               <h:outputText value="Preço Realizado" title="Preço que o serviço foi vendido."/>
+           </f:facet> 
+           <h:outputText value="#{_relatorioDetalhadoFuncionarioDTO.precoVendidoProdutoServico}">
+           		<f:convertNumber currencySymbol="R$"  type="currency"  locale="pt_BR"/>
+           </h:outputText>
+         </rich:column> 
+         
+          <rich:column styleClass="#{_relatorioDetalhadoFuncionarioDTO.alteracaoComissao ? 'tableRowSelecionada': ''}"> 
+           <f:facet name="header">
+               <h:outputText value="% Desc." title="Percentual de desconto dado na venda"/>
+           </f:facet> 
+           <h:outputText value="#{_relatorioDetalhadoFuncionarioDTO.percDescontoTotalVenda}">
+           </h:outputText>
+         </rich:column>  
+         
+          <rich:column styleClass="#{_relatorioDetalhadoFuncionarioDTO.alteracaoComissao ? 'tableRowSelecionada': ''}"> 
+           <f:facet name="header">
+               <h:outputText value="Valor Total Venda" title="Valor total da venda."/>
+           </f:facet> 
+           <h:outputText value="#{_relatorioDetalhadoFuncionarioDTO.valorTotalVenda}">
+           		<f:convertNumber currencySymbol="R$"  type="currency"  locale="pt_BR"/>
+           </h:outputText>
+         </rich:column> 
+         
+         <rich:column styleClass="#{_relatorioDetalhadoFuncionarioDTO.alteracaoComissao ? 'tableRowSelecionada': ''}" rendered="#{user.perfil.codPerfil != constantes.vendedor}"> 
+           	<f:facet name="header">
+               	<h:outputText value="Lucro" title="Lucro da venda do produto descontado a comissão."/>
+           	</f:facet>
+           	 
+           	<h:outputText value="#{_relatorioDetalhadoFuncionarioDTO.lucro}">
+           		<f:convertNumber currencySymbol="R$"  type="currency"  locale="pt_BR"/>
+           	</h:outputText>       
+           	
+           	<f:facet name="footer">
+               <h:outputText value="#{relatorioDetalhadoFuncionarioList.valorTotalLucroServicosVendidos}" styleClass="textoNegrito">
+               		<f:convertNumber currencySymbol="R$"  type="currency"  locale="pt_BR"/>
+               </h:outputText>
+            </f:facet>         	          
+         </rich:column> 
+         
+          <rich:column styleClass="#{_relatorioDetalhadoFuncionarioDTO.alteracaoComissao ? 'tableRowSelecionada': ''}"> 
+           	<f:facet name="header">
+               	<h:outputText value="Comissão" title="Valor pré estipulado da comissão pela venda do produto."/>
+           	</f:facet>
+           	 
+           	<h:outputText value="#{_relatorioDetalhadoFuncionarioDTO.comissaoDefault}">
+           		<f:convertNumber currencySymbol="R$"  type="currency"  locale="pt_BR"/>
+           	</h:outputText>    
+           	
+           	<f:facet name="footer">
+               <h:outputText value="#{relatorioDetalhadoFuncionarioList.valorTotalComissaoServicosVendidosDefault}" styleClass="textoNegrito">
+               		<f:convertNumber currencySymbol="R$"  type="currency"  locale="pt_BR"/>
+               </h:outputText>
+            </f:facet>        	          
+         </rich:column> 
+         
+          <rich:column styleClass="#{_relatorioDetalhadoFuncionarioDTO.alteracaoComissao ? 'tableRowSelecionada': ''}"> 
+           	<f:facet name="header">
+               	<h:outputText value="Comissão Paga" title="Valor realmente pago de comissão pela venda do produto."/>
+           	</f:facet>
+           	 
+           	<h:outputText value="#{_relatorioDetalhadoFuncionarioDTO.comissaoEfetiva}">
+           		<f:convertNumber currencySymbol="R$"  type="currency"  locale="pt_BR"/>
+           	</h:outputText>    
+           	
+           	<f:facet name="footer">
+               <h:outputText value="#{relatorioDetalhadoFuncionarioList.valorTotalComissaoServicosVendidosEfetivo}" styleClass="textoNegrito">
+               		<f:convertNumber currencySymbol="R$"  type="currency"  locale="pt_BR"/>
+               </h:outputText>
+            </f:facet>         	          
+         </rich:column> 
+        
+         <rich:column styleClass="#{_relatorioDetalhadoFuncionarioDTO.alteracaoComissao ? 'tableRowSelecionada': ''}">   
+            <s:link view="/Venda.xhtml" propagation="default" id="vendaViewId">
+                <h:graphicImage id="visualizar" url="/img/binoculo.jpg"/>                
+                <f:param name="vendaCodVenda" value="#{_relatorioDetalhadoFuncionarioDTO.codVenda}"/>
+                <f:param name="vendaFrom" value="RelatorioDetalhadoFuncionarioList"/>
+            </s:link>
+            
+            <f:facet name="footer">
+               <h:outputText value="#{relatorioDetalhadoFuncionarioList.numeroTotalServicosVendidos}" title="Quantidade total de serviços vendidos." styleClass="textoNegrito"/>
+            </f:facet>
+		</rich:column>
+		
+    </rich:dataTable>
+    
+    <br/>
+    <br/>
+    <h:outputText value="Consumo do Funcionário"  styleClass="textoNegrito"/>
+    <br/>
+     <!-- LISTA DE VENDAS DO FUNCIONÁRIO -->
+    
+	<rich:dataTable
+			                var="_venda"
+			              	value="#{relatorioDetalhadoFuncionarioList.listaVendasConsumo}"			           	
+				           	onRowMouseOver="this.style.backgroundColor='#F0F0F0'"
+				           	onRowMouseOut="this.style.backgroundColor='#{a4jSkin.rowBackgroundColor}'"
+				           	columnClasses="center" 
+				           	footerClass="center"	
+				           	columnsWidth="*,*,*,*,*,*,*,*,*"
+				           	rowClasses="tableRowOne,tableRowTwo">
+	         
+	         <rich:column sortBy="#{_venda.codVenda}"> 
+	           <f:facet name="header">
+	               <h:outputText value="Venda"/>
+	           </f:facet>  
+	           <h:outputText value="#{_venda.codVenda}"/>
+	         </rich:column> 
+			
+			 <rich:column sortBy="#{_venda.cliente.nome}" styleClass="left"> 
+	           <f:facet name="header">
+	               <h:outputText value="Cliente"/>
+	           </f:facet> 
+	           <h:outputText value="#{_venda.cliente.nome}"/>
+	         </rich:column>      
+	         
+	         <rich:column sortBy="#{_venda.usuario.nomeUsuario}" > 
+	           <f:facet name="header">
+	               <h:outputText value="Vendedor" title="Nome do vendedor"/>
+	           </f:facet> 
+	           <h:outputText value="#{_venda.usuario.nomeUsuario}"/>
+	         </rich:column>  
+	         
+	         <rich:column sortBy="#{_venda.usuario.nomeUsuario}" > 
+	           <f:facet name="header">
+	               <h:outputText value="Funcionário Cadastro" title="Funcionário que cadastrou a venda"/>
+	           </f:facet> 
+	           <h:outputText value="#{_venda.usuarioCadastro.nomeUsuario}"/>
+	         </rich:column>     
+	         
+	          <rich:column sortBy="#{_venda.tipoPagamento.descTipoPagamento}}" > 
+	           <f:facet name="header">
+	               <h:outputText value="Tipo Pagamento" title="Tipo de Pagamento"/>
+	           </f:facet> 
+	           <h:outputText value="#{ _venda.tipoPagamento.descTipoPagamento}"/>
+	         </rich:column>
+	         
+	         <rich:column sortBy="#{_venda.dataInicioVenda}" > 
+	           <f:facet name="header">
+	               <h:outputText value="Data Início" title="Data de início da venda"/>
+	           </f:facet> 
+	           <h:outputText value="#{_venda.dataInicioVenda}">
+	           		<s:convertDateTime type="date" pattern="dd/MM/yyyy HH:mm"/>
+	           </h:outputText>
+	         </rich:column>    
+	          
+	         <rich:column sortBy="#{_venda.dataFimVenda}" > 
+	           <f:facet name="header">
+	               <h:outputText value="Data Fim" title="Data de finalização da venda"/>
+	           </f:facet> 
+	           <h:outputText value="#{_venda.dataFimVenda}">
+	           		<s:convertDateTime type="date" pattern="dd/MM/yyyy HH:mm"/>
+	           </h:outputText>
+	         </rich:column> 
+	        
+	         <rich:column sortBy="#{_venda.statusVenda.descStatusVenda}" > 
+	           <f:facet name="header">
+	               <h:outputText value="Status"/>
+	           </f:facet> 
+	           <h:outputText value="#{ _venda.statusVenda.descStatusVenda}"/>
+	           
+	            <f:facet name="footer">
+	               <h:outputText value="Total" styleClass="textoNegrito" title="Valor total das vendas pesquisadas."/>
+	           </f:facet> 
+	         </rich:column>
+	         
+	         <rich:column  sortBy="#{_venda.valorTotalVenda}"> 
+	           <f:facet name="header">
+	               <h:outputText value="Valor Venda" title="Valor total da venda"/>
+	           </f:facet> 
+	           <h:outputText value="#{_venda.valorTotalVenda}">
+	           		<f:convertNumber currencySymbol="R$"  type="currency"  locale="pt_BR"/>
+	           </h:outputText>    
+	           
+	           <f:facet name="footer">
+	               <h:outputText value="#{relatorioDetalhadoFuncionarioList.valorTotalConsumoFuncionario}" styleClass="textoNegrito" title="Valor total consumo funcionário.">
+	               		<f:convertNumber currencySymbol="R$"  type="currency"  locale="pt_BR"/>
+	               	</h:outputText>    
+	           </f:facet> 
+	                 
+	         </rich:column>    
+         
+    </rich:dataTable>
+    
+    <br/>
+    <br/>
+	<h:outputText value="Não houveram pagamentos realizados para o funcinário no período informado" rendered="#{emptyrelatorioDetalhadoFuncionarioList.pagamentosList}" />
+    <h:outputText value="Pagamento realizados para o funcionário"  styleClass="textoNegrito"/>
+     <!-- LISTA DE PAGAMENTOS DO FUNCIONÁRIO -->
+	 <br/>				
+					<rich:dataTable var="_pagamento"
+						value="#{relatorioDetalhadoFuncionarioList.pagamentosList}"
+						onRowMouseOver="this.style.backgroundColor='#F0F0F0'"
+						onRowMouseOut="this.style.backgroundColor='#{a4jSkin.rowBackgroundColor}'"
+						footerClass="center"
+						rows="#{pagamentoList.numeroLinhasDT}" 
+						columnsWidth="0,*,*,*,*,*,*,*,*,*,0"
+						rowClasses="tableRowOne,tableRowTwo"
+						rowKeyVar="row">
+
+						<rich:column sortBy="#{_pagamento.compra.codCompra}"
+							styleClass="#{_pagamento.inConferencia ? 'tableRowSelecionada center': 'center'}">
+							<f:facet name="header">
+								<h:outputText value="Compra" />
+							</f:facet>
+							<h:outputText value="#{_pagamento.compra.codCompra}" styleClass="#{_pagamento.dataBalancete == null ? 'textoMedioVermelho': ''}" />
+						</rich:column>
+
+						<rich:column sortBy="#{_pagamento.fornecedor.nomeFantasia}"
+							styleClass="#{_pagamento.inConferencia ? 'tableRowSelecionada left': 'left'}">
+							<f:facet name="header">
+								<h:outputText value="Cedente" />
+							</f:facet>
+							<h:outputText value="#{_pagamento.fornecedor.nomeFantasia}" id="fornecedor" styleClass="#{_pagamento.dataBalancete == null ? 'textoMedioVermelho': ''}"/>
+						</rich:column>
+					
+						<rich:column sortBy="#{_pagamento.usuarioCadastramento}"
+							styleClass="#{_pagamento.inConferencia ? 'tableRowSelecionada center': 'center'}">
+							<f:facet name="header">
+								<h:outputText value="Cadastrado por"
+									title="Usuário do Cadastramento do Pagamento" />
+							</f:facet>
+							<h:outputText value="#{_pagamento.usuarioCadastramento.nomeUsuario}" id="usuarioCadastramento" styleClass="#{_pagamento.dataBalancete == null ? 'textoMedioVermelho': ''}"/>
+						</rich:column>
+					
+						<rich:column sortBy="#{_pagamento.dataCadastramento}"
+							styleClass="#{_pagamento.inConferencia ? 'tableRowSelecionada center': 'center'}">
+							<f:facet name="header">
+								<h:outputText value="Data Cadastramento"
+									title="Data do Cadastramento do Pagamento" />
+							</f:facet>
+							<h:outputText value="#{_pagamento.dataCadastramento}" id="dataCadastramento" styleClass="#{_pagamento.dataBalancete == null ? 'textoMedioVermelho': ''}">
+								<s:convertDateTime type="date" pattern="dd/MM/yyyy HH:mm"/>
+							</h:outputText>
+						</rich:column>
+						 
+						<rich:column sortBy="#{_pagamento.dataVencimento}"
+							styleClass="#{_pagamento.inConferencia ? 'tableRowSelecionada center': 'center'}">
+							<f:facet name="header">
+								<h:outputText value="Data Vencimento"
+									title="Data vencimento" />
+							</f:facet>
+							<h:outputText value="#{_pagamento.dataVencimento}" id="dataVencimento" styleClass="#{_pagamento.dataBalancete == null ? 'textoMedioVermelho': ''}">
+								<s:convertDateTime type="date" pattern="dd/MM/yyyy"/>
+							</h:outputText>
+						</rich:column>
+						
+						<rich:column sortBy="#{_pagamento.dataBalancete}"
+							styleClass="#{_pagamento.inConferencia ? 'tableRowSelecionada center': 'center'}">
+							<f:facet name="header">
+								<h:outputText value="Data Balancete"
+									title="Data em que o pagamento foi realmente efetivado" id="dataBalancete"/>
+							</f:facet>
+
+							<h:outputText value="#{_pagamento.dataBalancete}" rendered="true" styleClass="#{_pagamento.dataBalancete == null ? 'textoMedioVermelho': ''}">
+								<s:convertDateTime type="date" pattern="dd/MM/yyyy"/>
+							</h:outputText>
+						</rich:column>
+					
+						<rich:column sortBy="#{_pagamento.tipoDebito.descTipoDebito}"
+							styleClass="#{_pagamento.inConferencia ? 'tableRowSelecionada center': 'center'}">
+							<f:facet name="header">
+								<h:outputText value="Tipo de Débito"/>
+							</f:facet>
+							<h:outputText value="#{_pagamento.tipoDebito.descTipoDebito}" styleClass="#{_pagamento.dataBalancete == null ? 'textoMedioVermelho': ''}"/>							
+						</rich:column>
+						
+						<rich:column sortBy="#{_pagamento.fornecedor.inContaFixa}"
+							styleClass="#{_pagamento.inConferencia ? 'tableRowSelecionada center': 'center'}">
+							<f:facet name="header">
+								<h:outputText value="Conta Fixa"/>
+							</f:facet>
+							<h:outputText value="SIM"  rendered="#{_pagamento.fornecedor.inContaFixa}" styleClass="#{_pagamento.dataBalancete == null ? 'textoMedioVermelho': ''}"/>
+							<h:outputText value="NAO"  rendered="#{!_pagamento.fornecedor.inContaFixa}" styleClass="#{_pagamento.dataBalancete == null ? 'textoMedioVermelho': ''}"/>
+						</rich:column>
+						
+						<rich:column sortBy="#{_pagamento.observacao}"
+							styleClass="#{_pagamento.inConferencia ? 'tableRowSelecionada left': 'left'}">
+							<f:facet name="header">
+								<h:outputText value="Observação"/>
+							</f:facet>
+							<h:outputText value="#{_pagamento.observacao}" id="observacao" styleClass="#{_pagamento.dataBalancete == null ? 'textoMedioVermelho': ''}"/>
+						</rich:column>
+						
+						<rich:column sortBy="#{_pagamento.valor}"
+							styleClass="#{_pagamento.inConferencia ? 'tableRowSelecionada center': 'center'}">
+							<f:facet name="header">
+								<h:outputText value="Valor"
+									title="Valor a Receber" />
+							</f:facet>
+
+							<h:outputText value="#{_pagamento.valor}" id="valor" styleClass="#{_pagamento.dataBalancete == null ? 'textoMedioVermelho': ''}">
+								<f:convertNumber currencySymbol="R$" type="currency" locale="pt_BR" />
+							</h:outputText>
+
+							<f:facet name="footer">
+								<h:outputText styleClass="textoNegrito" value="#{pagamentoList.valorTotal}">
+									<f:convertNumber currencySymbol="R$" type="currency" locale="pt_BR" />
+								</h:outputText>
+							</f:facet>
+						</rich:column>
+						
+						<rich:column
+							styleClass="#{_pagamento.inConferencia ? 'tableRowSelecionada center semQuebra': 'center semQuebra'}">
+							<f:facet name="header">
+								<h:outputText value="Editar" title="Alterar ou Excluir um pagamento"/>
+							</f:facet>
+
+<!-- img iconBlueCheck -->		           		 
+							<h:graphicImage url="/img/iconBlueCheck.gif" style="border:0" title="Confirmado o Pagamento" rendered="#{_pagamento.inConferencia}"/>                   
+		                    
+						</rich:column>
+
+<!-- checkbox confirmar  -->							
+						<rich:column 
+							rendered="#{identity.hasRole(transacoes.transacaoGerenciarPagamentosConferir)}"
+							sortBy="#{_pagamento.inConferencia}"
+							styleClass="#{_pagamento.inConferencia ? 'tableRowSelecionada center': 'center'}">
+							<f:facet name="header">
+								<h:outputText value="Conferir" title="Pagamento realizado"/>
+							</f:facet>
+
+							<h:selectBooleanCheckbox id="op" value="#{_pagamento.inConferencia}">
+								<a:support ajaxSingle="true" event="onclick" action="#{pagamentoHome.conferir(_pagamento)}"
+									reRender="valor, dataBalancete, panelResultado2"/>
+							</h:selectBooleanCheckbox>
+
+						</rich:column>
+
+					</rich:dataTable>
+
+     <br/>
+     <br/>
+     <br/>
+       
+    <!-- TABELA DE RESUMO FINAL  -->
+    <rich:panel >
+        	<f:facet name="header"><h:outputText value="Resumo Funcionário: #{relatorioDetalhadoFuncionarioList.nomeFuncionario}" styleClass="textoNegrito"/> </f:facet>
+        	<table border="0" width="100%">
+        	        	
+        	    <tr>
+        			<td width="20%" nowrap="nowrap"><h:outputText value="FUNCIONÁRIO:" /></td>
+        			<td width="80%"><h:outputText value="#{relatorioDetalhadoFuncionarioList.funcionario.nomeUsuario}" styleClass="textoNegrito"/>
+        			</td>
+        		</tr>	
+        		<tr>
+        			<td width="20%" nowrap="nowrap"><h:outputText value="DADOS BANCÁRIOS:" /></td>
+        			<td width="80%"><h:outputText value="#{relatorioDetalhadoFuncionarioList.funcionario.dadosBancarios}" styleClass="textoNegrito"/>
+        			</td>
+        		</tr>        		
+        		<tr>
+        			<td width="20%" nowrap="nowrap"><h:outputText value="PERÍODO PESQUISADO:" /></td>
+        			<td width="80%">
+        				<h:outputText value="#{relatorioDetalhadoFuncionarioList.dataInicioPesquisa}" styleClass="textoNegrito">
+	           				<s:convertDateTime type="date" pattern="dd/MM/yyyy"/>
+	           			</h:outputText>
+	           			<h:outputText value=" -- à --  " styleClass="textoNegrito"/>  
+	           			<h:outputText value="#{relatorioDetalhadoFuncionarioList.dataFimPesquisa}" styleClass="textoNegrito">
+	           				<s:convertDateTime type="date" pattern="dd/MM/yyyy"/>
+	           			</h:outputText>        				
+        			</td>
+        		</tr>
+        		<tr>
+        			<td width="20%"  nowrap="nowrap"></td>
+        			<td width="80%">___________________________________
+        			</td>
+        		</tr>
+        		
+        		<tr>
+        			<td width="20%" nowrap="nowrap"><h:outputText value="TOTAL PRODUTOS VENDIDOS:" /></td>
+        			<td width="80%"><h:outputText value="#{relatorioDetalhadoFuncionarioList.numeroTotalProdutosVendidos}" styleClass="textoNegrito"/></td>
+        		</tr>
+        		<tr>
+        			<td width="20%" nowrap="nowrap"><h:outputText value="TOTAL SERVIÇOS REALIZADOS:"/></td>
+        			<td width="80%"><h:outputText value="#{relatorioDetalhadoFuncionarioList.numeroTotalServicosVendidos}" styleClass="textoNegrito"/></td>
+        		</tr>
+        		
+        		<tr>
+        			<td width="20%"  nowrap="nowrap"></td>
+        			<td width="80%">___________________________________
+        			</td>
+        		</tr>
+        		
+        		<tr>
+        			<td width="20%" nowrap="nowrap"><h:outputText value="VALOR TOTAL COMISSÃO SOBRE PRODUTOS:"/></td>
+        			<td width="80%">
+        				<h:outputText value="#{relatorioDetalhadoFuncionarioList.valorTotalComissaoProdutosVendidosEfetivo}" styleClass="textoNegrito">
+        					<f:convertNumber currencySymbol="R$"  type="currency"  locale="pt_BR"/>
+        				</h:outputText>
+        			</td>
+        		</tr>
+        		
+        		<tr>
+        			<td width="20%"  nowrap="nowrap"><h:outputText value="VALOR TOTAL COMISSÃO SOBRE SERVIÇOS:"/></td>
+        			<td width="80%"><h:outputText value="#{relatorioDetalhadoFuncionarioList.valorTotalComissaoServicosVendidosEfetivo}" styleClass="textoNegrito">
+        				<f:convertNumber currencySymbol="R$"  type="currency"  locale="pt_BR"/>
+        				</h:outputText>
+        			</td>
+        		</tr>
+        		
+        		<tr>
+        			<td width="20%" nowrap="nowrap"><h:outputText value="VALOR TOTAL DO CONSUMO DO FUNCIONÁRIO:"/></td>
+        			<td width="80%">
+        				<h:outputText value="#{relatorioDetalhadoFuncionarioList.valorTotalConsumoFuncionario}" styleClass="textoNegritoVermelho">
+        					<f:convertNumber currencySymbol="R$"  type="currency"  locale="pt_BR"/>
+        				</h:outputText>
+        			</td>
+        		</tr>
+        		<tr>
+        			<td width="20%" nowrap="nowrap"><h:outputText value="VALOR TOTAL PAGAMENTOS/ADIANTAMENTOS:"/></td>
+        			<td width="80%">
+        				<h:outputText value="#{pagamentoList.valorTotal}" styleClass="textoNegritoVermelho">
+        					<f:convertNumber currencySymbol="R$"  type="currency"  locale="pt_BR"/>
+        				</h:outputText>
+        			</td>
+        		</tr>
+        		
+        		<tr>
+        			<td width="20%"  nowrap="nowrap"></td>
+        			<td width="80%">___________________________________
+        			</td>
+        		</tr>
+        		
+        		<tr>
+        			<td width="20%"  nowrap="nowrap"><h:outputText value="VALOR TOTAL COMISSÃO:"/></td>
+        			<td width="80%"><h:outputText value="#{relatorioDetalhadoFuncionarioList.valorTotalComissaoProdutosVendidosEfetivo + relatorioDetalhadoFuncionarioList.valorTotalComissaoServicosVendidosEfetivo}" styleClass="textoNegrito5">
+        				<f:convertNumber currencySymbol="R$"  type="currency"  locale="pt_BR"/>
+        				</h:outputText>
+        			</td>
+        		</tr>
+        		
+        		<tr>
+        			<td width="20%"  nowrap="nowrap"><h:outputText value="VALOR TOTAL COMISSÃO COM DESCONTOS:"/></td>
+        			<td width="80%"><h:outputText 
+        				value="#{relatorioDetalhadoFuncionarioList.valorTotalComissaoProdutosVendidosEfetivo + relatorioDetalhadoFuncionarioList.valorTotalComissaoServicosVendidosEfetivo - relatorioDetalhadoFuncionarioList.valorTotalConsumoFuncionario - pagamentoList.valorTotal}" 
+        				styleClass="textoNegrito5">
+        				<f:convertNumber currencySymbol="R$"  type="currency"  locale="pt_BR"/>
+        				</h:outputText>
+        			</td>
+        		</tr>
+        	</table>
+	</rich:panel>
+</ui:composition>

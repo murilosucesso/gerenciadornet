@@ -1,0 +1,113 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:s="http://jboss.com/products/seam/taglib"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:a="http://richfaces.org/a4j"
+    xmlns:rich="http://richfaces.org/rich"
+    xmlns:easy="http://easyfaces.com.br/easyfaces"
+    template="layout/template.xhtml">
+
+<ui:define name="body">
+
+    <h:form id="vendedor" styleClass="edit">
+		<ui:include src="/paginas/help/GenericEditHelp.xhtml"/>
+        <rich:panel>
+            <f:facet name="header">#{vendedorHome.managed ? 'Editar' : 'Adicionar'} Vendedor</f:facet>
+			
+			<s:decorate template="layout/edit.xhtml">
+                <ui:define name="label">Fornecedor</ui:define> 
+                 <h:selectOneMenu id="fornecedor" value="#{vendedorHome.instance.fornecedor}" rendered="#{!vendedorHome.managed}" required="true" styleClass="defaultInput">		
+				   <s:selectItems  value="#{fornecedorList.resultList}" 
+				   				  var="fornecedor" 							   				  
+				                  label="#{fornecedor.nomeFantasia}"
+				                  noSelectionLabel="Selecione.." 
+				                  />			
+				   <s:convertEntity />	 
+				  </h:selectOneMenu>
+				  
+				  <h:outputText value="#{vendedorHome.instance.fornecedor.nomeFantasia}" rendered="#{vendedorHome.managed}"/>
+            </s:decorate> 
+			
+            <s:decorate id="nomeVendedorField" template="layout/edit.xhtml">
+                <ui:define name="label">Vendedor</ui:define>
+                <h:inputText id="nomeVendedor"
+                       required="true"
+                     styleClass="defaultInput"
+                      maxlength="100"
+                          value="#{vendedorHome.instance.nomeVendedor}">
+                </h:inputText>
+            </s:decorate>
+
+
+            <s:decorate id="emailVendedorField" template="layout/edit.xhtml">
+                <ui:define name="label">Email</ui:define>
+                <h:inputText id="emailVendedor"
+                     styleClass="defaultInput"
+                      maxlength="100"
+                          value="#{vendedorHome.instance.emailVendedor}">
+                </h:inputText>
+            </s:decorate>
+
+
+            <s:decorate id="telefoneVendedorField" template="layout/edit.xhtml">
+                <ui:define name="label">Telefone</ui:define>
+                <easy:inputPhone id="telefoneVendedor"
+	                value="#{vendedorHome.instance.telefoneVendedor}"
+	                required="false"
+	                submitWithMask="true"
+	                useMask="true"
+	                useValidate="true"
+	                useMaskSize="false"
+	                placeHolder=" ">
+                </easy:inputPhone>
+            </s:decorate>
+            
+             
+
+            <div style="clear:both">
+                <span class="required">*</span>
+                Campos obrigatórios
+            </div>
+
+        </rich:panel>
+
+        <div class="actionButtons">
+
+            <h:commandButton id="save"
+                          value="Salvar"
+                         action="#{vendedorHome.persist}"
+                       disabled="#{!vendedorHome.wired}"
+                       rendered="#{!vendedorHome.managed}"/>
+
+            <h:commandButton id="update"
+                          value="Salvar"
+                         action="#{vendedorHome.update}"
+                       rendered="#{vendedorHome.managed}"/>
+
+            <h:commandButton id="delete"
+                          value="Excluir"
+                         action="#{vendedorHome.remove}"
+                      immediate="true"
+                       onclick="if (!confirm('Tem certeza que deseja Excluir este registro?')) return false"
+                       rendered="#{vendedorHome.managed}"/>
+
+            <s:button id="cancelEdit"
+                   value="Voltar"
+             propagation="end"
+                    view="/Vendedor.xhtml"
+                rendered="#{vendedorHome.managed}"/>
+
+            <s:button id="cancelAdd"
+                   value="Voltar"
+             propagation="end"
+                    view="/#{empty vendedorFrom ? 'VendedorList' : vendedorFrom}.xhtml"
+                rendered="#{!vendedorHome.managed}"/>
+
+        </div>
+    </h:form>
+<rich:jQuery selector="#fornecedor" timing="onload" query="focus()" />
+</ui:define>
+</ui:composition>

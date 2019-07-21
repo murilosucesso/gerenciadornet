@@ -1,0 +1,197 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:s="http://jboss.com/products/seam/taglib"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:a="http://richfaces.org/a4j"
+    xmlns:easy="http://easyfaces.com.br/easyfaces" 
+    xmlns:rich="http://richfaces.org/rich"    
+    template="layout/template.xhtml">
+
+<ui:define name="head">
+	<a:loadScript src="javascript/util.js"/>
+	<a:loadScript src="javascript/cliente.js"/>
+	<a:loadScript src="/javascript/maskCpfCnpj.js"/>
+</ui:define>
+
+<ui:define name="body">
+	
+	<!-- INICIO Pop up novo endereço  -->
+        
+		<a:outputPanel id="panelEditEndereco" ajaxRendered="true"  >
+		       <ui:include src="/includes/includeEnderecoNovoPopup.xhtml" />
+		</a:outputPanel>
+	<!-- FIM  Pop up novo endereço  -->
+
+    <h:form id="cliente" styleClass="edit">
+
+		<ui:include src="/paginas/help/GenericEditHelp.xhtml"/>
+ 
+        <rich:panel> 
+            <f:facet name="header">#{clienteHome.managed ? 'Editar' : 'Adicionar'} Cliente</f:facet>
+   
+   			
+   			<s:decorate id="exclusaoField" template="layout/display.xhtml" rendered="#{clienteHome.managed and clienteHome.instance.inExclusao}">
+                <ui:define name="label" ></ui:define>
+               <h:outputText value="CLIENTE DESATIVADO (EXCLUÍDO)" styleClass="textoGrandeVermelho" />   
+            </s:decorate>
+   
+			<s:decorate id="codigoField" template="layout/display.xhtml"  rendered="#{clienteHome.managed}">
+                <ui:define name="label" >
+                	<span id="labelCodigo"> 
+                		<h:outputText value="Código Cliente"/>                		
+                	</span>	                	
+				</ui:define>
+               <h:outputText id="codigo" value="#{clienteHome.instance.codCliente}" styleClass="textoGrande2"/>
+               
+            </s:decorate>
+                
+			<ui:include src="/includes/includeFormEditCliente.xhtml"/>
+            
+        <!--     <s:decorate id="senhaField" template="layout/edit.xhtml">
+                <ui:define name="label">Senha</ui:define>                   
+                <h:inputSecret value="#{clienteHome.instance.senha}"/>
+            </s:decorate> -->
+            
+            
+            <s:decorate id="dtCadastroField" template="layout/display.xhtml"  rendered="#{clienteHome.managed}">
+                <ui:define name="label">Data Cadastro</ui:define>                   
+                <h:outputText value="#{clienteHome.instance.dtCadastro}">
+	                <s:convertDateTime type="date" pattern="dd/MM/yyyy"/>
+	            </h:outputText>                 
+            </s:decorate>
+
+			
+			<div style="clear:both">
+                <span class="required">*</span>
+                Campos obrigatórios
+            </div>					
+					
+        </rich:panel>
+        
+	        
+<!-- botoes para salvar, editar e voltar - CLiente - INÍCIO -->   
+        <div class="actionButtons">
+
+            <h:commandButton id="save"
+                          value="Salvar"
+                         action="#{clienteHome.persist}"
+                       disabled="#{!clienteHome.wired}"
+                       rendered="#{!clienteHome.managed}"/>
+                       
+            <h:commandButton id="reativar"
+                          value="Reativar Cliente"
+                         action="#{clienteHome.reativarCliente}"
+                       rendered="#{clienteHome.managed and clienteHome.instance.inExclusao}"/>
+
+            <h:commandButton id="update"
+                          value="Salvar"
+                         action="#{clienteHome.update}"
+                       rendered="#{clienteHome.managed and !clienteHome.instance.inExclusao}"/>
+
+            <h:commandButton id="delete"
+                          value="Excluir"
+                         action="#{clienteHome.remove}"
+                      immediate="true"
+                      onclick="if (!confirm('Tem certeza que deseja excluir este registro?')) return false"
+                       rendered="#{clienteHome.managed and identity.hasRole(transacoes.transacaoClienteExcluir)}"/>
+
+            <s:button id="cancelEdit"
+                   value="Voltar"
+                    includePageParams="true" 
+            		propagation="#{empty clienteFrom ? 'end' : 'join'}"
+                    view="/#{empty clienteFrom ? 'Cliente' : clienteFrom}.xhtml"
+                rendered="#{clienteHome.managed}"/>
+
+            <s:button id="cancelAdd"
+                   value="Voltar"
+             propagation="end"
+                    view="/#{empty clienteFrom ? 'ClienteList' : clienteFrom}.xhtml"
+                rendered="#{!clienteHome.managed}"/>
+
+        </div>
+<!-- botoes para salvar, editar e voltar - CLiente - FIM -->        
+    </h:form>
+
+<a:outputPanel id="painelEnderecos" ajaxRendered="true">
+
+<rich:tabPanel switchType="ajax">
+
+    <rich:tab label="Endereços">
+        
+        <a:form styleClass="association" id="enderecosChildren">
+			<h:panelGroup id="out">
+			
+            <h:outputText value="Não existe endereço associado a este cliente."
+                       rendered="#{empty clienteHome.enderecos}"/>
+
+            <rich:dataTable value="#{clienteHome.enderecos}"
+                           var="_endereco"
+                      rendered="#{not empty clienteHome.enderecos}"
+                            id="enderecosTable"
+                onRowMouseOver="this.style.backgroundColor='#F0F0F0'"
+		         onRowMouseOut="this.style.backgroundColor='#{a4jSkin.rowBackgroundColor}'"
+		         columnClasses="center"  
+		            rowClasses="tableRowOne,tableRowTwo">
+                
+                <ui:include src="/includes/includeListarEnderecos.xhtml"/>
+                
+                <h:column>
+                
+                <f:facet name="header">Visualizar/Excluir</f:facet>	  
+                	<s:link id="selectendereco" view="/Endereco.xhtml">
+                		<h:graphicImage url="/img/binoculo.jpg"/>
+	                    <f:param name="enderecoCodEndereco" value="#{_endereco.codEndereco}"/>
+	                    <f:param name="enderecoFrom" value="Cliente"/>
+                	</s:link>	  
+                	<rich:toolTip for="selectendereco" value="Visualizar Endereço" direction="top-left"/>
+                	#{' '}
+                	<a:commandLink id="delete" action="#{clienteHome.removeEndereco(_endereco)}" reRender="out" >
+                		<h:graphicImage url="/img/lixeira.gif"/> 
+	                	<f:param name="enderecoCodEndereco" value="#{_endereco.codEndereco}"/>                 	 	                   
+                	</a:commandLink>      
+                	<rich:toolTip for="delete" value="Excluir Endereço" direction="top-left"/>
+	            </h:column>
+	            
+            </rich:dataTable>
+			</h:panelGroup>
+        
+
+       <!--  <f:subview rendered="#{clienteHome.managed}" id="enderecos">
+        <div class="actionButtons">
+        
+            <s:button id="addendereco"
+                    value="Adicionar endereço"
+                    view="/EnderecoEdit.xhtml"
+             		propagation="none">
+                 <f:param name="clienteCodCliente"
+                         value="#{clienteHome.instance.codCliente}"/>
+                 <f:param name="enderecoFrom" value="Cliente"/>
+            </s:button>   
+            
+                        
+        </div>
+        </f:subview> -->
+    	<br/>
+	    <a:commandButton value="Adicionar Endereço ++"
+					actionListener="#{clienteHome.novoEndereco()}" 
+					ajaxSingle="true"
+					limitToList="true"
+					oncomplete="#{rich:component('editPanel')}.show()"
+					reRender="panelEditEndereco"/> 
+		</a:form>		
+	</rich:tab>				
+				
+</rich:tabPanel>
+</a:outputPanel>
+
+<script type="text/javascript">
+	hideCampos();
+	hideCamposEstudante();
+</script>
+<rich:jQuery selector="#nome" timing="onload" query="focus()" />
+
+</ui:define>
+</ui:composition>

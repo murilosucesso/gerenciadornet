@@ -1,0 +1,195 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:s="http://jboss.com/products/seam/taglib"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:rich="http://richfaces.org/rich"
+    xmlns:a="http://richfaces.org/a4j"
+    template="layout/template.xhtml">
+
+<ui:define name="body">
+
+    <h:form id="compraSearch" styleClass="edit">
+
+		<ui:include src="/paginas/help/GenericListHelp.xhtml"/>
+
+        <rich:simpleTogglePanel label="Filtro de pesquisa de Compra" switchType="client">          
+            
+             <s:decorate template="layout/display.xhtml">
+                <ui:define name="label">Código compra</ui:define>
+                <h:inputText id="compra" value="#{compraList.compra.codCompra}" styleClass="defaultInput" />
+            </s:decorate>
+            
+             <s:decorate template="layout/display.xhtml">
+                <ui:define name="label">Fornecedor</ui:define> 
+                 <h:selectOneMenu id="fornecedor" value="#{compraList.compra.vendedor.fornecedor}"  required="false" styleClass="defaultInput">		
+				   <s:selectItems  value="#{fornecedorList.resultList}" 
+				   				  var="fornecedor" 			
+				                  label="#{fornecedor.nomeFantasia}"
+				                  noSelectionLabel="Selecione.." 
+				                  />			
+				   <s:convertEntity />	
+				  </h:selectOneMenu>
+            </s:decorate> 
+            
+            <s:decorate template="layout/display.xhtml">
+                <ui:define name="label">Nota Fiscal</ui:define>
+                <h:inputText id="numeroNotaFiscal" value="#{compraList.compra.numeroNotaFiscal}" styleClass="defaultInput" />
+            </s:decorate>
+            
+            <s:decorate template="layout/display.xhtml">
+                <ui:define name="label">Data Inicial</ui:define>                
+                 <rich:calendar id="dataInicial" required="true" value="#{compraList.dataInicial}" defaultTime="00:00" resetTimeOnDateSelect="true" datePattern="dd/MM/yyyy">
+                	<f:convertDateTime pattern="yyyy-MM-dd HH:mm"/>
+                </rich:calendar>
+            </s:decorate>
+            
+            <s:decorate template="layout/display.xhtml">
+                <ui:define name="label">Data Final</ui:define>
+                <rich:calendar id="dataFinal" required="true" value="#{compraList.dataFinal}" defaultTime="00:00" resetTimeOnDateSelect="true" datePattern="dd/MM/yyyy">
+                	<f:convertDateTime pattern="yyyy-MM-dd HH:mm"/>
+                </rich:calendar>
+            </s:decorate>     
+
+        </rich:simpleTogglePanel>
+
+ 		<table border="0" width="10%">
+			<tr>
+				<td nowrap="nowrap">
+					 <div class="actionButtons">
+						<a:commandButton id="search" type="submit" value="Pesquisar"
+							action="#{compraList.setMostrarResultados(true)}" actionListener="#{compraList.setRestriction()}"
+							reRender="panelResultado, sc"/>
+							
+						<s:button id="reset" value="Limpar" includePageParams="false" />
+						<rich:hotKey key="return"
+							handler="#{rich:element('search')}.click()" />
+					</div>
+				</td>
+				<td nowrap="nowrap">    
+					 <s:div styleClass="actionButtons">
+				        <s:button view="/CompraEdit.xhtml" rendered="#{identity.hasRole(transacoes.transacaoCompraInserir)}" 
+				                    id="create"
+				           propagation="none"
+				                 value="Nova Compra">
+				            <f:param name="compraCodCompra"/>
+				        </s:button>
+			    	</s:div>
+				</td>
+			</tr>
+		</table>
+    </h:form>
+
+	<h:form>
+	 <a:outputPanel id="panelResultado" ajaxRendered="true">
+	 <rich:panel  rendered="#{compraList.mostrarResultados}">
+    
+	    <f:facet name="header">
+			<a:outputPanel  id="panelDiv" ajaxRendered="true">
+		    	<h:outputText value=" Resultado da pesquisa por Compras (#{empty compraList.resultList ? 0 : (compraList.paginated ? compraList.resultCount : compraList.qtdResultados)})"/>
+		    </a:outputPanel>
+	    </f:facet>
+   
+   	<h:outputText value="#{messages['mensagem.pesquisa.vazia']}" rendered="#{compraList.pesquisaVazia}"/>
+   		
+	<rich:dataTable id="resultadoList"
+		                var="_compra"
+		              	value="#{compraList.resultList}"			           	
+			           	onRowMouseOver="this.style.backgroundColor='#F0F0F0'"
+			           	onRowMouseOut="this.style.backgroundColor='#{a4jSkin.rowBackgroundColor}'"
+			           	columnClasses="center" 
+			           	footerClass="center"		
+			           	rows="15"	
+			           	rendered="#{not compraList.pesquisaVazia}"		           
+			           	rowClasses="tableRowOne,tableRowTwo">           
+       
+        <rich:column sortBy="#{_compra.codCompra}"> 
+           <f:facet name="header">
+               <h:outputText value="Compra"/>
+           </f:facet>            
+           <h:outputText value="#{_compra.codCompra}"/>
+        </rich:column> 
+                         
+        <rich:column sortBy="#{_compra.numeroNotaFiscal}"> 
+           <f:facet name="header">
+               <h:outputText value="Nota Fiscal"/>
+           </f:facet>            
+           <h:outputText value="#{_compra.numeroNotaFiscal}"/>
+        </rich:column> 
+                 
+        <rich:column sortBy="#{_compra.vendedor.fornecedor.nomeFantasia}"> 
+           <f:facet name="header">
+               <h:outputText value="Fornecedor"/>
+           </f:facet>            
+           <h:outputText value="#{_compra.vendedor.fornecedor.nomeFantasia}"/>
+        </rich:column> 
+        
+        <rich:column sortBy="#{_compra.codStatusCompra}"> 
+           <f:facet name="header">
+               <h:outputText value="Status"/>
+           </f:facet>            
+           <h:outputText value="Em Andamento" rendered="#{_compra.codStatusCompra == constantes.compraEmAndamento}"/>
+           <h:outputText value="Concluída" rendered="#{_compra.codStatusCompra == constantes.compraConcluida}"/>
+        </rich:column> 
+        
+        <rich:column sortBy="#{_compra.dataCompra}"> 
+           <f:facet name="header">
+               <h:outputText value="Data compra"/>
+           </f:facet>            
+           <h:outputText value="#{_compra.dataCompra}">
+           		<s:convertDateTime type="date" pattern="dd/MM/yyyy"/>
+           </h:outputText>
+        </rich:column>
+        
+        <rich:column sortBy="#{_compra.precoTotal}"> 
+           <f:facet name="header">
+               <h:outputText value="Valor"/>
+           </f:facet>            
+           <h:outputText value="#{_compra.precoTotal}">
+           		<f:convertNumber currencySymbol="R$"  type="currency"  locale="pt_BR"/>
+           </h:outputText>
+           <f:facet name="footer">
+               <h:outputText value="#{compraList.precoCustoTotal}" tittle="Valor total das compras"  styleClass="textoNegrito">
+               		<f:convertNumber currencySymbol="R$"  type="currency"  locale="pt_BR"/>
+               </h:outputText>
+           </f:facet>
+        </rich:column>
+        
+        <rich:column sortBy="#{_compra.usuario.nomeUsuario}"> 
+           <f:facet name="header">
+               <h:outputText value="Responsável"/>
+           </f:facet>            
+           <h:outputText value="#{_compra.usuario.nomeUsuario}"/>
+        </rich:column>
+      
+        <rich:column styleClass="action">
+            <f:facet name="header">Visualizar/Editar</f:facet>
+            <s:link view="/Compra.xhtml" propagation="default" id="compraViewId">
+             	<h:graphicImage url="/img/binoculo.jpg"/>
+                <f:param name="compraCodCompra" value="#{_compra.codCompra}"/>
+                <f:param name="compraFrom" value="CompraList"/>
+            </s:link>
+            <rich:toolTip for="compraViewId" value="Visualizar Compra" direction="top-left"/>
+            
+            #{' '}
+            
+            <s:link view="/CompraEdit.xhtml" propagation="default" id="compraEdit" rendered="#{identity.hasRole(transacoes.transacaoCompraEditar)}" >
+            	<h:graphicImage url="/img/editar.jpg"/>
+                <f:param name="compraCodCompra" value="#{_compra.codCompra}"/>
+                <f:param name="compraFrom" value="CompraList"/>
+            </s:link>
+            <rich:toolTip for="compraEdit" value="Editar Compra" direction="top-left"/>
+            
+        </rich:column>
+    </rich:dataTable>
+	
+    <ui:include src="/includes/includeDataScroller.xhtml"/>
+    
+    </rich:panel>
+    </a:outputPanel>
+	</h:form>
+</ui:define>
+
+</ui:composition>

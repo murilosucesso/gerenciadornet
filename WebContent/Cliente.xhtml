@@ -1,0 +1,307 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:s="http://jboss.com/products/seam/taglib"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:rich="http://richfaces.org/rich"
+    xmlns:a="http://richfaces.org/a4j"
+    template="layout/template.xhtml">
+
+<ui:define name="body">
+
+    <rich:panel header="Detalhes do Cliente">
+		
+		<rich:panel> 
+		
+		
+       <h:outputText value="CLIENTE DESATIVADO (EXCLUÍDO)" styleClass="center textoGrandeVermelho" rendered="#{clienteHome.instance.inExclusao}"/>   
+       
+		
+		<table width="100%" border="0">
+			<tr>
+				<td colspan="2" nowrap="nowrap">
+					<h:outputText value="#{clienteHome.instance.nomeFantasiaApelido}"  rendered="#{clienteHome.instance.tipoPessoa == false and clienteHome.instance.nomeFantasiaApelido != null}" styleClass="textoGrande"/> 
+					<h:outputText value="#{clienteHome.instance.nomeFantasiaApelido}" rendered="#{clienteHome.instance.tipoPessoa == true and clienteHome.instance.nomeFantasiaApelido != null}" styleClass="textoGrande"/>
+				</td>
+				
+				<td colspan="2" align="right">
+ 						
+					<h:outputText value="#{clienteHome.instance.grupo.nomeGrupo}" 
+						rendered="#{not empty clienteHome.instance.grupo.nomeGrupo}" styleClass="textoGrande" /> 
+						
+					<h:outputText value="Cliente não possui Grupo(Carteira)" 
+						rendered="#{empty clienteHome.instance.grupo.nomeGrupo}" styleClass="textoGrandeVermelho" /> 
+				</td>
+				<td colspan="2" align="right">
+					<h:outputText value="Código Cliente: #{clienteHome.instance.codCliente}" styleClass="textoGrande" />
+				</td>
+			</tr>
+			
+			<tr>
+				<td colspan="6" height="15"></td>
+			</tr>
+			
+			<tr> 
+				<td width="160px"  height="25" nowrap="nowrap">
+					<h:outputText value="Nome"  rendered="#{clienteHome.instance.tipoPessoa == false}" styleClass="textoNegrito6"/> 
+					<h:outputText value="Razão Social" rendered="#{clienteHome.instance.tipoPessoa == true}" styleClass="textoNegrito6"/>
+				</td>
+				<td>
+					<h:outputText value="#{clienteHome.instance.nome}"  rendered="#{clienteHome.instance.tipoPessoa == false}" styleClass="textoMedioCinza4"/>
+					<h:outputText value="#{clienteHome.instance.nome}" rendered="#{clienteHome.instance.tipoPessoa == true}" styleClass="textoMedioCinza4"/>
+				</td>
+				<td width="140px">
+					<h:outputText value="C.P.F" rendered="#{clienteHome.instance.tipoPessoa == false}" styleClass="textoNegrito6"/>
+					<h:outputText value="C.N.P.J" rendered="#{clienteHome.instance.tipoPessoa == true}" styleClass="textoNegrito6"/>
+				</td>
+				<td>
+					<h:outputText value="#{clienteHome.instance.cpfCnpj}"  rendered="#{clienteHome.instance.tipoPessoa == false}" styleClass="textoMedioCinza4"/>
+					<h:outputText value="#{clienteHome.instance.cpfCnpj}"  rendered="#{clienteHome.instance.tipoPessoa == true}" styleClass="textoMedioCinza4"/>
+				</td>
+				<td width="140px"> 
+					<h:outputLabel value="I.E" rendered="#{clienteHome.instance.tipoPessoa == true}" styleClass="textoNegrito6"/>
+					<h:outputLabel value="R.G" rendered="#{clienteHome.instance.tipoPessoa == false}" styleClass="textoNegrito6"/>
+				</td>
+				<td>
+					<h:outputText value="#{clienteHome.instance.rgIe}"  rendered="#{clienteHome.instance.tipoPessoa == true}" styleClass="textoMedioCinza4"/>
+					<h:outputText value="#{clienteHome.instance.rgIe}"  rendered="#{clienteHome.instance.tipoPessoa == false}" styleClass="textoMedioCinza4"/>
+				</td>
+			</tr>
+			
+			<tr>
+				<td  height="25">
+					<h:outputText value="Email" styleClass="textoNegrito6"/>
+				</td>
+				<td>
+					<h:outputText value="#{clienteHome.instance.email}" styleClass="textoMedioCinza4"/>
+				</td>
+				<td>
+					<h:outputLabel value="Telefone" styleClass="textoNegrito6"/>
+				</td>
+				<td nowrap="nowrap">
+					<h:outputText value="#{clienteHome.instance.telefone}" styleClass="textoMedioCinza4"/>
+				</td>
+				<td  nowrap="nowrap">
+					<h:outputLabel value="Data Nascimento" rendered="#{clienteHome.instance.tipoPessoa == false}" styleClass="textoNegrito6"/>
+				</td>
+				<td  nowrap="nowrap">
+					<h:outputText value="#{clienteHome.instance.dtNascimento}"  rendered="#{clienteHome.instance.tipoPessoa == false}" styleClass="textoMedioCinza4">
+						 <s:convertDateTime type="date" pattern="dd/MM/yyyy"/>
+					</h:outputText>
+				</td>
+			</tr>
+			
+			<tr>
+				<td nowrap="nowrap"  height="25">
+					<h:outputText value="Situação Financeira" styleClass="textoNegrito6"/>
+				</td>
+				<td>
+					<h:outputText value="Adimplente" rendered="#{clienteHome.instance.inAdimplente}" styleClass="textoMedioCinza4"/>
+					<h:outputText value="Inadimplente" rendered="#{!clienteHome.instance.inAdimplente}" styleClass="textoGrandeVermelho"/>
+				</td>
+				<td>
+					<h:outputText value="Data de Cadastro" styleClass="textoNegrito6"/>
+				</td>
+				<td>
+					<h:outputText value="#{clienteHome.instance.dtCadastro}"  styleClass="textoMedioCinza4">
+		                <s:convertDateTime type="date" pattern="dd/MM/yyyy"/>
+		            </h:outputText> 
+				</td>
+				<td>
+					<h:outputText value="Sexo" rendered="#{clienteHome.instance.tipoPessoa == false}" styleClass="textoNegrito6"/>
+				</td>
+				<td>
+					<h:outputText value="#{clienteHome.getSexoDesc()}" rendered="#{clienteHome.instance.tipoPessoa == false}" styleClass="textoMedioCinza4"/>
+				</td>
+			</tr>
+			
+			<a:outputPanel  rendered="#{clienteHome.instance.inEstudante}">
+			
+			<tr>
+				<td  height="25">
+					<h:outputText value="Responsável" styleClass="textoNegrito6"/>
+				</td>
+				<td>
+					<h:outputText value="#{clienteHome.instance.nomeResponsavel}" styleClass="textoMedioCinza4"/>
+				</td>
+				<td>
+					<h:outputLabel value="Matrícula" styleClass="textoNegrito6"/>
+				</td>
+				<td nowrap="nowrap">
+					<h:outputText value="#{clienteHome.instance.matriculaEstudante}" styleClass="textoMedioCinza4"/>
+				</td>
+				<td  nowrap="nowrap">
+					<h:outputLabel value="Entidade/Grau Curso" styleClass="textoNegrito6"/>
+				</td>
+				<td  nowrap="nowrap">
+					<h:outputText value="#{clienteHome.instance.entidade.nome} / #{clienteHome.instance.nomeGrauCurso}" styleClass="textoMedioCinza4"/>
+				</td>
+			</tr>
+			
+			</a:outputPanel>
+			
+			<tr>
+				<td  height="25">
+					<h:outputText value="Vendedor Resp." title="Vendedor Responsável pelo cliente" styleClass="textoNegrito6"/>
+				</td>
+				<td  nowrap="nowrap">
+					<h:outputText value="#{clienteHome.instance.usuario.nomeUsuario}" styleClass="textoMedioCinza4"/>
+				</td>
+				<td  height="25">
+					<h:outputText value="Dia Cobrança Pag." title="Dia do mês que o cliente será cobrado" styleClass="textoNegrito6"/>
+				</td>
+				<td  nowrap="nowrap">
+					<h:outputText value="#{clienteHome.instance.diaCobrancaPagamento}" styleClass="textoMedioCinza4"/>
+				</td>
+				<td>
+					<h:outputText value="Observação" styleClass="textoNegrito6"/>
+				</td>
+				<td>
+					<h:outputText value="#{clienteHome.instance.observacao}" styleClass="textoMedioCinza4"/>
+				</td>
+			</tr>
+		</table>
+		</rich:panel> 
+		
+		<rich:spacer height="20px" />
+		
+		<h:outputText value="Endereços" styleClass="textoNegrito"/>
+		<h:form  id="enderecosChildren">
+	
+	        <h:outputText value="Nao existe enderecos associados a este cliente."
+	                   rendered="#{empty clienteHome.enderecos}"/>
+	
+	        <rich:dataTable value="#{clienteHome.enderecos}"
+	                       var="_endereco"
+	                  rendered="#{not empty clienteHome.enderecos}"
+	                        id="enderecosTable"
+	            onRowMouseOver="this.style.backgroundColor='#F1F1F1'"
+	             onRowMouseOut="this.style.backgroundColor='#{a4jSkin.rowBackgroundColor}'"
+	             columnClasses="center"  
+	                rowClasses="tableRowOne,tableRowTwo"
+	                columnsWidth="*,*,*,*,*,*,*,*,*,5%">
+	          
+	           <ui:include src="/includes/includeListarEnderecos.xhtml"/>
+	            
+	           <h:column>
+	           		<f:facet name="header">Visualizar</f:facet>
+	                <s:link id="selectendereco" view="/Endereco.xhtml">
+	               		<h:graphicImage url="/img/binoculo.jpg"/>
+	                    <f:param name="enderecoCodEndereco" value="#{_endereco.codEndereco}"/>
+	                    <f:param name="enderecoFrom" value="Cliente"/>
+	               	</s:link>	  
+	               	<rich:toolTip for="selectendereco" value="Visualizar Endereço" direction="top-left"/>
+	            
+	            </h:column>
+	        </rich:dataTable>
+	    </h:form>
+	    
+	    <rich:spacer height="20px" />
+
+		<h:outputText value="Vendas em Aberto" styleClass="textoNegrito"/>
+			    
+	    <h:form id="vendasChildren">
+	
+        <rich:dataTable value="#{clienteHome.vendasEmAberto}"
+	                       var="_venda"
+	                        id="vendasTable"
+	           onRowMouseOver="this.style.backgroundColor='#F0F0F0'"
+	           	 onRowMouseOut="this.style.backgroundColor='#{a4jSkin.rowBackgroundColor}'"
+	           	 columnClasses="center" 
+	           	   footerClass="center"
+	           	   		  rows="10"
+	           	    rowClasses="tableRowOne,tableRowTwo"
+	           	    columnsWidth="*,*,*,*,*,*,5%">
+	           
+	            <rich:column sortBy="#{_venda.codVenda}">
+	                <f:facet name="header">Venda</f:facet>
+	                <h:outputText value="#{_venda.codVenda}"/>
+	            </rich:column>
+	            
+	            <rich:column sortBy="#{_venda.usuario.nomeUsuario}" styleClass="left"> 
+		           <f:facet name="header">
+		               <h:outputText value="Vendedor" title="Vendedor que realizou a venda"/>
+		           </f:facet> 
+		           <h:outputText value="#{_venda.usuario.nomeUsuario}"/>
+		         </rich:column>    
+	                   
+	            <rich:column sortBy="#{_venda.dataInicioVenda}">
+	                <f:facet name="header">Data Venda</f:facet>
+	                 <h:outputText value="#{_venda.dataInicioVenda}">
+		                <s:convertDateTime type="date" pattern="dd/MM/yyyy HH:mm:ss"/>
+		            </h:outputText>
+	            </rich:column>
+	         		            
+	            <rich:column sortBy="#{_venda.tipoPagamento.descTipoPagamento}">
+	                <f:facet name="header">Tipo Pagamento</f:facet>
+	                <h:outputText value="#{_venda.tipoPagamento.descTipoPagamento}"/>
+	                 <f:facet name="footer">
+		             <h:outputText>
+		             		<h:outputLabel styleClass="textoNegrito" value="Saldo em Aberto"/>
+		             </h:outputText>
+		           </f:facet>
+	            </rich:column>
+	            
+	         	<rich:column  sortBy="#{_venda.valorTotalVenda}"> 
+		           <f:facet name="header">
+		               <h:outputText value="Valor Venda"/>
+		           </f:facet> 
+		           <h:outputText value="#{_venda.valorTotalVenda}" title="Valor total da venda">
+		           		<f:convertNumber currencySymbol="R$"  type="currency"  locale="pt_BR"/>
+		           </h:outputText>          
+		           <f:facet name="footer">
+		             <h:outputText>
+		             		<h:outputLabel styleClass="textoNegrito" value="#{clienteHome.valorTotalVendasEmAberto}">
+		             			<f:convertNumber currencySymbol="R$"  type="currency"  locale="pt_BR"/>
+		             		</h:outputLabel>
+		             </h:outputText>
+		           </f:facet>
+		         </rich:column>  
+		         
+		          <rich:column sortBy="#{_venda.situacaoFinanceira}"> 
+		           <f:facet name="header">
+		               <h:outputText value="Situação da Venda" title="Situação da Venda do Cliente - Dias em aberto"/>
+		           </f:facet> 
+		           <h:outputText value="#{_venda.situacaoFinanceira}"/>
+		         </rich:column>
+	            
+	            <h:column>
+	            	<f:facet name="header">Visualizar</f:facet>
+	                <s:link id="selectvenda" propagation="none"  view="/Venda.xhtml">
+	                    <h:graphicImage url="/img/binoculo.jpg"/>
+	                    <f:param name="vendaCodVenda" value="#{_venda.codVenda}"/>
+	                    <f:param name="vendaFrom" value="cliente"/>
+	                </s:link>
+	            </h:column>
+	        </rich:dataTable>
+			<rich:datascroller align="center" for="vendasTable" renderIfSinglePage="false" maxPages="10" id="sc"/>
+		    </h:form>
+		    
+ 		    <rich:spacer height="20px" />
+
+<!-- Include  Funcionalidade Anotações Cliente--> 		    
+ 		    <ui:include src="/includes/includeAnotacoesCliente.xhtml"/>
+			
+		</rich:panel>
+
+		<div class="actionButtons">
+
+			<s:button view="/ClienteEdit.xhtml" id="edit" value="Editar" rendered="#{identity.hasRole(transacoes.transacaoClienteEditar)}"/>
+			
+	        <s:button view="/ClienteEdit.xhtml"
+	                    id="create"
+	           propagation="none"
+	                 value="Novo Cliente">
+	                 <f:param name="clienteCodCliente" />
+	        </s:button>         
+	        
+	        <s:button view="/#{empty clienteFrom ? 'ClienteList' : clienteFrom}.xhtml"
+				includePageParams="true" propagation="join" id="done" value="Voltar" />
+	        
+		</div>
+		
+	</ui:define>
+
+</ui:composition>

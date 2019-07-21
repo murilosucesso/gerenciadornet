@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sistema versao="1.02" xmlns="http://www.portalfiscal.inf.br/nfe">
+	<emit>
+		<CNPJ>02417059000105</CNPJ>
+		<xNome>DF COMERCIO DE PRODUTOS MEDICOS E ODONTOLOGICOS LTDA</xNome>
+		<xFant>DENTAL DF</xFant>
+		<enderEmit>
+			<xLgr>SCIA QUADRA 13 CONJUNTO 04 LOJA</xLgr>
+			<nro>12</nro>
+			<xCpl>GUARA ZONA INDUSTRIAL</xCpl>
+			<xBairro>Brasilia</xBairro>
+			<cMun>5300108</cMun>
+			<xMun>Brasilia</xMun>
+			<UF>DF</UF>
+			<CEP>71250200</CEP>
+			<cPais>1058</cPais>
+			<xPais>BRASIL</xPais>
+		</enderEmit>
+		<IE>0738311000152</IE>
+		<CRT>1</CRT>
+	</emit>
+</sistema>

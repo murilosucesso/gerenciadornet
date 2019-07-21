@@ -1,0 +1,247 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:s="http://jboss.com/products/seam/taglib"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:a="http://richfaces.org/a4j"
+    xmlns:rich="http://richfaces.org/rich"
+    template="layout/template.xhtml">
+
+<ui:define name="body">
+
+    <h:form id="produtoVendido" styleClass="edit">
+
+        <rich:panel>
+            <f:facet name="header">#{produtoVendidoHome.managed ? 'Editar' : 'Adicionar'} Produto vendido</f:facet>
+
+
+            <s:decorate id="codLoteProdutoField" template="layout/edit.xhtml">
+                <ui:define name="label">Cod lote produto</ui:define>
+                <h:inputText id="codLoteProduto"
+                       required="true"
+                       disabled="#{produtoVendidoHome.managed}"
+                          value="#{produtoVendidoHome.instance.id.codLoteProduto}">
+                    <a:support event="onblur" reRender="codLoteProdutoField" bypassUpdates="true" ajaxSingle="true"/>
+                </h:inputText>
+            </s:decorate>
+
+            <s:decorate id="codVendaField" template="layout/edit.xhtml">
+                <ui:define name="label">Cod venda</ui:define>
+                <h:inputText id="codVenda"
+                       required="true"
+                       disabled="#{produtoVendidoHome.managed}"
+                          value="#{produtoVendidoHome.instance.id.codVenda}">
+                    <a:support event="onblur" reRender="codVendaField" bypassUpdates="true" ajaxSingle="true"/>
+                </h:inputText>
+            </s:decorate>
+
+
+
+
+            <s:decorate id="qtdField" template="layout/edit.xhtml">
+                <ui:define name="label">Qtd</ui:define>
+                <h:inputText id="qtd"
+                       required="true"
+                          value="#{produtoVendidoHome.instance.qtd}">
+                    <a:support event="onblur" reRender="qtdField" bypassUpdates="true" ajaxSingle="true"/>
+                </h:inputText>
+            </s:decorate>
+
+
+            <s:decorate id="descontoField" template="layout/edit.xhtml">
+                <ui:define name="label">Desconto</ui:define>
+                <h:inputText id="desconto"
+                          value="#{produtoVendidoHome.instance.desconto}">
+                    <a:support event="onblur" reRender="descontoField" bypassUpdates="true" ajaxSingle="true"/>
+                </h:inputText>
+            </s:decorate>
+
+
+            <s:decorate id="precoVendaField" template="layout/edit.xhtml">
+                <ui:define name="label">Preco venda</ui:define>
+                <h:inputText id="precoVenda"
+                          value="#{produtoVendidoHome.instance.precoVenda}">
+                    <a:support event="onblur" reRender="precoVendaField" bypassUpdates="true" ajaxSingle="true"/>
+                </h:inputText>
+            </s:decorate>
+
+            <div style="clear:both">
+                <span class="required">*</span>
+                required fields
+            </div>
+
+        </rich:panel>
+
+        <div class="actionButtons">
+
+            <h:commandButton id="save"
+                          value="Save"
+                         action="#{produtoVendidoHome.persist}"
+                       disabled="#{!produtoVendidoHome.wired}"
+                       rendered="#{!produtoVendidoHome.managed}"/>
+
+            <h:commandButton id="update"
+                          value="Save"
+                         action="#{produtoVendidoHome.update}"
+                       rendered="#{produtoVendidoHome.managed}"/>
+
+            <h:commandButton id="delete"
+                          value="Delete"
+                         action="#{produtoVendidoHome.remove}"
+                      immediate="true"
+                       rendered="#{produtoVendidoHome.managed}"/>
+
+            <s:button id="cancelEdit"
+                   value="Cancel"
+             propagation="end"
+                    view="/ProdutoVendido.xhtml"
+                rendered="#{produtoVendidoHome.managed}"/>
+
+            <s:button id="cancelAdd"
+                   value="Cancel"
+             propagation="end"
+                    view="/#{empty produtoVendidoFrom ? 'ProdutoVendidoList' : produtoVendidoFrom}.xhtml"
+                rendered="#{!produtoVendidoHome.managed}"/>
+
+        </div>
+    </h:form>
+
+<rich:tabPanel switchType="ajax">
+
+    <rich:tab label="Venda *" labelClass="required">
+    <div class="association" id="vendaParent">
+
+        <h:outputText value="There is no venda associated with this produtoVendido."
+                   rendered="#{produtoVendidoHome.instance.venda == null}"/>
+
+        <rich:dataTable var="_venda"
+                   value="#{produtoVendidoHome.instance.venda}"
+                rendered="#{produtoVendidoHome.instance.venda != null}"
+              rowClasses="rvgRowOne,rvgRowTwo"
+                      id="vendaTable">
+            <h:column>
+                <f:facet name="header">Cod venda</f:facet>
+                <h:outputText value="#{_venda.codVenda}"/>
+            </h:column>
+            <h:column>
+                <f:facet name="header">Tipo pagamento cod tipo pagamento</f:facet>
+                <h:outputText value="#{_venda.tipoPagamento.codTipoPagamento}"/>
+            </h:column>
+            <h:column>
+                <f:facet name="header">Cliente cod cliente</f:facet>
+                <h:outputText value="#{_venda.cliente.codCliente}"/>
+            </h:column>
+            <h:column>
+                <f:facet name="header">Usuario cod usuario</f:facet>
+                <h:outputText value="#{_venda.usuario.codUsuario}"/>
+            </h:column>
+            <h:column>
+                <f:facet name="header">Data inicio venda</f:facet>
+                <h:outputText value="#{_venda.dataInicioVenda}">
+                    <s:convertDateTime type="both" dateStyle="short"/>
+                </h:outputText>
+            </h:column>
+            <h:column>
+                <f:facet name="header">Data fim venda</f:facet>
+                <h:outputText value="#{_venda.dataFimVenda}">
+                    <s:convertDateTime type="both" dateStyle="short"/>
+                </h:outputText>
+            </h:column>
+            <h:column>
+                <f:facet name="header">Num nota fiscal</f:facet>
+                <h:outputText value="#{_venda.numNotaFiscal}"/>
+            </h:column>
+            <h:column>
+                <f:facet name="header">Desconto total</f:facet>
+                <h:outputText value="#{_venda.descontoTotal}"/>
+            </h:column>
+            <h:column>
+                <f:facet name="header">Obs venda</f:facet>
+                <h:outputText value="#{_venda.obsVenda}"/>
+            </h:column>
+            <h:column>
+                <f:facet name="header">In orcamento</f:facet>
+                <h:outputText value="#{_venda.inOrcamento}"/>
+            </h:column>
+        </rich:dataTable>
+
+        <div class="actionButtons">
+            <s:button id="#{produtoVendidoHome.instance.venda != null ? 'changeParent' : 'selectParent'}" value="#{produtoVendidoHome.instance.venda != null ? 'Change' : 'Select'} venda"
+                       view="/VendaList.xhtml">
+                <f:param name="from" value="ProdutoVendidoEdit"/>
+            </s:button>
+        </div>
+
+    </div>
+    </rich:tab>
+
+    <rich:tab label="Lote produto *" labelClass="required">
+    <div class="association" id="loteProdutoParent">
+
+        <h:outputText value="There is no loteProduto associated with this produtoVendido."
+                   rendered="#{produtoVendidoHome.instance.loteProduto == null}"/>
+
+        <rich:dataTable var="_loteProduto"
+                   value="#{produtoVendidoHome.instance.loteProduto}"
+                rendered="#{produtoVendidoHome.instance.loteProduto != null}"
+              rowClasses="rvgRowOne,rvgRowTwo"
+                      id="loteProdutoTable">
+            <h:column>
+                <f:facet name="header">Cod lote produto</f:facet>
+                <h:outputText value="#{_loteProduto.codLoteProduto}"/>
+            </h:column>
+            <h:column>
+                <f:facet name="header">Produto cod produto</f:facet>
+                <h:outputText value="#{_loteProduto.produto.codProduto}"/>
+            </h:column>
+            <h:column>
+                <f:facet name="header">Compra cod compra</f:facet>
+                <h:outputText value="#{_loteProduto.compra.codCompra}"/>
+            </h:column>
+            <h:column>
+                <f:facet name="header">Qtd compra</f:facet>
+                <h:outputText value="#{_loteProduto.qtdCompra}"/>
+            </h:column>
+            <h:column>
+                <f:facet name="header">Preco compra unidade</f:facet>
+                <h:outputText value="#{_loteProduto.precoCompraUnidade}"/>
+            </h:column>
+            <h:column>
+                <f:facet name="header">Identificacao lote</f:facet>
+                <h:outputText value="#{_loteProduto.identificacaoLote}"/>
+            </h:column>
+            <h:column>
+                <f:facet name="header">Data validade</f:facet>
+                <h:outputText value="#{_loteProduto.dataValidade}">
+                    <s:convertDateTime type="date" dateStyle="short"/>
+                </h:outputText>
+            </h:column>
+            <h:column>
+                <f:facet name="header">Preco venda unidade</f:facet>
+                <h:outputText value="#{_loteProduto.precoVendaUnidade}"/>
+            </h:column>
+            <h:column>
+                <f:facet name="header">Qtd estoque</f:facet>
+                <h:outputText value="#{_loteProduto.qtdEstoque}"/>
+            </h:column>
+            <h:column>
+                <f:facet name="header">Prc desconto maximo</f:facet>
+                <h:outputText value="#{_loteProduto.prcDescontoMaximo}"/>
+            </h:column>
+        </rich:dataTable>
+
+        <div class="actionButtons">
+            <s:button id="#{produtoVendidoHome.instance.loteProduto != null ? 'changeParent' : 'selectParent'}" value="#{produtoVendidoHome.instance.loteProduto != null ? 'Change' : 'Select'} loteProduto"
+                       view="/LoteProdutoList.xhtml">
+                <f:param name="from" value="ProdutoVendidoEdit"/>
+            </s:button>
+        </div>
+
+    </div>
+    </rich:tab>
+</rich:tabPanel>
+</ui:define>
+
+</ui:composition>

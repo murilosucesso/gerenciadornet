@@ -1,0 +1,254 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:s="http://jboss.com/products/seam/taglib"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:rich="http://richfaces.org/rich"
+    xmlns:a="http://richfaces.org/a4j"
+    template="layout/template.xhtml">
+
+<ui:define name="body">
+
+    <h:form id="produtoSearch" styleClass="edit">
+
+		<ui:include src="/paginas/help/GenericListHelp.xhtml"/>	
+						
+        <rich:simpleTogglePanel label="Filtro de pesquisa de Produto" switchType="client">
+
+            <s:decorate template="layout/display.xhtml">
+                <ui:define name="label">Código de Barras</ui:define>
+                <h:inputText id="codigoBarrasProduto" value="#{produtoList.produto.codigoBarrasProduto}" styleClass="defaultInput" maxlength="40"/>
+            </s:decorate>  
+
+             <s:decorate template="layout/display.xhtml">
+                <ui:define name="label">Código Produto</ui:define>
+                <h:inputText id="codProdutoExterno" styleClass="defaultInput" value="#{produtoList.produto.codProdutoExterno}"  maxlength="20"/>
+            </s:decorate>
+            
+            <s:decorate template="layout/display.xhtml">
+                <ui:define name="label">Nome Produto</ui:define>
+                <h:inputText id="nomeProduto" value="#{produtoList.produto.nomeProduto}" styleClass="defaultInput" maxlength="60"/>
+            </s:decorate>     
+            
+            <s:decorate template="layout/display.xhtml">
+                <ui:define name="label">NCM</ui:define>
+                <h:inputText id="ncm" value="#{produtoList.produto.ncm}" styleClass="defaultInput" maxlength="20"/>
+            </s:decorate>        
+
+            <s:decorate template="layout/display.xhtml">
+                <ui:define name="label">Descrição Produto</ui:define>
+                <h:inputText id="descProduto" value="#{produtoList.produto.descProduto}" styleClass="defaultInput" maxlength="60"/>
+            </s:decorate>
+            
+            <s:decorate template="layout/display.xhtml">
+                <ui:define name="label">Fornecedor</ui:define> 
+                 <h:selectOneMenu id="fornecedor" value="#{produtoList.fornecedor}"  required="false" styleClass="defaultInput">		
+				   <s:selectItems  value="#{fornecedorList.resultList}" 
+				   				  var="fornecedor" 			
+				                  label="#{fornecedor.nomeFantasia}"
+				                  noSelectionLabel="Selecione.."/>
+						<s:convertEntity />	 
+				  </h:selectOneMenu>
+            </s:decorate>  
+            
+            <s:decorate id="produtoMarcaField" template="layout/edit.xhtml">
+            	<ui:define name="label">Marca</ui:define>
+	            <h:selectOneMenu id="marca" value="#{produtoList.produto.marca}" required="false" styleClass="defaultInput">		
+				   <s:selectItems value="#{marcaList.resultList}" 
+				   				  var="marca" 			
+				                  label="#{marca.nomeMarca}"				                  
+				                  noSelectionLabel="Selecione.."/>			
+				   <s:convertEntity />			
+				</h:selectOneMenu>
+			</s:decorate>
+			
+			  <s:decorate template="layout/display.xhtml">
+                <ui:define name="label"><h:outputText value="Qtd. Linhas" title="Quantidade de linhas que serão exibidas na consulta" /></ui:define>                                
+				<rich:inputNumberSpinner id="numeroLinhasDT" value="#{produtoList.numeroLinhasDT}" step="10" inputSize="8" maxValue="1000" styleClass="inputDefault"/>				
+            </s:decorate> 
+
+		</rich:simpleTogglePanel>
+
+		<table border="0" width="10%">
+			<tr>
+				<td nowrap="nowrap">
+					<div class="actionButtons">
+						<a:commandButton id="search" type="submit" value="Pesquisar"
+							action="#{produtoList.setMostrarResultados(true)}"
+							reRender="resultadoList, panelDiv, msnListaVazia, sc" />
+
+						<s:button id="reset" value="Limpar" includePageParams="false" />
+						<rich:hotKey key="return"
+							handler="#{rich:element('search')}.click()" />
+					</div>
+				</td>
+				<td nowrap="nowrap">
+					<s:div styleClass="actionButtons">
+				        <s:button view="/ProdutoEdit.xhtml" rendered="#{identity.hasRole(transacoes.transacaoProdutoInserir)}"
+				                    id="create"
+				           propagation="none"
+				                 value="Novo Produto">
+				            <f:param name="produtoCodProduto"/>
+				        </s:button>
+				    </s:div>		
+				</td>
+			</tr>
+		</table>
+
+		</h:form>
+	<h:form> 
+	
+	<a:outputPanel id="msnListaVazia" ajaxRendered="true">
+	
+    <rich:panel  rendered="#{produtoList.mostrarResultados}">
+    
+    <f:facet name="header">
+		<a:outputPanel  id="panelDiv" ajaxRendered="true">
+	    	Resultado da pesquisa de Produto (#{empty produtoList.resultList ? 0 : (produtoList.paginated ? produtoList.resultCount : produtoList.resultList.size)})
+	    </a:outputPanel>
+    </f:facet>
+
+	<h:outputText value="#{messages['mensagem.pesquisa.vazia']}" rendered="#{empty produtoList.resultList}"/>  
+
+    <rich:dataTable  id="resultadoList"
+                	var="_produto"
+              	  value="#{produtoList.resultList}"
+           	   rendered="#{not empty produtoList.resultList}"
+         onRowMouseOver="this.style.backgroundColor='#F0F0F0'"
+          onRowMouseOut="this.style.backgroundColor='#{a4jSkin.rowBackgroundColor}'"
+          columnClasses="center"  
+        	       rows="#{produtoList.numeroLinhasDT}"
+        	columnsWidth="*,*,*,*,*,*,*,1%"
+             rowClasses="tableRowOne,tableRowTwo">
+     <!--
+     	 <rich:column> 
+           <f:facet name="header">
+               <h:outputText value="Cód. Sist" title="Código Interno do Produto no Sistema"/>
+           </f:facet> 
+           <h:outputText value="#{_produto.codProduto}"/>
+         </rich:column>-->
+         
+         <rich:column sortBy="#{_produto.codProdutoExterno}"> 
+           <f:facet name="header">
+               <h:outputText value="Cód.Prod." title="Código do Produto"/>
+           </f:facet> 
+           <h:outputText value="#{_produto.codProdutoExterno}"/>
+         </rich:column>
+         
+        <!--  <rich:column sortBy="#{_produto.ncm}" styleClass="left"> 
+           <f:facet name="header">
+               <h:outputText value="NCM"/> 
+           </f:facet> 
+           <h:outputText value="#{_produto.ncm}"/>
+         </rich:column> -->
+         
+         <rich:column sortBy="#{_produto.codigoBarrasProduto}" styleClass="left"> 
+           <f:facet name="header">
+               <h:outputText value="Cód.Barras"/>
+           </f:facet> 
+           <h:outputText value="#{_produto.codigoBarrasProduto}"/>
+         </rich:column>   
+               
+         <rich:column sortBy="#{_produto.nomeProduto}" styleClass="left"> 
+           <f:facet name="header">
+               <h:outputText value="Nome Produto"/>
+           </f:facet> 
+           <h:outputText value="#{_produto.nomeProduto}" title="#{_produto.descProduto}"/>
+         </rich:column>
+         
+          <rich:column sortBy="#{_produto.marca.nomeMarca}"> 
+           <f:facet name="header">
+               <h:outputText value="Marca"/>
+           </f:facet> 
+           <h:outputText value="#{_produto.marca.nomeMarca}"/>
+         </rich:column>
+         
+      <!--    <rich:column sortBy="#{_produto.temperatura}"> 
+           <f:facet name="header">
+               <h:outputText value="Temp.ºC" title="Temperatura em graus Celsius"/>
+           </f:facet> 
+           <h:outputText value="#{_produto.temperatura}"/>
+         </rich:column> -->
+               
+         <rich:column sortBy="#{_produto.categoria.nomeCategoria}"> 
+           <f:facet name="header">
+               <h:outputText value="Categoria"/>
+           </f:facet> 
+           <h:outputText value="#{_produto.categoria.nomeCategoria}"/>
+         </rich:column>
+         
+         <rich:column sortBy="#{_produto.localizadorDefault}"> 
+           <f:facet name="header">
+               <h:outputText value="Localizador" title="Localizador default."/>
+           </f:facet> 
+           <h:outputText value="#{_produto.localizadorDefault}"/>
+         </rich:column>
+         
+         <rich:column sortBy="#{_produto.precoCompraDefault}"> 
+           <f:facet name="header">
+               <h:outputText value="Preço Compra" title="Preço de compra padrão utilizado em uma Compra"/>
+           </f:facet> 
+           <h:outputText value="#{_produto.precoCompraDefault}">
+           		<f:convertNumber currencySymbol="R$"  type="currency"  locale="pt_BR"/>
+           </h:outputText>
+         </rich:column>
+         
+         <rich:column sortBy="#{_produto.precoVendaDefault}"> 
+           <f:facet name="header">
+               <h:outputText value="Preço Venda" title="Preço de venda padrão utilizado em uma Compra"/>
+           </f:facet> 
+           <h:outputText value="#{_produto.precoVendaDefault}">
+           		<f:convertNumber currencySymbol="R$"  type="currency"  locale="pt_BR"/>
+           </h:outputText>
+         </rich:column>
+         
+        <rich:column> 
+           <f:facet name="header">
+               <h:outputText value="Comissão" title="Valor pago de comissão pela venda do produto."/>
+           </f:facet> 
+           <h:outputText value="#{_produto.valorComissao}">
+           		<f:convertNumber currencySymbol="R$"  type="currency"  locale="pt_BR"/>
+           </h:outputText>
+         </rich:column>
+         
+         <rich:column> 
+           <f:facet name="header">
+               <h:outputText value="Lucro" title="Valor Venda - Valor Compra - Valor Comissão"/>
+           </f:facet> 
+           <h:outputText value="#{_produto.precoVendaDefault - _produto.precoCompraDefault - _produto.valorComissao}">
+           		<f:convertNumber currencySymbol="R$"  type="currency"  locale="pt_BR"/>
+           </h:outputText>
+         </rich:column>
+          
+         <rich:column>   
+            <f:facet name="header">Ver/Editar</f:facet>
+            
+            <s:link view="/#{empty from ? 'Produto' : from}.xhtml" propagation="#{empty from ? 'none' : 'default'}"
+                      id="produtoViewId">
+                <h:graphicImage url="/img/binoculo.jpg"/>
+                <f:param name="produtoCodProduto" value="#{_produto.codProduto}"/>
+            </s:link> 
+            <rich:toolTip for="produtoViewId" value="Visualizar Produto" direction="top-left"/>
+            
+            #{' '}
+            
+            <s:link view="/ProdutoEdit.xhtml" propagation="none" id="produtoEdit" rendered="#{identity.hasRole(transacoes.transacaoProdutoEditar)}">
+            	<h:graphicImage url="/img/editar.jpg"/>
+                <f:param name="produtoCodProduto" value="#{_produto.codProduto}"/>
+            </s:link>
+            <rich:toolTip for="produtoEdit" value="Editar Produto" direction="top-left"/>
+            
+        </rich:column>
+    </rich:dataTable>
+	
+	<ui:include src="/includes/includeDataScroller.xhtml"/>
+    </rich:panel>
+    </a:outputPanel>
+	</h:form>
+   
+<rich:jQuery selector="#codigoBarrasProduto" timing="onload" query="focus()" />
+</ui:define>
+
+</ui:composition>

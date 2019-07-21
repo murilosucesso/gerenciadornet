@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<page xmlns="http://jboss.com/products/seam/pages" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://jboss.com/products/seam/pages http://jboss.com/products/seam/pages-2.2.xsd"
+	login-required="true">
+	
+	
+	
+	<restrict>#{identity.hasRole(transacoes.transacaoClienteGestao)}</restrict>
+	<begin-conversation join="true" flush-mode="MANUAL"/>
+	 
+	<param name="firstResult" value="#{clienteGestaoList.firstResult}" />
+	<param name="sort" value="#{clienteGestaoList.orderColumn}" />
+	<param name="dir" value="#{clienteGestaoList.orderDirection}" />
+	<param name="logic" value="#{clienteGestaoList.restrictionLogicOperator}" />
+	<param name="from" />
+	<param name="clienteFrom"/>
+	
+	<param name="entidade" value="#{clienteGestaoList.cliente.entidade.codEntidade}" />
+	<param name="usuario" value="#{clienteGestaoList.cliente.usuario.codUsuario}" />
+	<param name="grupo" value="#{clienteGestaoList.cliente.grupo.codGrupo}" />
+	<param name="dataInicioVenda" value="#{clienteGestaoList.dataInicioVenda}" />
+	<param name="mostrarResultados" value="#{clienteGestaoList.mostrarResultados}" />
+	<param name="numeroLinhasDT" 	value="#{clienteGestaoList.numeroLinhasDT}" />
+</page>
+

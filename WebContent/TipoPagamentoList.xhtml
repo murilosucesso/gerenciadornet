@@ -1,0 +1,155 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:s="http://jboss.com/products/seam/taglib"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:rich="http://richfaces.org/rich"
+    xmlns:a="http://richfaces.org/a4j"
+    template="layout/template.xhtml">
+
+<ui:define name="body">
+
+    <h:form id="tipoPagamentoSearch" styleClass="edit">
+
+		<ui:include src="/paginas/help/GenericListHelp.xhtml"/>	
+
+        <rich:simpleTogglePanel label="Filtro de pesquisa de Tipo de Pagamento" switchType="client">
+
+            <s:decorate template="layout/display.xhtml">
+                <ui:define name="label">Tipo Pagamento</ui:define>
+                <h:inputText id="descTipoPagamento" value="#{tipoPagamentoList.tipoPagamento.descTipoPagamento}" size="50"/>
+            </s:decorate>
+
+        </rich:simpleTogglePanel>
+        
+	    <table border="0" width="10%">
+			<tr>
+				<td nowrap="nowrap">
+
+		        	 <a:commandButton id="search" type="submit" value="Pesquisar" reRender="resultadoList, panelDiv, msnListaVazia, sc"/>
+                     <s:button id="reset" value="Limpar" includePageParams="false" action="#{tipoPagamentoList.limpar()}"/>   
+			   		 <rich:hotKey key="return" handler="#{rich:element('search')}.click()"/>		  
+				</td>
+				<td nowrap="nowrap">    
+				   <s:div styleClass="actionButtons">
+				        <s:button view="/TipoPagamentoEdit.xhtml"  rendered="#{identity.hasRole(transacoes.transacaoTipoPagamentoInserir)}"
+				                    id="create"
+				           propagation="none"
+				                 value="Novo Tipo Pagamento">
+				            <f:param name="tipoPagamentoCodTipoPagamento"/>
+				        </s:button>
+				    </s:div>
+			   	</td>
+	    	</tr>
+		</table>
+
+    </h:form>
+
+	<h:form>
+    <rich:panel>
+    
+    <f:facet name="header">
+		<a:outputPanel  id="panelDiv" ajaxRendered="true">
+	        Resultado da pesquisa por Tipo Pagamento (#{empty tipoPagamentoList.resultList ? 0 : (tipoPagamentoList.paginated ? tipoPagamentoList.resultCount : tipoPagamentoList.resultList.size)})
+	    </a:outputPanel>
+    </f:facet>
+    
+    <a:outputPanel id="msnListaVazia" ajaxRendered="true">
+   	
+	<h:outputText value="#{messages['mensagem.pesquisa.vazia']}" rendered="#{empty tipoPagamentoList.resultList}" />
+
+    <rich:dataTable id="resultadoList"
+                var="_tipoPagamento"
+              value="#{tipoPagamentoList.resultList}"
+     onRowMouseOver="this.style.backgroundColor='#F0F0F0'"
+      onRowMouseOut="this.style.backgroundColor='#{a4jSkin.rowBackgroundColor}'"
+      columnClasses="left, center, center, center, center, center, center"  
+      		   rows="15"
+      	   rendered="#{not empty tipoPagamentoList.resultList}"
+         rowClasses="tableRowOne,tableRowTwo">
+                   
+       <rich:column sortBy="#{_tipoPagamento.descTipoPagamento}"> 
+           <f:facet name="header">
+               <h:outputText value="Tipo Pagamento"/>
+           </f:facet> 
+           <h:outputText value="#{_tipoPagamento.descTipoPagamento}"/>
+        </rich:column>
+        
+        <rich:column sortBy="#{_tipoPagamento.numVezes}"> 
+           <f:facet name="header">
+               <h:outputText value="Número Vezes" title="Número de parcelas em que o pagamento será realizado"/>
+           </f:facet> 
+           <h:outputText value="#{_tipoPagamento.numVezes}"/>
+        </rich:column>
+        
+        <rich:column sortBy="#{_tipoPagamento.intervaloDias}"> 
+           <f:facet name="header">
+               <h:outputText value="Intervalo de Dias" title="Intervalo de dias em que serão cobradas as parcelas"/>
+           </f:facet> 
+           <h:outputText value="#{_tipoPagamento.intervaloDias}"/>
+        </rich:column>
+        
+        <rich:column sortBy="#{_tipoPagamento.diasCarencia}"> 
+           <f:facet name="header">
+               <h:outputText value="Dias de Carência" title="Quantidade de dias para a cobrança da primeira parcela"/>
+           </f:facet> 
+           <h:outputText value="#{_tipoPagamento.diasCarencia}"/>
+        </rich:column>
+        
+        <rich:column sortBy="#{_tipoPagamento.inGN}">
+           <f:facet name="header">
+               <h:outputText value="Gerenenciador Net" title="Tipo de Pagamento visível no sistema GerenciadorNet"/>
+           </f:facet> 
+           <h:graphicImage url="/img/iconBlueCheck.gif" rendered="#{_tipoPagamento.inGN}"/>
+        </rich:column>
+        
+        <rich:column sortBy="#{_tipoPagamento.inGNb2b}"> 
+           <f:facet name="header">
+               <h:outputText value="Gerenenciador Net B2B" title="Tipo de Pagamento visível no sistema GerenciadorNetB2B"/>
+           </f:facet> 
+           <h:graphicImage url="/img/iconBlueCheck.gif" rendered="#{_tipoPagamento.inGNb2b}"/>
+        </rich:column>
+        
+         <rich:column sortBy="#{_tipoPagamento.inECommerce}"> 
+           <f:facet name="header">
+               <h:outputText value="ECommerce" title="Tipo de Pagamento visível no sistema Ecommerce - comércio eletrônico"/>
+           </f:facet> 
+           <h:graphicImage url="/img/iconBlueCheck.gif" rendered="#{_tipoPagamento.inECommerce}"/>
+        </rich:column>
+        
+        <rich:column styleClass="action">
+        
+            <f:facet name="header">Visualizar/Editar</f:facet>
+        
+            <s:link view="/TipoPagamento.xhtml" propagation="default" id="tipoPagamentoViewId">
+                <h:graphicImage url="/img/binoculo.jpg"/>
+                <f:param name="tipoPagamentoCodTipoPagamento" value="#{_tipoPagamento.codTipoPagamento}"/>
+                <f:param name="from" value="TipoPagamentoList"/>
+            </s:link>
+            
+            <rich:toolTip for="tipoPagamentoViewId" value="Visualizar Tipo de Pagamento" direction="top-left"/>
+            
+            #{' '}
+            
+            <s:link view="/TipoPagamentoEdit.xhtml" propagation="none" id="tipoPagamentoEdit"
+                rendered="#{identity.hasRole(transacoes.transacaoTipoPagamentoEditar)}">
+                <h:graphicImage url="/img/editar.jpg"/>
+                <f:param name="tipoPagamentoCodTipoPagamento" value="#{_tipoPagamento.codTipoPagamento}"/>
+            </s:link>
+            
+            <rich:toolTip for="tipoPagamentoEdit" value="Editar Tipo de Pagamento" direction="top-left"/>
+            
+        </rich:column>
+    </rich:dataTable>
+	
+	<ui:include src="/includes/includeDataScroller.xhtml"/>
+	
+    </a:outputPanel>
+    </rich:panel>
+	</h:form>
+	<rich:jQuery selector="#descTipoPagamento" timing="onload" query="focus()" />
+</ui:define>
+
+</ui:composition>

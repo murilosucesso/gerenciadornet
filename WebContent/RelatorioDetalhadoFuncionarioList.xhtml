@@ -1,0 +1,136 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:s="http://jboss.com/products/seam/taglib"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:rich="http://richfaces.org/rich"
+    xmlns:a="http://richfaces.org/a4j"
+    template="layout/template.xhtml">
+
+<ui:define name="body">
+		
+    <h:form id="vendaSearch" styleClass="edit">
+		
+        <rich:simpleTogglePanel label="Filtro de pesquisa de Vendas" switchType="client">
+			
+			 <table border="0" width="100%" align="left">
+			 
+				<tr>
+	            	<td>
+			            <s:decorate template="layout/display.xhtml">
+			                <ui:define name="label">Vendedor(Funcionário)</ui:define>                
+			                <h:selectOneMenu id="usuario" value="#{relatorioDetalhadoFuncionarioList.funcionario}" 
+			                		rendered="#{user.perfil.codPerfil != constantes.vendedor}"
+			                		required="true"
+			                		requiredMessage="Selecione um funcionário."
+			                		title="Funcionário que realizou a venda" styleClass="defaultInput">		
+							   <s:selectItems value="#{usuarioList.resultList}" 
+							   				  var="usuario" 			
+							                  label="#{usuario.nomeUsuario}"
+							                  required="true"
+							                  noSelectionLabel="Selecione.." />							       		
+							   <s:convertEntity />			
+							</h:selectOneMenu>		
+			            	<h:outputText value="#{user.nomeUsuario}" rendered="#{user.perfil.codPerfil == constantes.vendedor}"/>
+			            </s:decorate>
+           			</td>
+            	</tr>
+            	
+            	<tr>
+		        	<td width="20%" nowrap="nowrap" colspan="2"> 
+			            <s:decorate template="layout/display.xhtml">
+			                <ui:define name="label">Cliente(Funcionário)</ui:define>
+			                 <h:selectOneMenu id="cliente" value="#{relatorioDetalhadoFuncionarioList.clienteFuncionario}"
+			                 		requiredMessage="O campo Cliente é obrigatório" required="true" title="Selecione o funcinário" styleClass="defaultInput">		
+							   <s:selectItems value="#{clienteList.getResultListCombo()}"
+							   			itemValue="#{cliente.codCliente}" 
+							   				  var="cliente" 			
+							                  label="#{cliente.nome}"
+							                  noSelectionLabel="Selecione.." />		
+							</h:selectOneMenu>	
+			            </s:decorate>
+			        </td>
+				</tr>
+				<tr>
+		        	<td width="20%" nowrap="nowrap" colspan="2"> 
+		        		 <s:decorate template="layout/display.xhtml">
+		        		 	 <ui:define name="label">Fornecedor(Funcionário)</ui:define>
+		        		 	 
+								<h:selectOneMenu id="fornecedor"
+										value="#{relatorioDetalhadoFuncionarioList.fornecedor}" title="Fornecedor da compra" styleClass="defaultInput">
+										<s:selectItems value="#{fornecedorList.getResultList()}" var="fornecedor"
+											label="#{fornecedor.nomeFantasia}" required="false"
+											noSelectionLabel="Selecione.." />
+										<s:convertEntity />
+								</h:selectOneMenu>
+						 </s:decorate>
+			        </td>
+				</tr>
+				<tr>
+		            <td>
+		            	<h:outputLabel value="Data Início*" styleClass="name"/>
+		            	<rich:spacer width="5px"/>
+		                <rich:calendar id="dataInicioVenda" required="true" value="#{relatorioDetalhadoFuncionarioList.dataInicioPesquisa}" defaultTime="00:00" resetTimeOnDateSelect="true" datePattern="dd/MM/yyyy">
+		                	<f:convertDateTime pattern="yyyy-MM-dd HH:mm"/>
+		                </rich:calendar>  
+ 						<rich:spacer width="20px"/>
+		            	<h:outputLabel value="Data Fim*" styleClass="textoNegrito"/>
+		            	<rich:spacer width="15" />
+		                <rich:calendar id="dataFimVenda" required="true" value="#{relatorioDetalhadoFuncionarioList.dataFimPesquisa}" defaultTime="23:59" resetTimeOnDateSelect="false" datePattern="dd/MM/yyyy">
+		                	<f:convertDateTime pattern="yyyy-MM-dd HH:mm"/>
+		                </rich:calendar>
+		            </td>
+	            </tr>
+           	</table>    
+            <div style="clear:both">
+                <span class="required">*</span>
+                Campos obrigatórios            
+            </div>
+                       
+        </rich:simpleTogglePanel>
+
+         <div class="actionButtons">
+	          <a:commandButton id="search" type="button" value="Pesquisar" 
+	          	process="cliente,usuario,dataInicioVenda,dataFimVenda" 
+	          	action="#{relatorioDetalhadoFuncionarioList.setMostrarResultados(true)}" 
+	          	actionListener="#{relatorioDetalhadoFuncionarioList.executarConsultas()}"
+	          	reRender="msnListaVazia"/>
+	          	
+	          	<s:button id="reset" value="Limpar" includePageParams="false"/>   
+	   		  
+	   		  <rich:hotKey key="return" handler="#{rich:element('search')}.click()"/>
+	   	</div>
+
+    </h:form>
+    
+	<h:form> 
+	
+	<a:outputPanel id="msnListaVazia" ajaxRendered="true">
+	
+    <rich:panel  rendered="#{relatorioDetalhadoFuncionarioList.mostrarResultados}">
+    
+    <f:facet name="header">   
+	    <a:outputPanel  id="panelDiv" ajaxRendered="true">
+	    	Relatório de Realizações do Funcionário
+	    </a:outputPanel> 
+    </f:facet> 
+	
+		<ui:include src="/RelatorioDetalhadoFuncionarioListInclude.xhtml"/>
+		<ui:include src="/RelatorioDetalhadoFuncionarioListImprimir.xhtml" />
+		
+   		<a:region rendered="#{relatorioDetalhadoFuncionarioList.mostrarResultados}">
+	    	<input  type="button" id="btnImprimir" value="Imprimir"  title="Imprimir Relatório"/>
+			<rich:componentControl for="imprimirRelatorioFuncionarioPopUp" attachTo="btnImprimir"  operation="show" event="onclick"/>								
+	    </a:region>
+   		  
+    </rich:panel>
+    </a:outputPanel>
+    <rich:jQuery selector="#usuario" timing="onload" query="focus()" />
+	</h:form>
+	
+	 
+</ui:define>
+
+</ui:composition>

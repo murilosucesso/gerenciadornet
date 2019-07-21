@@ -1,0 +1,219 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:s="http://jboss.com/products/seam/taglib"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:rich="http://richfaces.org/rich"
+    xmlns:a="http://richfaces.org/a4j"
+    template="layout/template.xhtml">
+
+<ui:define name="body">
+
+    <a:form id="vendaSearch" styleClass="edit">
+		
+        <rich:simpleTogglePanel label="Filtro de pesquisa de Vendas" switchType="client">
+			
+			 <table width="100%" align="left">
+			 	<tr>
+		        	<td width="20%" nowrap="nowrap" colspan="2">
+			           						
+							<s:decorate template="layout/edit.xhtml">
+			                <ui:define name="label">Cliente</ui:define>
+			                 <h:selectOneMenu id="cliente" value="#{relatorioList.codCliente}" title="Cliente da venda" styleClass="defaultInput">		
+							   <s:selectItems value="#{clienteList.getResultListCombo()}" 
+							   				  var="cliente" 			
+							   				  itemValue="#{cliente.codCliente}"
+							                  label="#{cliente.nome}"/>										          				       	
+							</h:selectOneMenu>	
+			            	</s:decorate>									
+			            
+			        </td>
+				</tr>
+           		<tr>
+		            <td colspan="2">
+			            <s:decorate template="layout/display.xhtml">
+			                <ui:define name="label">Status Venda</ui:define>
+							 <h:selectOneMenu id="statusVenda" value="#{relatorioList.statusVenda}" styleClass="defaultInput textoNegrito">
+			                	<f:selectItem itemLabel="Todas" />					
+								<f:selectItem itemLabel="Em Aberto(Não Concluídas)" itemValue="88" />
+								<f:selectItem itemLabel="Concluídas(Pagas)" itemValue="2" />
+							</h:selectOneMenu>				
+			            </s:decorate>
+           			</td>
+		        </tr>	           
+	            <tr>
+		            <td colspan="2">
+		            	<h:outputLabel value="Data Início*" styleClass="name"/>
+		            	<rich:spacer width="5px"/>
+		                <rich:calendar id="dataInicioVenda" required="true" requiredMessage="O campo Data Início é obrigatório" value="#{relatorioList.venda.dataInicioVenda}" defaultTime="00:00" resetTimeOnDateSelect="true" datePattern="dd/MM/yyyy">
+		                	<f:convertDateTime pattern="yyyy-MM-dd HH:mm"/>
+		                </rich:calendar>  
+ 						<rich:spacer width="20px"/>
+		            	<h:outputLabel value="Data Fim*" styleClass="textoNegrito"/>
+		            	<rich:spacer width="15" />
+		                <rich:calendar id="dataFimVenda" required="true" requiredMessage="O campo Data Fim é obrigatório" value="#{relatorioList.venda.dataFimVenda}" defaultTime="23:59" resetTimeOnDateSelect="false" datePattern="dd/MM/yyyy">
+		                	<f:convertDateTime pattern="yyyy-MM-dd HH:mm"/>
+		                </rich:calendar>
+		            </td>
+	            </tr>            
+           	</table>    
+            <div style="clear:both">
+                <span class="required">*</span>
+                Campos obrigatórios            
+            </div>
+                       
+        </rich:simpleTogglePanel>
+
+         <div class="actionButtons">
+	          <a:commandButton id="search" type="submit" value="Pesquisar" actionListener="#{relatorioList.buscarCliente()}" action="#{relatorioList.setMostrarResultados(true)}" reRender="resultadoList, panelDiv, msnListaVazia, anotacoesPanel"/>
+	           
+	          <s:button id="reset" value="Limpar" includePageParams="false"/>   
+	   		  <rich:hotKey key="return" handler="#{rich:element('search')}.click()"/>
+	   	</div>
+
+    </a:form>
+    
+	<h:form>
+		<a:outputPanel id="msnListaVazia" ajaxRendered="true">
+		    <rich:panel  rendered="#{relatorioList.mostrarResultados}">
+		    
+		    <f:facet name="header">   
+			    <a:outputPanel  id="panelDiv" ajaxRendered="true">
+			    	Relatório de Vendas(#{empty relatorioList.resultList ? 0 : (relatorioList.paginated ? relatorioList.resultCount : relatorioList.resultList.size)})
+			    </a:outputPanel> 
+		    </f:facet> 
+			
+			<ui:include src="/RelatorioClienteListResultado.xhtml"/>
+			<ui:include src="/RelatorioClienteListImprimir.xhtml" />
+			 
+			<rich:spacer height="15" />
+		    <h:outputText value="Valores(Recebimentos) em ABERTO"  styleClass="textoNegrito" />
+		    <rich:spacer height="10" />
+		    
+		    <!-- Lista de Recebimentos do cliente para o período pesquisado -->
+		    <rich:dataTable id="recebimentoList2" var="_recebimento"
+					value="#{relatorioList.listarRecebimentosCliente()}"
+					onRowMouseOver="this.style.backgroundColor='#F0F0F0'"
+					onRowMouseOut="this.style.backgroundColor='#{a4jSkin.rowBackgroundColor}'"
+					footerClass="center"
+					rows="15" 
+					columnsWidth="20%,20%,20%,25%,15%"
+					rowClasses="tableRowOne,tableRowTwo"
+					rowKeyVar="row">
+		
+				<rich:column styleClass="center">
+					<f:facet name="header">
+						<h:outputText value="Data Venda" />
+					</f:facet>
+					<h:outputText value="#{_recebimento.venda.dataInicioVenda}"
+						id="dataVenda">
+						<s:convertDateTime type="date" pattern="dd/MM/yyyy HH:mm" />
+					</h:outputText>
+				</rich:column>
+		
+				<rich:column styleClass="center">
+					<f:facet name="header">
+						<h:outputText value="Venda" />
+					</f:facet>
+					<h:outputText value="#{_recebimento.venda.codVenda}" />
+				</rich:column>
+		
+				<rich:column styleClass="left">
+					<f:facet name="header">
+						<h:outputText value="Vendedor" title="Vendedor que realizou a venda" />
+					</f:facet>
+					<h:outputText value="#{_recebimento.venda.usuario.nomeUsuario}" />
+				</rich:column>
+		
+				<rich:column styleClass="center">
+					<f:facet name="header">
+						<h:outputText value="Data Agendamento Recebimento"
+							title="Data Agendamento do Recebimento. Data prevista de recebimento da parcela. " />
+					</f:facet>
+					<h:outputText value="#{_recebimento.dataAgendamentoRecebimento}"
+						id="dataAgendamentoRecebimento">
+						<s:convertDateTime type="date" pattern="dd/MM/yyyy" />
+					</h:outputText>
+				</rich:column>
+		
+				<rich:column styleClass="center">
+					<f:facet name="header">
+						<h:outputText value="Valor a Receber" title="Valor a Receber" />
+					</f:facet>
+		
+					<h:outputText value="#{_recebimento.valorAReceber}"
+						id="valorAReceber">
+						<f:convertNumber currencySymbol="R$" type="currency" locale="pt_BR" />
+					</h:outputText>
+		
+					<f:facet name="footer">
+						<h:outputText styleClass="textoNegrito" id="valorTotalAReceber"
+							value="#{relatorioList.valorTotalAreceber}">
+							<f:convertNumber currencySymbol="R$" type="currency" locale="pt_BR" />
+						</h:outputText>
+					</f:facet>
+				</rich:column>
+			</rich:dataTable>
+		    <rich:datascroller align="center" renderIfSinglePage="false" for="recebimentoList2" maxPages="10" id="sc2"/>
+		    
+		    <br/>
+		    
+<!-- Funcionalidade Anotações Cliente-->
+			<h:outputText value="Anotações" styleClass="textoNegrito"/>
+
+			<h:form id="anotacoesForm">
+			<a:outputPanel id="anotacoesPanel" ajaxRendered="true">
+			
+			<rich:dataTable value="#{relatorioList.anotacoes}"
+				id="anotacoesTable" var="_anotacao"
+				rendered="#{not empty relatorioList.anotacoes}"
+				onRowMouseOver="this.style.backgroundColor='#F0F0F0'"
+				onRowMouseOut="this.style.backgroundColor='#{a4jSkin.rowBackgroundColor}'"
+				columnClasses="center" footerClass="center"
+				columnsWidth="15%, 15%, *" 
+				rowClasses="tableRowOne,tableRowTwo">
+
+						<rich:column id="dataAnotacao">
+							<f:facet name="header">
+								<h:outputText value="Data da Anotação" />
+							</f:facet>
+							<h:outputText value="#{_anotacao.dataAnotacao}">
+								<s:convertDateTime type="date" pattern="dd/MM/yyyy HH:mm:ss" />
+							</h:outputText>
+						</rich:column>
+
+						<rich:column>
+							<f:facet name="header">
+								<h:outputText value="Usuário" />
+							</f:facet>
+							<h:outputText value="#{_anotacao.usuario.nomeUsuario}" />
+						</rich:column>
+
+						<rich:column styleClass="left">
+							<f:facet name="header">
+								<h:outputText value="Anotação" />
+							</f:facet>
+							<h:outputText value="#{_anotacao.descAnotacao}" />
+						</rich:column>
+
+			</rich:dataTable>
+ 		 	
+ 		 	</a:outputPanel>
+			</h:form>
+			
+		    </rich:panel>
+		    
+		    <a:region rendered="#{relatorioList.mostrarResultados}">
+		    	<input  type="button" id="btnImprimir" value="Imprimir"  title="Imprimir Relatório"/>
+				<rich:componentControl for="imprimirFinanceiroPopUp" attachTo="btnImprimir"  operation="show" event="onclick"/>								
+		    </a:region>
+		    
+	    </a:outputPanel>
+	    <rich:jQuery selector="#cliente" timing="onload" query="focus()" />
+	</h:form>
+   
+</ui:define>
+
+</ui:composition>

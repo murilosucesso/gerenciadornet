@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<page xmlns="http://jboss.com/products/seam/pages" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://jboss.com/products/seam/pages http://jboss.com/products/seam/pages-2.2.xsd"
+	login-required="true">
+	
+	<begin-conversation join="true" flush-mode="MANUAL"/>
+	 
+	<param name="firstResult" value="#{atendimentoList.firstResult}" />
+	<param name="sort" value="#{atendimentoList.orderColumn}" />
+	<param name="dir" value="#{atendimentoList.orderDirection}" />
+	<param name="logic" value="#{atendimentoList.restrictionLogicOperator}" />
+	<param name="from" />
+	<param name="atendimentoFrom" />
+	
+	<param name="codAtendimento" 	value="#{atendimentoList.atendimento.codAtendimento}"/>
+	<param name="codCliente" 		value="#{atendimentoList.atendimento.cliente.codCliente}" />
+	<param name="cpfCnpj" 			value="#{atendimentoList.atendimento.cliente.cpfCnpj}" />
+	<param name="nome" 				value="#{atendimentoList.atendimento.cliente.nome}" />
+	<param name="telefone" 			value="#{atendimentoList.atendimento.cliente.telefone}" />
+	<param name="usuario" 			value="#{atendimentoList.atendimento.usuario.codUsuario}" />
+	<param name="statusAtendimento"	value="#{atendimentoList.atendimento.statusAtendimento}" />
+	<param name="statusAtendimento"	value="#{atendimentoList.atendimento.codTipoAtendimento}" />
+	<param name="inObtencaoExito" 	value="#{atendimentoList.atendimento.inObtencaoExito}" />
+
+	<param name="dataInicio" 		value="#{atendimentoList.dataInicio}" />
+	<param name="dataFim"	 		value="#{atendimentoList.dataFim}" />
+	
+	<param name="mostrarResultados" value="#{atendimentoList.mostrarResultados}" />
+	<param name="numeroLinhasDT" 	value="#{atendimentoList.numeroLinhasDT}" />
+</page>
+

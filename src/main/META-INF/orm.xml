@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<orm:entity-mappings version="1.0"
+	xmlns:orm="http://java.sun.com/xml/ns/persistence/orm" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/persistence/orm http://java.sun.com/xml/ns/persistence/orm_1_0.xsd ">
+
+	<orm:named-query name="ImagemProduto.findAll">
+		<orm:query>SELECT im.id,im.produto,im.ordemApresentacao,im.nome,im.extensao,im.tamanho FROM ImagemProduto im</orm:query>
+	</orm:named-query>
+
+</orm:entity-mappings>

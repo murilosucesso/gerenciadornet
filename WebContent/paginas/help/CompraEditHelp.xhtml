@@ -1,0 +1,43 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition id="panelPopUp" width="700" height="470" 
+	xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:s="http://jboss.com/products/seam/taglib"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:a="http://richfaces.org/a4j"
+    xmlns:rich="http://richfaces.org/rich">
+
+	<div>
+		<a:commandLink>
+			<h:graphicImage value="/img/help.png" styleClass="help" id="helplink"/>
+			<rich:toolTip direction="bottom-left" attachTo="helplink" followMouse="true">
+	           <s:span style="white-space:nowrap">
+	           	   ---------- Ajuda, Dicas e Procedimentos para Incluir um Nova Compra  -------------<br/><br/>
+	               Cada compra só pode ter um único Fornecedor/Vendedor.<br/>
+	               Caso o Fornecedor/Vendedor seja alterado, todos os produtos serão excluídos.<br/><br/>
+	               Passo a passo para inclusão de uma Nova Compra:<br/>
+	               - Selecione Fornecedor/Vendedor<br/> 
+	               - Informe Data Compra e Tipo Pagamento<br/> 
+	               - Os campos Observação e Número nota fiscal são opcionais<br/> 
+	               - Selecione Marca e Produto<br/>
+	               - Informe Lote, Data Validade, Quantidade(Qtd), Preço Compra, <br/>
+	                 Preço Venda e Desconto Máximo(Desc Max).<br/> 
+	               - Os campos Preço Compra e Preço Venda vêm com preços sugeridos no cadastro do produto<br/>
+	               - Adicione o produto clicando no botão ADD+<br/> 
+	               - Repita este processo até o incluir todos os lotes de produto.<br/> 
+	               - Clique no botão Salvar pra finalizar a compra.	<br/> 	    
+	               Obs: Os campos marcados com asterisco(*) são de preenchimento obrigatório<br/> 
+	               
+	               ---------- Ajuda, Dicas e Procedimentos para Alterar uma Compra  -------------<br/><br/>
+	               - Alguns campos não são passíveis de edição<br/> 
+	               - Altere os campos desejados<br/>
+	               - Caso queira Excluir um lote já adicionado, clique no ícone da lixeira(Excluir)<br/>
+	               - Clique no botão Salvar para que as alterações sejam confirmadas<br/><br/>
+	               - Caso queira cancelar a alteração, clique no botão Voltar<br/>	           
+	            </s:span>
+	       	</rich:toolTip>
+      	</a:commandLink>
+   	</div>
+</ui:composition> 

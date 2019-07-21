@@ -1,0 +1,123 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:s="http://jboss.com/products/seam/taglib"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:rich="http://richfaces.org/rich"
+    template="layout/template.xhtml">
+
+<ui:define name="body">
+
+    <rich:panel>
+        <f:facet name="header">Detalhes da Marca</f:facet>
+
+        <s:decorate id="nomeMarca" template="layout/display.xhtml">
+            <ui:define name="label">Nome marca</ui:define>
+            <h:outputText value="#{marcaHome.instance.nomeMarca}"/>
+        </s:decorate>
+        
+        <s:decorate id="fornecedor" template="layout/display.xhtml">
+            <ui:define name="label">Fornecedor</ui:define>
+            <h:outputText value="#{marcaHome.instance.fornecedor.nomeFantasia}"/>
+        </s:decorate>
+
+        <div style="clear:both"/>
+
+    </rich:panel>
+
+    <div class="actionButtons">
+
+        <s:button view="/MarcaEdit.xhtml" rendered="#{identity.hasRole(transacoes.transacaoMarcaEditar)}"
+                    id="edit"
+                 value="Editar"/>
+
+        <s:button view="/#{empty marcaFrom ? 'MarcaList' : marcaFrom}.xhtml"
+                    id="done"
+                 value="Voltar"/>
+
+    </div>
+
+    <rich:tabPanel switchType="ajax">
+
+    <rich:tab>
+        <f:facet name="label">
+            <h:panelGroup><h:graphicImage value="/img/onetomany.gif" style="vertical-align: middle; padding-right: 4px;"/>Produtos</h:panelGroup>
+        </f:facet>
+    <h:form styleClass="association" id="produtosChildren">
+
+        <h:outputText value="There are no produtos associated with this marca."
+                   rendered="#{empty marcaHome.produtos}"/>
+
+        <rich:dataTable value="#{marcaHome.produtos}"
+                       var="_produto"
+                  rendered="#{not empty marcaHome.produtos}"           
+                        id="produtosTable"
+			onRowMouseOver="this.style.backgroundColor='#F0F0F0'"
+           	 onRowMouseOut="this.style.backgroundColor='#{a4jSkin.rowBackgroundColor}'"
+           	 columnClasses="center" 
+           		rowClasses="tableRowOne,tableRowTwo">
+           
+             <rich:column sortBy="#{_produto.codProdutoExterno}"> 
+           <f:facet name="header">
+               <h:outputText value="Codigo produto"/>
+           </f:facet> 
+           <h:outputText value="#{_produto.codProdutoExterno}"/>
+         </rich:column>  
+               
+         <rich:column sortBy="#{_produto.nomeProduto}"> 
+           <f:facet name="header">
+               <h:outputText value="Nome produto"/>
+           </f:facet> 
+           <h:outputText value="#{_produto.nomeProduto}"/>
+         </rich:column>
+   
+         <rich:column sortBy="#{_produto.categoria.nomeCategoria}"> 
+           <f:facet name="header">
+               <h:outputText value="Categoria"/>
+           </f:facet> 
+           <h:outputText value="#{_produto.categoria.nomeCategoria}"/>
+         </rich:column>
+        
+         <rich:column sortBy="#{_produto.marca.nomeMarca}"> 
+           <f:facet name="header">
+               <h:outputText value="Marca"/>
+           </f:facet> 
+           <h:outputText value="#{_produto.marca.nomeMarca}"/>
+         </rich:column>
+    
+        <rich:column sortBy="#{_produto.descProduto}"> 
+           <f:facet name="header">
+               <h:outputText value="Descricao produto"/>
+           </f:facet> 
+           <h:outputText value="#{_produto.descProduto}"/>
+         </rich:column>             
+                
+         <h:column>
+             <f:facet name="header">Ver</f:facet>
+             <s:link id="selectproduto" view="/Produto.xhtml">
+                    <h:graphicImage url="/img/binoculo.jpg"/>     
+	                 <f:param name="produtoCodProduto"
+	                         value="#{_produto.codProduto}"/>
+	                 <f:param name="produtoFrom" value="Marca"/>
+             </s:link>
+         </h:column>
+        </rich:dataTable>
+
+    </h:form>
+
+    <div class="actionButtons">
+        <s:button  rendered="#{identity.hasRole(transacoes.transacaoProdutoInserir)}"
+               value="Novo Produto"
+                view="/ProdutoEdit.xhtml">
+            <f:param name="marcaCodMarca"
+                    value="#{marcaHome.instance.codMarca}"/>
+            <f:param name="produtoFrom" value="Marca"/>
+        </s:button>
+    </div>
+    </rich:tab>
+</rich:tabPanel>
+</ui:define>
+
+</ui:composition>

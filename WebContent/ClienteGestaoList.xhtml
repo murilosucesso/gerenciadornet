@@ -1,0 +1,207 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:s="http://jboss.com/products/seam/taglib"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:a="http://richfaces.org/a4j"
+    xmlns:rich="http://richfaces.org/rich"
+    xmlns:easy="http://easyfaces.com.br/easyfaces"
+    template="layout/template.xhtml">
+
+<ui:define name="body">
+
+    <a:form id="clienteSearch" styleClass="edit">
+		
+		<ui:include src="/paginas/help/GenericListHelp.xhtml"/>	
+		
+        <rich:simpleTogglePanel label="Filtro de pesquisa de Cliente" switchType="client">
+
+             <s:decorate template="layout/display.xhtml">
+                <ui:define name="label">Entidade</ui:define>
+                 <h:selectOneMenu id="entidade" value="#{clienteGestaoList.cliente.entidade}" styleClass="defaultInput">		
+				   <s:selectItems value="#{entidadeList.resultList}" 
+				   				  var="entidade" 			
+				                  label="#{entidade.nome}"
+				                  required="false"
+				                  noSelectionLabel="Selecione.." />							       		
+				   <s:convertEntity />			
+				</h:selectOneMenu>		
+            </s:decorate>
+			
+			<s:decorate template="layout/display.xhtml">
+                <ui:define name="label">Vendedor(Responsável)</ui:define>                
+                <h:selectOneMenu id="usuario" value="#{clienteGestaoList.cliente.usuario}" styleClass="defaultInput">		
+				   <s:selectItems value="#{usuarioList.resultList}" 
+				   				  var="usuario" 			
+				                  label="#{usuario.nomeUsuario}"
+				                  required="false"
+				                  noSelectionLabel="Selecione.." />							       		
+				   <s:convertEntity />			
+				</h:selectOneMenu>		
+            </s:decorate>
+            
+            <s:decorate template="layout/display.xhtml">
+                <ui:define name="label">Grupo(Carteira)</ui:define>                
+                <h:selectOneMenu id="grupo" value="#{clienteGestaoList.cliente.grupo}" styleClass="defaultInput">		
+				   <s:selectItems value="#{grupoList.resultList}" 
+				   				  var="grupo" 			
+				                  label="#{grupo.nomeGrupo}"
+				                  required="false"
+				                  noSelectionLabel="Selecione.." />							       		
+				   <s:convertEntity />			
+				</h:selectOneMenu>		
+            </s:decorate>
+            
+             <s:decorate template="layout/edit.xhtml">
+                <ui:define name="label">Não compram desde</ui:define>
+                <rich:calendar id="dataInicioVenda" value="#{clienteGestaoList.dataInicioVenda}" requiredMessage="Data obrigatória" required="true" defaultTime="00:00" resetTimeOnDateSelect="true" datePattern="dd/MM/yyyy">
+                	<f:convertDateTime pattern="yyyy-MM-dd HH:mm"/>
+                </rich:calendar>
+            </s:decorate>
+            
+            <s:decorate template="layout/display.xhtml"> 
+                <ui:define name="label"><h:outputText value="Qtd. Linhas" title="Quantidade de linhas que serão exibidas na consulta" /></ui:define>                                
+				<rich:inputNumberSpinner id="numeroLinhasDT" value="#{clienteGestaoList.numeroLinhasDT}" step="10" inputSize="8" maxValue="1000" styleClass="inputDefault"/>				
+            </s:decorate> 
+                
+		</rich:simpleTogglePanel>
+		
+		<a:commandButton id="search" type="submit" value="Pesquisar"
+							action="#{clienteGestaoList.setMostrarResultados(true)}" actionListener="#{clienteGestaoList.setConsultaJaRealizada(false)}" reRender="panelResultado, resultadoList, sc"/>
+		
+		<rich:hotKey key="return" handler="#{rich:element('search')}.click()" />
+											
+    </a:form>
+    
+	<h:form>
+		<a:outputPanel id="panelResultado" ajaxRendered="true">
+		    <rich:panel rendered="#{clienteGestaoList.mostrarResultados}">
+		        
+		    <f:facet name="header">
+			    	Resultado da Consulta de Clientes(#{empty clienteGestaoList.resultList ? 0 : (clienteGestaoList.paginated ? clienteGestaoList.resultCount : clienteGestaoList.resultList.size)})
+		    </f:facet>
+			
+			<h:outputText value="#{messages['mensagem.pesquisa.vazia']}" rendered="#{empty clienteGestaoList.resultList}"/>
+			
+		    <rich:dataTable  id="resultadoList"
+		                	var="_cliente"
+		               	  value="#{clienteGestaoList.resultList}"
+		         onRowMouseOver="this.style.backgroundColor='#F0F0F0'"
+		          onRowMouseOut="this.style.backgroundColor='#{a4jSkin.rowBackgroundColor}'"
+		          columnClasses="center"  
+		           		   rows="#{clienteGestaoList.numeroLinhasDT }"
+		           columnsWidth="5%,*,*,*,*,*,*,*,5%"
+		               rendered="#{not empty clienteGestaoList.resultList}"
+		             rowClasses="tableRowOne,tableRowTwo"
+		             footerClass="center">
+		             
+		        <rich:column sortBy="#{_cliente.codCliente}" styleClass="center"> 
+		           <f:facet name="header">
+		               <h:outputText value="Código"/>
+		           </f:facet> 
+		           <h:outputText value="#{_cliente.codCliente}"/>
+		         </rich:column> 
+		
+		        <rich:column sortBy="#{_cliente.nome}" styleClass="left"> 
+		           <f:facet name="header">
+		               <h:outputText value="Nome / Razão Social"/>
+		           </f:facet> 
+		           <h:outputText value="#{_cliente.nome}"/>
+		         </rich:column> 
+		         
+		         <rich:column sortBy="#{_cliente.telefone}" styleClass="center"> 
+		           <f:facet name="header">
+		               <h:outputText value="Telefone"/>
+		           </f:facet> 
+		           <h:outputText value="#{_cliente.telefone}"/>
+		         </rich:column>  
+		         
+		      	 <rich:column sortBy="#{_cliente.email}" styleClass="left"> 
+		           <f:facet name="header">
+		               <h:outputText value="Email"/>
+		           </f:facet> 
+		           <h:outputText value="#{_cliente.email}"/>
+		         </rich:column> 
+		         
+		         <rich:column sortBy="#{_cliente.dtCadastro}" > 
+		           <f:facet name="header">
+		               <h:outputText value="Data Cadastro"/>
+		           </f:facet>            
+		           <h:outputText value="#{_cliente.dtCadastro}">
+		                <s:convertDateTime type="both" dateStyle="short" pattern="dd/MM/yyyy"/>
+		           </h:outputText>
+		         </rich:column>  
+		         
+		          <rich:column sortBy="#{_cliente.dtUltimaVenda}" > 
+		           <f:facet name="header">
+		               <h:outputText value="Última Venda" title="Data da última venda realizada para o cliente."/>
+		           </f:facet>            
+		           <h:outputText value="#{_cliente.dtUltimaVenda}">
+		                <s:convertDateTime type="both" dateStyle="short" pattern="dd/MM/yyyy"/>
+		           </h:outputText>
+		         </rich:column>  
+		         
+		          <rich:column sortBy="#{_cliente.observacao}" > 
+		           <f:facet name="header">
+		               <h:outputText value="Dias sem venda" title="Dias desde a última Venda/Serviço"/>
+		           </f:facet>            
+		           <h:outputText value="#{_cliente.observacao} dias"/>		               
+		         </rich:column>  
+		         
+		         <rich:column sortBy="#{_cliente.usuario.nomeUsuario}" styleClass="center"> 
+		           <f:facet name="header">
+		               <h:outputText value="Vendedor(Responsável)" title="Funcionário/Vendedor responsável pelo cliente"/>
+		           </f:facet> 
+		           <h:outputText value="#{_cliente.usuario.nomeUsuario}"/>
+		           
+		           <f:facet name="footer" >
+		           		<a:commandLink title="Excluir todos os vendedores responsáveis dos clientes da lista."
+										action="#{clienteGestaoHome.excluirVendedoresResponsavel(clienteGestaoList.resultList)}" 
+                				  		ajaxSingle="true">
+	            							<h:graphicImage url="/img/cancelada.jpg"/>     
+	            		</a:commandLink>
+			       </f:facet>
+           
+		         </rich:column>
+		         
+		         <rich:column sortBy="#{_cliente.inAdimplente}"> 
+		           <f:facet name="header">
+		               <h:outputText value="Situação Financeira" title="Situação Financeira - Adimplente ou Inadimplente"/>
+		           </f:facet> 
+		           <h:outputText value="Adimplente" rendered="#{_cliente.inAdimplente}"/>
+		           <h:outputText value="Inadimplente" rendered="#{!_cliente.inAdimplente}" styleClass="textoMedioVermelho"/>
+		         </rich:column>
+		         		        
+		        <rich:column styleClass="action" > 
+		            <f:facet name="header">Ver/Editar</f:facet>
+		            <s:link view="/Cliente.xhtml" id="clienteViewId"  propagation="default">
+		                <h:graphicImage url="/img/binoculo.jpg"/>
+		                <f:param name="clienteCodCliente" value="#{_cliente.codCliente}"/>
+		                <f:param name="clienteFrom" value="clienteGestaoList"/>
+		            </s:link>
+		            <rich:toolTip for="clienteViewId" value="Visualizar Cliente" direction="top-left"/>
+		            
+		            #{' '}
+		            
+		            <s:link view="/ClienteEdit.xhtml" propagation="default" id="clienteEdit">
+		                <h:graphicImage url="/img/editar.jpg"/> 
+		                <f:param name="clienteCodCliente" value="#{_cliente.codCliente}"/>
+		                <f:param name="clienteFrom" value="clienteGestaoList"/>
+		            </s:link>
+		            <rich:toolTip for="clienteEdit" value="Editar Cliente" direction="top-left"/>
+		        </rich:column>
+		    </rich:dataTable>
+		
+			<ui:include src="/includes/includeDataScroller.xhtml"/>
+		   		   
+		   	</rich:panel>	
+		</a:outputPanel>
+		
+	</h:form> 
+	    
+<rich:jQuery selector="#codCliente" timing="onload" query="focus()" />
+</ui:define>
+
+</ui:composition>

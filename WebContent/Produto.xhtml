@@ -1,0 +1,136 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:s="http://jboss.com/products/seam/taglib"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:rich="http://richfaces.org/rich" template="layout/template.xhtml">
+
+	<ui:define name="body">
+
+		<rich:panel>
+			<f:facet name="header">Detalhes do Produto</f:facet>
+
+			<s:decorate id="imagemField" template="layout/display.xhtml">
+                <h:graphicImage value="/img/produtos/#{produtoHome.instance.marca.nomeMarca}/#{produtoHome.instance.nomeImagem}" rendered="#{!empty produtoHome.instance.nomeImagem }"/>
+                <h:graphicImage value="/img/produtos/imagem_indisponivel.jpg" rendered="#{empty produtoHome.instance.nomeImagem }"/>
+             </s:decorate> 
+             
+			<s:decorate id="nomeProduto" template="layout/display.xhtml">
+				<ui:define name="label">Nome produto</ui:define>
+				<h:outputText value="#{produtoHome.instance.nomeProduto}" />
+			</s:decorate>
+			
+			<s:decorate id="ncm" template="layout/display.xhtml">
+				<ui:define name="label">NCM</ui:define>
+				<h:outputText value="#{produtoHome.instance.ncm}" />
+			</s:decorate>
+
+			<s:decorate id="codProdutoExterno" template="layout/display.xhtml">
+				<ui:define name="label">Código Produto</ui:define>
+				<h:outputText value="#{produtoHome.instance.codProdutoExterno}" />
+			</s:decorate>
+
+			<s:decorate id="localizadorField" template="layout/display.xhtml">
+				<ui:define name="label">Localizador</ui:define>
+				<h:outputText value="#{produtoHome.instance.localizadorDefault}" />
+			</s:decorate>
+
+			<s:decorate id="codigoBarrasProduto" template="layout/display.xhtml">
+				<ui:define name="label">Código Barras</ui:define>
+				<h:outputText value="#{produtoHome.instance.codigoBarrasProduto}" />
+			</s:decorate>
+
+			<s:decorate id="descProduto" template="layout/display.xhtml">
+				<ui:define name="label">Descrição Produto</ui:define>
+				<h:outputText value="#{produtoHome.instance.descProduto}" />
+			</s:decorate>
+
+			<s:decorate id="descProduto" template="layout/display.xhtml">
+				<ui:define name="label">Marca</ui:define>
+				<h:outputText value="#{produtoHome.instance.marca.nomeMarca}" />
+			</s:decorate>
+
+			<s:decorate id="descProduto" template="layout/display.xhtml">
+				<ui:define name="label">Categoria</ui:define>
+				<h:outputText
+					value="#{produtoHome.instance.categoria.nomeCategoria}" />
+			</s:decorate>
+
+			<s:decorate id="precoCompraField" template="layout/display.xhtml">
+				<ui:define name="label">Preço Compra (R$)</ui:define>
+				<h:outputText value="#{produtoHome.instance.precoCompraDefault}">
+					<f:convertNumber currencySymbol="R$" type="currency" locale="pt_BR" />
+				</h:outputText>
+			</s:decorate>
+
+			<s:decorate id="precoVendaField" template="layout/display.xhtml">
+				<ui:define name="label">Preço Venda (R$)</ui:define>
+				<h:outputText value="#{produtoHome.instance.precoVendaDefault}">
+					<f:convertNumber currencySymbol="R$" type="currency" locale="pt_BR" />
+				</h:outputText>
+			</s:decorate>
+			
+			<s:decorate id="precoVendaField" template="layout/display.xhtml">
+				<ui:define name="label">Valor Comissão (R$)</ui:define>
+				<h:outputText value="#{produtoHome.instance.valorComissao}">
+					<f:convertNumber currencySymbol="R$" type="currency" locale="pt_BR" />
+				</h:outputText>
+			</s:decorate>
+
+			<s:decorate id="larguraField" template="layout/display.xhtml">
+				<ui:define name="label">Largura (cm)</ui:define>
+				<h:outputText value="#{produtoHome.instance.largura}" />
+			</s:decorate>
+
+			<s:decorate id="comprimentoField" template="layout/display.xhtml">
+				<ui:define name="label">Comprimento (cm)</ui:define>
+				<h:outputText value="#{produtoHome.instance.comprimento}" />
+			</s:decorate>
+
+			<s:decorate id="alturaField" template="layout/display.xhtml">
+				<ui:define name="label">Altura (cm)</ui:define>
+				<h:outputText value="#{produtoHome.instance.altura}" />
+			</s:decorate>
+
+			<s:decorate id="pesoField" template="layout/display.xhtml">
+				<ui:define name="label">Peso (Kg)</ui:define>
+				<h:outputText value="#{produtoHome.instance.peso}" />
+			</s:decorate>
+			
+			<s:decorate id="unidadeField" template="layout/display.xhtml">
+				<ui:define name="label">Unidade</ui:define>
+				<h:outputText value="#{produtoHome.instance.unidade}" />
+			</s:decorate>
+			
+			<s:decorate id="temperaturaField" template="layout/display.xhtml">
+				<ui:define name="label">Temperatura</ui:define>
+				<h:outputText value="#{produtoHome.instance.temperatura}" />
+			</s:decorate>
+
+			 <s:decorate id="nomeImagemField" template="layout/display.xhtml">
+                <ui:define name="label">Nome Imagem</ui:define>
+                <h:outputText value="#{produtoHome.instance.nomeImagem}" />
+            </s:decorate>
+            
+			<div style="clear: both" />
+
+		</rich:panel>
+
+		<div class="actionButtons">
+
+			<s:button view="/ProdutoEdit.xhtml" id="edit" value="Editar" rendered="#{identity.hasRole(transacoes.transacaoProdutoEditar)}"/>
+
+			<s:button
+				view="/#{empty produtoFrom ? 'ProdutoList' : produtoFrom}.xhtml"
+				id="done" value="Voltar" />
+
+			<s:button view="/ProdutoEdit.xhtml" id="create" propagation="none" rendered="#{identity.hasRole(transacoes.transacaoProdutoInserir)}"
+				value="Novo Produto">
+				<f:param name="produtoCodProduto" />
+			</s:button>
+		</div>
+	</ui:define>
+
+</ui:composition>

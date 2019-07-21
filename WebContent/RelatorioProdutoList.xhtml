@@ -1,0 +1,322 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:s="http://jboss.com/products/seam/taglib"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:rich="http://richfaces.org/rich"
+    xmlns:a="http://richfaces.org/a4j"
+    template="layout/template.xhtml">
+
+<ui:define name="body">
+		
+    <h:form id="vendaSearch" styleClass="edit">
+		
+        <rich:simpleTogglePanel label="Filtro de pesquisa de Vendas" switchType="client">
+			
+			 <table border="0" width="100%" align="left">
+			 
+				<tr>
+					<td width="20%" nowrap="nowrap" colspan="3">
+						<s:decorate	id="codCompraField" template="layout/edit.xhtml">
+							
+							<ui:define name="label">Código da Compra</ui:define>
+							<h:inputText id="codigoCompra" value="#{relatorioProdutoList.codigoCompra}" styleClass="defaultInput" maxlength="20" />
+
+						</s:decorate>
+					</td>
+				</tr>
+				
+				<tr>
+					<td width="20%" nowrap="nowrap" colspan="3">
+						<s:decorate	id="codProdutoField" template="layout/edit.xhtml">
+							
+							<ui:define name="label">Código do Produto</ui:define>
+							<h:inputText id="codigoProdutoExterno" value="#{relatorioProdutoList.codigoProdutoExterno}" styleClass="defaultInput" maxlength="20" />
+
+						</s:decorate>
+					</td>
+				</tr>
+				
+				<tr>
+					<td width="20%" nowrap="nowrap" colspan="3">
+						<s:decorate	id="produtoMarcaField" template="layout/edit.xhtml">
+								<ui:define name="label">Marca</ui:define>
+								
+								<h:selectOneMenu id="marca" value="#{relatorioProdutoList.codMarca}" 
+									required="false" style="width: 420px" requiredMessage="Selecione marca" >
+									 <s:selectItems value="#{marcaList.resultList}" 
+							   				  var="marca" 			
+							   				  itemValue="#{marca.codMarca}"
+							                  itemLabel="#{marca.nomeMarca}"							                  
+							                  label="#{marca.nomeMarca}" 
+							                  noSelectionLabel="Selecione.." />	
+							                  <a:support event="onchange" reRender="produtoSelecionado"  ajaxSingle="true" limitToList="true"  />
+								</h:selectOneMenu>
+								
+						</s:decorate></td>
+				</tr>
+				<tr>
+					<td width="20%" nowrap="nowrap" colspan="3">
+						<s:decorate	id="produtoField" template="layout/edit.xhtml">
+							
+							<ui:define name="label">Produto</ui:define>
+							
+							 <h:selectOneMenu id="produtoSelecionado" value="#{relatorioProdutoList.produto.codProduto}" style="width: 420px">		
+				 					<s:selectItems value="#{produtoList.listarProdutos(relatorioProdutoList.codMarca)}" 
+						   				  var="produto" 			
+						   				  itemValue="#{produto.codProduto}"
+						                  itemLabel="#{produto.codigoBarrasProduto} - #{produto.nomeProduto}"							                  
+						                  label="#{produto.nomeProduto} (#{produto.nomeMarca})" 
+						                  noSelectionLabel="Selecione.." />	
+							</h:selectOneMenu>		
+
+						</s:decorate>
+					</td>
+				</tr>
+				
+				<tr>
+					<td width="20%" nowrap="nowrap" colspan="3">
+						 <s:decorate template="layout/display.xhtml">
+			                <ui:define name="label">Cliente</ui:define>
+			                 <h:selectOneMenu id="cliente" value="#{relatorioProdutoList.cliente}" title="Cliente da venda" style="width: 420px">		
+							   <s:selectItems value="#{clienteList.resultList}" 
+							   				  var="cliente" 			
+							                  label="#{cliente.nome}"
+							                  required="false"
+							                  noSelectionLabel="Selecione.." />							       		
+							   <s:convertEntity />			
+							</h:selectOneMenu>	
+			            </s:decorate>
+					</td>
+				</tr>
+
+				<tr>
+		            <td colspan="3">
+		            	<h:outputLabel value="Data Início*" styleClass="name"/>
+		            	<rich:spacer width="5px"/>
+		                <rich:calendar id="dataInicioVenda" required="true" value="#{relatorioProdutoList.dataInicioPesquisa}" defaultTime="00:00" resetTimeOnDateSelect="true" datePattern="dd/MM/yyyy">
+		                	<f:convertDateTime pattern="yyyy-MM-dd HH:mm"/>
+		                </rich:calendar>  
+ 						<rich:spacer width="20px"/>
+		            	<h:outputLabel value="Data Fim*" styleClass="textoNegrito"/>
+		            	<rich:spacer width="15" />
+		                <rich:calendar id="dataFimVenda" required="true" value="#{relatorioProdutoList.dataFimPesquisa}" defaultTime="23:59" resetTimeOnDateSelect="false" datePattern="dd/MM/yyyy">
+		                	<f:convertDateTime pattern="yyyy-MM-dd HH:mm"/>
+		                </rich:calendar>
+		            </td>
+	            </tr>
+	            
+            	<tr>
+		            <td colspan="3">
+			            <s:decorate template="layout/display.xhtml"> 
+			                <ui:define name="label"><h:outputText value="Qtd. Linhas" title="Quantidade de linhas que serão exibidas na consulta" /></ui:define>                                
+							<rich:inputNumberSpinner id="numeroLinhasDT" value="#{relatorioProdutoList.numeroLinhasDT}" step="10" inputSize="8" maxValue="10000" styleClass="inputDefault"/>				
+			            </s:decorate> 
+                     </td>
+	            </tr>
+           	</table>    
+            <div style="clear:both">
+                <span class="required">*</span>
+                Campos obrigatórios            
+            </div>
+                       
+        </rich:simpleTogglePanel>
+
+         <div class="actionButtons">
+	          <a:commandButton id="search" type="submit" value="Pesquisar" action="#{relatorioProdutoList.setMostrarResultados(true)}" actionListener="#{relatorioProdutoList.listarProdutosVendidos()}" reRender="msnListaVazia, sc"/>
+	           
+	          <s:button id="reset" value="Limpar" includePageParams="false"/>   
+	   		  <rich:hotKey key="return" handler="#{rich:element('search')}.click()"/>
+	   	</div>
+
+    </h:form>
+    
+	<h:form> 
+	
+	<a:outputPanel id="msnListaVazia" ajaxRendered="true">
+	
+    <rich:panel  rendered="#{relatorioProdutoList.mostrarResultados}">
+    
+    <f:facet name="header">   
+	    <a:outputPanel  id="panelDiv" ajaxRendered="true">
+	    	Relatório de Produtos Vendidos
+	    </a:outputPanel> 
+    </f:facet> 
+	
+    <rich:dataTable id="resultadoList"
+		                var="_relatorioListDTO"
+		              	value="#{relatorioProdutoList.listaLotesVendidos}"			           	
+			           	onRowMouseOver="this.style.backgroundColor='#F0F0F0'"
+			           	onRowMouseOut="this.style.backgroundColor='#{a4jSkin.rowBackgroundColor}'"
+			           	columnClasses="center" 
+			           	footerClass="center"	
+			           	rows="#{ relatorioProdutoList.numeroLinhasDT }"	
+			           	columnsWidth="*, *, *, *, *, *, *, *, *, *, *, *, *, *, *,*,1%"		           
+			           	rowClasses="tableRowOne,tableRowTwo">
+         
+               
+         <rich:column> 
+           <f:facet name="header">
+               <h:outputText value="Produto" title="Nome do Produto"/>
+           </f:facet> 
+           <h:outputText value="#{_relatorioListDTO.nomeProduto}"/>
+           
+            <f:facet name="footer">
+               <h:outputText value="Total Vendas: #{relatorioProdutoList.qtdResultados}" styleClass="textoNegrito"/>
+           </f:facet>
+         </rich:column>   
+         
+         <rich:column> 
+           <f:facet name="header">
+               <h:outputText value="Venda" title="Código da Venda"/>
+           </f:facet> 
+           <h:outputText value="#{_relatorioListDTO.codVenda}"/>
+         </rich:column>      
+         
+          <rich:column> 
+           <f:facet name="header">
+               <h:outputText value="Compra" title="Código da Compra"/>
+           </f:facet> 
+           <h:outputText value="#{_relatorioListDTO.codCompra}"/>
+         </rich:column>      
+         
+         <rich:column> 
+           <f:facet name="header">
+               <h:outputText value="Qtd. Compra" title="Quantidade de produtos comprados"/>
+           </f:facet> 
+           <h:outputText value="#{_relatorioListDTO.qtdCompra}"/>
+         </rich:column>  
+         
+          <rich:column> 
+           <f:facet name="header">
+               <h:outputText value="Estoque" title="Quantidade de produtos em Estoque"/>
+           </f:facet> 
+           <h:outputText value="#{_relatorioListDTO.qtdEstoque}"/>
+         </rich:column>
+         
+         <rich:column> 
+           <f:facet name="header">
+               <h:outputText value="Lote" title="Identificação do Lote do Produto"/>
+           </f:facet> 
+           <h:outputText value="#{_relatorioListDTO.identificacaoLote}"/>
+         </rich:column> 
+         
+         <rich:column> 
+           <f:facet name="header">
+               <h:outputText value="Data Validade"/>
+           </f:facet> 
+           <h:outputText value="#{_relatorioListDTO.dataValidade}" rendered="#{not empty _relatorioListDTO.dataValidade}"/>
+           <h:outputText value="Indeterminada" rendered="#{empty _relatorioListDTO.dataValidade}"/>
+         </rich:column> 
+		
+		 <rich:column styleClass="left">
+           <f:facet name="header">
+               <h:outputText value="Cliente"/>
+           </f:facet> 
+           <h:outputText value="#{_relatorioListDTO.nomeCliente}"/>
+         </rich:column>      
+                
+         <rich:column styleClass="left"> 
+           <f:facet name="header">
+               <h:outputText value="Vendedor" title="Vendedor que realizou a venda"/>
+           </f:facet> 
+           <h:outputText value="#{_relatorioListDTO.nomeVendedor}"/>
+         </rich:column>    
+         
+         <rich:column>
+           <f:facet name="header">
+               <h:outputText value="Data Venda" title="Data de abertura da venda"/>
+           </f:facet> 
+           <h:outputText value="#{_relatorioListDTO.dataInicioVenda}">
+           		<s:convertDateTime type="date" pattern="dd/MM/yyyy HH:mm"/>
+           </h:outputText>
+                     
+         </rich:column>
+         
+         <rich:column> 
+           <f:facet name="header">
+               <h:outputText value="Qtd Vendida" title="Quantidade Vendida do Produto"/>
+           </f:facet> 
+           <h:outputText value="#{_relatorioListDTO.qtdVendida}"/>
+           
+           <f:facet name="footer">
+               <h:outputText value="#{relatorioProdutoList.qtdTotal}" title="Quantidade total vendida" styleClass="textoNegrito"/>
+           </f:facet>
+           
+         </rich:column> 
+         
+         <rich:column> 
+           	<f:facet name="header">
+               	<h:outputText value="Desc. Unit." title="Desconto Unitário"/>
+           	</f:facet> 
+           	<h:outputText value="#{_relatorioListDTO.descontoUnitario}">
+           		<f:convertNumber currencySymbol="R$"  type="currency"  locale="pt_BR"/>
+           	</h:outputText> 
+         </rich:column> 
+         
+         <rich:column> 
+           	<f:facet name="header">
+               	<h:outputText value="Valor Unit." title="Valor original da unidade do produto"/>
+           	</f:facet>
+           	 
+           	<h:outputText value="#{_relatorioListDTO.valorVendaProduto}">
+           		<f:convertNumber currencySymbol="R$"  type="currency"  locale="pt_BR"/>
+           	</h:outputText>            	          
+           
+         </rich:column> 
+         
+         <rich:column> 
+           <f:facet name="header">
+               	<h:outputText value="% Desc." title="Percentual de desconto dado na venda"/>
+           </f:facet> 
+           <h:outputText value="#{_relatorioListDTO.percDescontoTotalVenda}"/>
+         </rich:column> 
+         
+          <rich:column> 
+           	<f:facet name="header">
+               	<h:outputText value="Valor Total Produtos" title="Valor dos produtos vendidos pesquisados."/>
+           	</f:facet>
+           	 
+           	<h:outputText value="#{_relatorioListDTO.valorProdutosVendidos}">
+           		<f:convertNumber currencySymbol="R$"  type="currency"  locale="pt_BR"/>
+           	</h:outputText>            	          
+           
+            <f:facet name="footer">
+               <h:outputText value="#{relatorioProdutoList.valorTotalProdutosVendidos}" title="Valor total vendido dos produtos pesquisados." styleClass="textoNegrito">
+               		<f:convertNumber currencySymbol="R$"  type="currency"  locale="pt_BR"/>
+               </h:outputText>
+           </f:facet>
+         </rich:column> 
+         
+         <rich:column> 
+           	<f:facet name="header">
+               	<h:outputText value="Valor Venda" title="Valor Total da Venda"/>
+           	</f:facet> 
+           	<h:outputText value="#{_relatorioListDTO.valorTotalVenda}">
+           		<f:convertNumber currencySymbol="R$"  type="currency"  locale="pt_BR"/>
+           	</h:outputText> 
+           	           
+         </rich:column> 
+        	
+         <rich:column styleClass="action">   
+            <s:link view="/Venda.xhtml" propagation="default" id="vendaViewId">
+                <h:graphicImage id="visualizar" url="/img/binoculo.jpg"/>                
+                <f:param name="vendaCodVenda" value="#{_relatorioListDTO.codVenda}"/>
+                <f:param name="vendaFrom" value="RelatorioProdutoList"/>
+            </s:link>
+		</rich:column>
+		
+    </rich:dataTable>
+    
+    <ui:include src="/includes/includeDataScroller.xhtml"/>
+          
+    </rich:panel>
+    </a:outputPanel>
+    <rich:jQuery selector="#codigoCompra" timing="onload" query="focus()" />
+	</h:form>
+   
+</ui:define>
+
+</ui:composition>

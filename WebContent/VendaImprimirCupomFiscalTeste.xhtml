@@ -1,0 +1,168 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<rich:modalPanel id="vendaImprimirCupomFiscalPopUpTeste" width="285" minHeight="330" autosized="true" top="15px" 
+		onshow="window.print();alert('Impressão Finalizada. A janela será fechada.');Richfaces.hideModalPanel('vendaImprimirCupomFiscalPopUpTeste')"
+	xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:s="http://jboss.com/products/seam/taglib"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html" 
+    xmlns:a="http://richfaces.org/a4j"
+    xmlns:rich="http://richfaces.org/rich">
+
+	<style type="text/css">
+	@media print {
+		 body > * {
+		 display: none; 		 
+		 }
+		 
+		 body > .rich-modalpanel {
+		 display: block;
+		 }
+		 
+		 .rich-mpnl_panel, .rich-mpnl_panel > div {
+		 position: static !important;
+		 }
+		 
+		 .rich-mpnl-mask-div, .rich-mpnl-shadow {
+		 display: none !important;
+		 }
+		 
+		 .rich-mp-content {
+		 overflow: visible !important;
+		 width: auto !important;
+		 height: auto !important;
+		 }
+		.noRowBorders
+		{
+		   border-bottom-width:0px;
+		    border-top-width:0px;
+		    border-left-width:0px;
+		    border-right-width:0px;
+		}
+		.textoFonte {
+			font-family: courier, Arial, sans-serif;
+			font-size: 10px;
+			color: #404040;
+		}
+		.dr-mpnl-pnl {
+    	 	border-width: 0px !important;   	 
+		}
+		
+	}
+	</style>
+		
+	<div>
+	<a:form>
+		
+		<h:panelGrid border="0" columns="1" width="100%" cellpadding="0" columnClasses="left">
+ 					
+			 <h:column headerClass="col2">
+			 	<h:outputLabel value="&#160;&#160;&#160;&#160; *** &#160;&#160;&#160;&#160; ***" styleClass="textoFonte" />
+				<br />	
+				<br />	
+				<h:outputLabel value="PERFUMERIA ULTRA, S. DE R.L. DE C.V." styleClass="textoFonte" />
+				<br />				
+				<h:outputLabel value="BLVD. LUIS DONALDO COLOSIO KM. 6.5," styleClass="textoFonte" />
+				<br />
+				<h:outputLabel value="MZA. 66, LOTE 88, 89, 90 Y 91, BODEGA 6,"	styleClass="textoFonte" />
+				<br />
+				<h:outputLabel value="SMZA. 310 RANCHO NAZARETH,"	styleClass="textoFonte" />
+				<br />
+				<h:outputLabel value="&#160;CANCUN, BENITO JUAREZ, QUINTANDA ROD"	styleClass="textoFonte" />
+				<br />
+				<h:outputLabel value="C.P.: 77560"	styleClass="textoFonte" />
+				<br />
+				<h:outputLabel value="RFC:  PUL880512N97" styleClass="textoFonte" />
+				<br />				
+				<br />
+				<h:outputLabel value="Expedito en:" styleClass="textoFonte" />
+				<br />				
+				<h:outputLabel value="Suc. ULTRA JEWELS KUKULCAN" styleClass="textoFonte" />
+				<br />				
+				<h:outputLabel value="&#160; BLVD KKULCAN KM 13, MZA 53 LOTE 8" styleClass="textoFonte" />
+				<br />				
+				<h:outputLabel value="LOCAL 83 Int LA-02" styleClass="textoFonte" />
+				<br />	
+				<h:outputLabel value="ZONA HOTELERA" styleClass="textoFonte" />
+				<br />							
+				<h:outputLabel value="CANCUN C.P.: 77500" styleClass="textoFonte" />
+				<br />				
+				<h:outputLabel value="BENITO JUAREZ QUINTANA ROO" styleClass="textoFonte" />
+				<br />
+				<br />					
+				<h:outputText value="-----------------------------------------------------------------"/>
+				<h:outputLabel value="Codigo &#160;&#160;&#160; Descripcion" styleClass="textoFonte" />
+				<br />
+				<h:outputLabel value="Vend.  &#160;&#160;&#160;&#160;&#160; Cant &#160;&#160;&#160;&#160;Precio&#160;&#160;&#160;&#160;&#160; Importe" styleClass="textoFonte" />
+				<br />
+				<h:outputText value="-----------------------------------------------------------------"/>
+				<br />
+				<h:outputLabel value="TG00101337 GMT-MASTER II.DATE ACE, BL" styleClass="textoFonte" />
+				<br />
+				<h:outputLabel value="1587 &#160;&#160;&#160;&#160;&#160;&#160; 1 &#160;x&#160; 185,392.40 &#160;&#160; 185,392.40 " styleClass="textoFonte" />
+				<br />
+				<br />
+				<h:outputLabel value="TOTAL &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; 185,392.40 " styleClass="textoFonte" />				
+				<br />
+				<br />
+				<h:outputLabel value="(SON: CIENTO OCHENTA Y CINCO MIL TRESCIENTOS" styleClass="textoFonte" />
+				<h:outputLabel value="NOVENTA Y DOS PESOS 40/100 MN)" styleClass="textoFonte" />
+				<br />
+				<br />
+				<h:outputLabel value="EL PRECIO INCLUYE IVA. 18,369.99" styleClass="textoFonte" />
+				<br />
+				<br />
+				<h:outputLabel value="Importes en pesos" styleClass="textoFonte" />
+				<br />
+				<h:outputLabel value="Total de Articulos: 001" styleClass="textoFonte" />
+				<br />				
+				<h:outputLabel value="T. CREDITO DO" styleClass="textoFonte" />
+				<br />
+				<h:outputLabel value="&#160;&#160;&#160;&#160; 14,044.88 * 13.20 &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; 185,392.40" styleClass="textoFonte" />
+				<br />
+				<h:outputLabel value="CAMBIO &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; 0.00" styleClass="textoFonte" />
+				<br />	
+				<br />				
+				<h:outputLabel value="MERCANCIA IMPORTADA CON LOS PEDIMENTOS:" styleClass="textoFonte" />
+				<br />				
+				<h:outputLabel value="11-53-3061-1001069 de fecha: 07/11/2003" styleClass="textoFonte" />
+				<br />
+				<br />					
+				<h:outputLabel value="EL PAGO DE LA CONTRAPRESTACION SE HACE EN" styleClass="textoFonte" />
+				<br />					
+				<h:outputLabel value="&#160; UNA SOLA EXHIBICION" styleClass="textoFonte" />
+				<br />
+				<br />	
+				<br />			
+				<h:outputLabel value="GRACIAS POR SU COMPRA,REVISE LA MERCANCIA" styleClass="textoFonte" />
+				<br />
+				<h:outputLabel value="*** NO REENBOLSOS *** &#160;NO REFUNDS &#160;***" styleClass="textoFonte" />
+				<br />	
+				<h:outputLabel value="THANKS FOR YOUR PURCHASE,CHECK YOUR PRODU" styleClass="textoFonte" />
+				<br />	
+				<br />	
+				<h:outputLabel value="CENTRO DE CONTACTO: 881-3590 O DEL" styleClass="textoFonte" />
+				<br />	
+				<h:outputLabel value="INTERIOR SIN COSTO 0180000ULTRA (85872)" styleClass="textoFonte" />
+				<br />	
+				<h:outputLabel value="www.luxuryavenue.com" styleClass="textoFonte" />
+				<br />	
+				<br />
+				<br />		
+				<h:outputLabel value="14/11/2003 16:44 013 02 00038731 2532" styleClass="textoFonte" />
+				<br />	
+				<br />
+				<br />	
+			</h:column>
+	
+			
+
+		</h:panelGrid>
+	
+		
+	
+	</a:form>
+	</div>
+	
+</rich:modalPanel>

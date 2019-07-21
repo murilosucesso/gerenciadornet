@@ -1,0 +1,16 @@
+action.package=br.com.gerenciadornet.session
+action.sources=/gerenciadornet/src/hot
+eclipse.preferences.version=1
+model.package=br.com.gerenciadornet.entity
+model.sources=/gerenciadornet/src/main
+seam.ejb.project=gerenciadornet
+seam.project.connection.profile=MySQL 5.1
+seam.project.deployment.type=war
+seam.project.settings.version=1.1
+seam.project.web.root.folder=/gerenciadornet/WebContent
+seam.runtime.name=jboss-seam-2.2.0.GA
+seam.settings.changed.by.user=true
+seam.test.creating=false
+seam.test.project=gerenciadornet-test
+test.package=br.com.gerenciadornet.test
+test.sources=/gerenciadornet-test/test-src

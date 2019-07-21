@@ -1,0 +1,88 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:component xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:s="http://jboss.com/products/seam/taglib"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:easy="http://easyfaces.com.br/easyfaces"
+	xmlns:a="http://richfaces.org/a4j">
+
+	<h:panelGrid  columns="3" border="0" width="100%" styleClass="painelGridCinza" rowClasses="rowPainelGrid">	
+											
+			<h:outputLabel>	
+				<h:outputText value="#{vendaHome.instance.descontoTotal}" styleClass="textoNegrito3"/>																																								
+				<h:outputLabel value="Desconto Total (%)" styleClass="textoNegrito"/>	
+			</h:outputLabel>
+						
+			<h:outputLabel>
+				<rich:spacer width="200px"/>
+			</h:outputLabel>
+						
+			<h:outputLabel>													
+					<h:outputText id="valorTotalVenda" value="#{vendaHome.valorTotalVenda}" styleClass="textoNegrito3">
+                          	<f:convertNumber currencySymbol="R$"  type="currency"  locale="pt_BR"/>
+                    </h:outputText>
+					<h:outputLabel value="Valor Total" styleClass="textoNegrito"/>																											
+			</h:outputLabel>
+			
+			<h:outputLabel>
+				<rich:spacer width="200px"/>
+			</h:outputLabel>
+			
+			<h:outputLabel>
+				<rich:spacer width="200px"/>
+			</h:outputLabel>
+			
+			<h:outputLabel>	
+				<h:outputText id="valorDescontoTotal" value="#{vendaHome.valorDescontoTotalVenda}" styleClass="textoNegrito3">
+					<f:convertNumber currencySymbol="R$"  type="currency"  locale="pt_BR"/>
+				</h:outputText>
+				<h:outputText value="Desconto" styleClass="textoNegrito"/>	
+			</h:outputLabel>
+			
+			<h:outputLabel/>	
+			<h:outputLabel/>
+			
+			<h:outputLabel>													
+					<h:outputText id="valorDescontoTotalVenda" value="#{vendaHome.valorTotalVendaComDesconto}" styleClass="textoNegrito2">
+                          	<f:convertNumber currencySymbol="R$"  type="currency"  locale="pt_BR"/>
+                    </h:outputText>
+					<h:outputLabel value="Valor Total c/ Desc." styleClass="textoNegrito"/>																												
+			</h:outputLabel>
+			
+			<a:outputPanel rendered="#{!vendaHome.wired}">
+			<h:outputLabel  rendered="#{ vendaHome.confirmarAndamentoVenda(vendaHome.instance.statusVenda) }">								
+					<easy:inputCurrency id="valorPago"
+					value="#{vendaHome.valorPago}" 
+					required="false"
+					decimalSeparator="," 
+					groupSeparator="." 
+					useValidate="false"
+					returnDecimal="true" 
+					size="10"
+					styleClass="textoNegrito2">
+						<a:support event="onchange" action="#{vendaHome.calcularTotalVenda()}"  reRender="trocoVenda" attachTo="valorPago"/>	
+					</easy:inputCurrency>							
+					<h:outputLabel value="Valor pago:" styleClass="textoNegrito"/>																											
+			</h:outputLabel>
+			</a:outputPanel>
+			
+			<h:outputLabel/>
+			<h:outputLabel/>
+			
+			<a:outputPanel rendered="#{!vendaHome.wired}">
+			<h:outputLabel rendered="#{ vendaHome.confirmarAndamentoVenda(vendaHome.instance.statusVenda) }">								
+					<h:outputText id="trocoVenda" value="#{vendaHome.trocoVenda}" styleClass="textoNegrito3">
+						<f:convertNumber currencySymbol="R$"  type="currency"  locale="pt_BR"/>	 
+					</h:outputText>
+					<h:outputLabel value="Troco:" styleClass="textoNegrito"/>
+					<u style="cursor:pointer"><h:outputLabel value="calcular" styleClass="textoNegrito"/></u>																											
+			</h:outputLabel>
+			</a:outputPanel>
+					
+	</h:panelGrid>
+
+</ui:component>

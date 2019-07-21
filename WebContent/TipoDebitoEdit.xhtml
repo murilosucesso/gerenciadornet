@@ -1,0 +1,73 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:s="http://jboss.com/products/seam/taglib"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:a="http://richfaces.org/a4j"
+    xmlns:rich="http://richfaces.org/rich"
+    template="layout/template.xhtml">
+
+<ui:define name="body">
+
+    <h:form id="tipoDebito" styleClass="edit">
+		
+		<ui:include src="/paginas/help/GenericEditHelp.xhtml"/>
+        <rich:panel>
+            <f:facet name="header">#{tipoDebitoHome.managed ? 'Editar' : 'Adicionar'} Tipo Débito</f:facet>
+
+            <s:decorate id="descTipoDebitoField" template="layout/edit.xhtml">
+                <ui:define name="label">Tipo Debito</ui:define>
+                <h:inputText id="descTipoDebito"
+                       required="true"
+                           size="50"
+                      maxlength="30"
+                          value="#{tipoDebitoHome.instance.descTipoDebito}">
+                </h:inputText>
+            </s:decorate>
+                                              
+            <div style="clear:both">
+                <span class="required">*</span>
+                Campos obrigatórios
+            </div>
+
+        </rich:panel>
+
+        <div class="actionButtons">
+
+            <h:commandButton id="save"
+                          value="Salvar"
+                         action="#{tipoDebitoHome.persist}"
+                       disabled="#{!tipoDebitoHome.wired}"
+                       rendered="#{!tipoDebitoHome.managed}"/>
+
+            <h:commandButton id="update"
+                          value="Salvar"
+                         action="#{tipoDebitoHome.update}"
+                       rendered="#{tipoDebitoHome.managed}"/>
+
+            <h:commandButton id="delete"
+                          value="Excluir"
+                         action="#{tipoDebitoHome.remove}"
+                        onclick="if (!confirm('Tem certeza que deseja excluir este registro?')) return false"
+                      immediate="true"
+                       rendered="#{tipoDebitoHome.managed and identity.hasRole(transacoes.transacaoAdminTipoDebito)}"/>
+
+            <s:button id="cancelEdit"
+                   value="Voltar"
+             propagation="end"
+                    view="/TipoDebito.xhtml"
+                rendered="#{tipoDebitoHome.managed}"/>
+
+            <s:button id="cancelAdd"
+                   value="Voltar"
+             propagation="end"
+                    view="/#{empty tipoDebitoFrom ? 'TipoDebitoList' : tipoDebitoFrom}.xhtml"
+                rendered="#{!tipoDebitoHome.managed}"/>
+
+        </div>
+    </h:form>
+</ui:define>
+
+</ui:composition>

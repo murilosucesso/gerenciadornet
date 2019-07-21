@@ -1,0 +1,73 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:s="http://jboss.com/products/seam/taglib"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:a="http://richfaces.org/a4j"
+	xmlns:rich="http://richfaces.org/rich">
+
+	<a:outputPanel ajaxRendered="false">
+	<h:form id="ultimasVendas">
+
+		<rich:panel header="Últimas 40 Vendas" styleClass="panelHeightHome">
+
+			<rich:dataTable id="ultimasVendasList" 
+				var="_venda" 
+				rows="8"
+				value="#{vendaList.listarUltimasVendas()}"
+				onRowMouseOver="this.style.backgroundColor='#F0F0F0'"
+				onRowMouseOut="this.style.backgroundColor='#{a4jSkin.rowBackgroundColor}'"
+				columnClasses="center" 
+				footerClass="center"
+				rendered="#{not vendaList.pesquisaVazia}"
+				headerClass="tableHeaderHome"
+				styleClass="tableHeightHome"
+				rowClasses="tableRowOne,tableRowTwo">
+
+				<rich:column>
+					<f:facet name="header">
+						<h:outputText value="Venda" />
+					</f:facet>
+					<h:outputText value="#{_venda.codVenda}" />
+				</rich:column>
+
+				<rich:column styleClass="left">
+					<f:facet name="header">
+						<h:outputText value="Cliente" />
+					</f:facet>
+					<h:outputText value="#{_venda.cliente.nome}" />
+				</rich:column>
+
+				<rich:column>
+					<f:facet name="header">
+						<h:outputText value="Vendedor" title="Nome do vendedor" />
+					</f:facet>
+					<h:outputText value="#{_venda.usuario.nomeUsuario}" />
+				</rich:column>
+
+				<rich:column>
+					<f:facet name="header">
+						<h:outputText value="Data Início" title="Data de início da venda" />
+					</f:facet>
+					<h:outputText value="#{_venda.dataInicioVenda}">
+						<s:convertDateTime type="date" pattern="dd/MM/yyyy HH:mm" />
+					</h:outputText>
+				</rich:column>
+
+				<rich:column>
+					<f:facet name="header">
+						<h:outputText value="Status" />
+					</f:facet>
+					<h:outputText value="#{ _venda.statusVenda.descStatusVenda}" />
+				</rich:column>
+
+			</rich:dataTable>
+			<rich:datascroller align="center" ajaxSingle="true" limitToList="true" renderIfSinglePage="false" for="ultimasVendasList" maxPages="5" id="sc"/>
+				
+		</rich:panel> 
+	</h:form>
+	</a:outputPanel>
+</ui:composition>

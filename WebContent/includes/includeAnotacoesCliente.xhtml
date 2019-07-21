@@ -1,0 +1,75 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:s="http://jboss.com/products/seam/taglib"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:easy="http://easyfaces.com.br/easyfaces"  
+    xmlns:a="http://richfaces.org/a4j"
+    xmlns:rich="http://richfaces.org/rich">
+     
+ 	<h:outputText value="Anotações" styleClass="textoNegrito"/>
+
+	<h:form id="anotacoesForm">
+	<a:outputPanel id="anotacoesPanel" ajaxRendered="true">
+	
+		<rich:dataTable value="#{clienteHome.anotacoes}" 
+			id="anotacoesTable"
+			var="_anotacao"
+			rendered="#{not empty clienteHome.anotacoes}" 
+			onRowMouseOver="this.style.backgroundColor='#F0F0F0'"
+			onRowMouseOut="this.style.backgroundColor='#{a4jSkin.rowBackgroundColor}'"
+			columnClasses="center" 
+			footerClass="center" 
+			rows="10" 
+			columnsWidth="15%, 15%,*,5%" 
+			rowClasses="tableRowOne,tableRowTwo">
+		
+			<rich:column id="dataAnotacao" sortBy="#{_anotacao.dataAnotacao}">
+				<f:facet name="header">
+					<h:outputText value="Data da Anotação" />
+				</f:facet>
+				<h:outputText value="#{_anotacao.dataAnotacao}">
+					<s:convertDateTime type="date" pattern="dd/MM/yyyy HH:mm:ss"/>
+				</h:outputText>
+			</rich:column>
+		
+			<rich:column sortBy="#{_anotacao.usuario.nomeUsuario}">
+				<f:facet name="header">
+					<h:outputText value="Usuário" />
+				</f:facet>
+				<h:outputText value="#{_anotacao.usuario.nomeUsuario}" />
+			</rich:column>
+			
+			<rich:column styleClass="left" >
+				<f:facet name="header">
+					<h:outputText value="Anotação" />
+				</f:facet>
+				<h:outputText value="#{_anotacao.descAnotacao}" />
+			</rich:column>
+			
+			<rich:column>
+				<f:facet name="header">
+					<h:outputText value="Excluir" />
+				</f:facet>
+		                 <a:commandLink ajaxSingle="true" id="deltelink"  onclick="if (!confirm('Excluir anotação?')) return false" rendered="#{identity.hasRole('GN067')}"
+		                 		action="#{clienteHome.removeAnotacao(_anotacao)}" reRender="anotacoesPanel" limitToList="true" >
+		                     <h:graphicImage url="/img/lixeira.gif" style="border:0" title="Excluir"/>
+		                 </a:commandLink>
+		                 <h:outputText value="GN067" title="Usuário não pode excluir pois não possui acesso a transação GN067 " rendered="#{!identity.hasRole('GN067')}"/>
+			</rich:column>
+			
+		</rich:dataTable>
+	<rich:datascroller align="center" for="anotacoesTable" renderIfSinglePage="false" maxPages="10" />
+	</a:outputPanel>
+	</h:form>
+	
+<!-- PopUp Nova Anotação -->
+	<a:commandButton id="novaAnotacao" value="Nova Anotação"
+		ajaxSingle="true" limitToList="true" oncomplete="focar()">
+		<rich:componentControl operation="show" attachTo="novaAnotacao" for="panelPopUp" event="onclick" />
+	</a:commandButton>
+	<ui:include src="/AnotacaoPopUp.xhtml" />
+</ui:composition>

@@ -1,0 +1,508 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:s="http://jboss.com/products/seam/taglib"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:a="http://richfaces.org/a4j"
+    xmlns:rich="http://richfaces.org/rich"
+    xmlns:easy="http://easyfaces.com.br/easyfaces"
+    template="layout/template.xhtml">
+
+<ui:define name="body">
+
+    <a:form id="compra" styleClass="edit">
+		
+		<ui:include src="/paginas/help/CompraEditHelp.xhtml"/>	
+        <rich:panel>
+            <f:facet name="header">#{compraHome.managed ? 'Editar' : 'Adicionar'} Compra</f:facet>
+			
+			<h:panelGrid border="0" styleClass="painelGrid" columns="3" width="100%" cellpadding="0" columnClasses="left">
+			
+							
+				<s:decorate id="nomeUsuarioField" template="layout/display.xhtml">
+					<ui:define name="label">Vendedor(Usuário)</ui:define>	
+					<h:outputText value="#{compraHome.instance.usuario.nomeUsuario}"  rendered="#{compraHome.managed}"/>	
+					<h:outputText value="#{user.nomeUsuario}"  rendered="#{!compraHome.managed}"/>								
+				</s:decorate>					 
+									
+								
+				<s:decorate id="dataCompraField" template="layout/display.xhtml">
+					<ui:define name="label">Data compra</ui:define>	
+	                <rich:calendar id="dataCompra" required="true" value="#{compraHome.instance.dataCompra}" datePattern="dd/MM/yyyy">
+	                	<f:convertDateTime pattern="yyyy-MM-dd HH:mm"/>
+	                </rich:calendar>            
+				</s:decorate>	
+				
+				<h:outputText value="Compra" styleClass="textoMedio" rendered="#{compraHome.managed}" />
+				<h:outputText rendered="#{!compraHome.managed}" />
+				
+				<s:decorate id="forncedorField"	template="layout/display.xhtml">
+					<ui:define name="label">Vendedor/Fornecedor</ui:define>
+				  	
+					<h:selectOneMenu id="vendedorForncedor" value="#{compraHome.instance.vendedor}"  rendered="#{!compraHome.managed}"				
+						styleClass="defaultInput">		
+					   <s:selectItems value="#{vendedorList.resultList}" 
+					   				  var="vendedor" 		
+					   				  noSelectionLabel="Selecione.."				   				  		
+					                  label="#{vendedor.nomeVendedor} - #{vendedor.fornecedor.nomeFantasia}"/>
+					   			<a:support event="onchange" reRender="marcaSelecionada, procudoSelecionado, loteProdutoList, precoCompraProduto, qtd_novoLoteProduto, precoVendaProduto, percentLucro, codProduto, localizadorProduto, editlink" 
+					   			ajaxSingle="true" limitToList="true" actionListener="#{compraHome.listarMarcas()}"/>					   							       	
+					   <s:convertEntity />			
+					</h:selectOneMenu>		
+					
+					<h:outputText value="#{compraHome.instance.vendedor.nomeVendedor} - #{compraHome.instance.vendedor.fornecedor.nomeFantasia}"  rendered="#{compraHome.managed}"/>								
+				</s:decorate>
+			 			 		 
+				<s:decorate id="tipoPagamentoField"	template="layout/display.xhtml">
+					<ui:define name="label">Tipo pagamento</ui:define>
+				  	
+					<h:selectOneMenu value="#{compraHome.instance.tipoPagamento}" required="true" styleClass="defaultInput">		
+					   <s:selectItems value="#{tipoPagamentoList.getResultList2()}" 
+					   				  var="tipoPagamento" 			
+					                  label="#{tipoPagamento.descTipoPagamento}"/>							       		
+					   <s:convertEntity />			
+					</h:selectOneMenu>										
+				</s:decorate>
+				
+				<h:outputText value="#{compraHome.instance.codCompra}" styleClass="textoMedio" rendered="#{compraHome.managed}" />
+				<h:outputText rendered="#{!compraHome.managed}" />
+							 
+			 	<s:decorate id="numeroNotaFiscalField" template="layout/display.xhtml">
+					<ui:define name="label">Número Nota Fiscal</ui:define>	
+					<h:inputText id="numNotaFiscal"  maxlength="45" value="#{compraHome.instance.numeroNotaFiscal}" styleClass="defaultInput"/>
+				</s:decorate>	
+			 
+				
+	            <s:decorate id="obsCompraField" template="layout/display.xhtml">
+	                <ui:define name="label">Observação</ui:define>	                
+	                <h:inputText id="obsVenda" maxlength="100" size="50"
+									value="#{compraHome.instance.obsCompra}" styleClass="defaultInput"/>									
+	            </s:decorate>
+	            <h:outputText/>
+          		
+          		<div style="height:20px">
+	                <span class="required">*</span>
+	                Campos obrigatórios
+	            </div>  
+	            	            
+			</h:panelGrid>
+			
+			<rich:spacer height="7"/>	
+	
+			<table width="100%" border="0">
+<!-- linha 1 -->				
+				<tr>
+					<td><h:outputText value="Marca" styleClass="textoNegrito"/></td>
+					<td>
+						<h:selectOneMenu id="marcaSelecionada"  
+							value="#{compraHome.marcaSelecionada}" 
+							styleClass="defaultInput2" >		
+						   <s:selectItems value="#{compraHome.marcas}" 
+						   				  var="marca" 								   				  
+						                  label="#{marca.nomeMarca}"/>
+						   		<a:support event="onchange" reRender="procudoSelecionado, precoCompraProduto, precoVendaProduto, percentLucro, codProduto, localizadorProduto" 
+						   			ajaxSingle="true" actionListener="#{compraHome.listarProdutos()}"/>							       		
+						   <s:convertEntity />			
+						</h:selectOneMenu>		
+					</td>
+					<td><h:outputText value="Produtos " styleClass="textoNegrito"/></td>
+					<td  colspan="2">
+						<h:selectOneMenu id="procudoSelecionado" value="#{compraHome.novoLoteProduto.produto}" styleClass="defaultInput" title="Código de Barras do Produto - Nome Produto" >		
+					   	<s:selectItems value="#{compraHome.produtos}" 
+					   				  var="produto" 			
+					   				  itemLabel="#{produto.nomeProduto}"
+					                  label="#{produto.codProdutoExterno} - #{produto.nomeProduto}"/>	
+					   		<a:support event="onchange" reRender="precoCompraProduto, precoVendaProduto, percentLucro, codProduto, localizadorProduto, editlink"
+					   			actionListener="#{compraHome.atualizarPrecoNovoLote()}" ajaxSingle="true"/>				
+					   					       		
+					   	<s:convertEntity />			
+					</h:selectOneMenu>	
+					</td>
+					
+					<td><h:outputText value="Cod.Barras" styleClass="textoNegrito"/></td>
+					<td>
+						<h:outputText id="codProduto" styleClass="textoNegrito4"
+								value="#{compraHome.novoLoteProduto.produto.codigoBarrasProduto}">
+						</h:outputText>
+					</td>
+					
+					<td><h:outputText value="Localizador" styleClass="textoNegrito"/></td>
+					<td>
+						<h:outputText id="localizadorProduto" styleClass="textoNegrito4"
+								value="#{compraHome.novoLoteProduto.produto.localizadorDefault}">
+						</h:outputText>
+					</td>
+					<td width="5%" align="right">
+						<a:commandLink ajaxSingle="true" id="editlink" oncomplete="#{rich:component('editPanel')}.show()" >
+							<h:graphicImage url="/img/editar.jpg" alt="Editar Produto" rendered="#{compraHome.novoLoteProduto.produto.nomeProduto != null}"/>
+							<h:outputText  value="Editar" rendered="#{compraHome.novoLoteProduto.produto.nomeProduto != null}" />
+		                </a:commandLink>
+		            </td>
+				</tr>
+<!-- linha 2 -->				
+				<tr>
+					<td><h:outputText value="Lote" styleClass="textoNegrito"/></td>
+					<td>
+						<h:inputText id="loteProduto"  maxlength="45" 
+							value="#{compraHome.novoLoteProduto.identificacaoLote}" styleClass="defaultInput2"/>
+					</td>
+					<td><h:outputText value="Data Validade" styleClass="textoNegrito"/></td>
+					<td  colspan="2">
+						<rich:calendar id="dataValidade" value="#{compraHome.novoLoteProduto.dataValidade}" datePattern="dd/MM/yyyy"/>
+					</td>
+					<td><h:outputText value="Qtd." styleClass="textoNegrito"/></td>
+					<td colspan="4">
+						<rich:inputNumberSpinner id="qtd_novoLoteProduto"  
+							 value="#{compraHome.novoLoteProduto.qtdCompra}" 
+							 minValue="1"		
+							 maxValue="1000000"					  
+							 step="1" 
+							 inputSize="6"/>
+					</td>
+				</tr>
+<!-- linha 3 -->					
+				<tr>
+					<td><h:outputText value="Preço Compra" styleClass="textoNegrito"/></td>
+					<td>
+						<easy:inputCurrency id="precoCompraProduto" 
+									value="#{compraHome.novoLoteProduto.precoCompraUnidade}" 
+									required="false"
+									decimalSeparator="," 
+									groupSeparator="." 
+									useValidate="true"
+									returnDecimal="true" 
+									size="10">
+							<a:support event="onblur" process="precoCompraProduto, percentLucro" 
+							reRender="percentLucro" ajaxSingle="true" actionListener="#{compraHome.calcularLucro()}"/>									
+						</easy:inputCurrency>	
+					</td>
+					<td><h:outputText value="Lucro(%)" styleClass="textoNegrito"/></td>
+					<td>
+						<rich:inputNumberSpinner id="percentLucro"  
+								 value="#{compraHome.percentLucro}"
+								 minValue="0" 							  
+								 step="1" 
+								 required="true"	
+								 inputSize="6"
+								 maxValue="999999999">								
+							<a:support event="onchange" process="precoCompraProduto, precoCompraProduto" 
+								reRender="precoVendaProduto" limitToList="true" ajaxSingle="true" actionListener="#{compraHome.calcularPrecoVenda()}"/> 
+						</rich:inputNumberSpinner>	
+					</td>
+					<td><h:outputText value="Preço Venda" styleClass="textoNegrito"/></td>
+					<td>
+						<easy:inputCurrency id="precoVendaProduto" 
+							value="#{compraHome.novoLoteProduto.precoVendaUnidade}" 
+							required="false"
+							decimalSeparator="," 
+							groupSeparator="." 
+							useValidate="true"
+							returnDecimal="true" 
+							size="10">
+							<a:support event="onblur" process="precoCompraProduto, precoVendaProduto" 
+								reRender="percentLucro" ajaxSingle="true" actionListener="#{compraHome.calcularLucro()}"/>
+						</easy:inputCurrency>	
+					</td>
+					<td><h:outputText value="Desc. Max.(%)" styleClass="textoNegrito" title="Desconto maximo permito"/></td>
+					<td>
+						<rich:inputNumberSpinner id="prcDescontoMaximo"  
+								 value="#{compraHome.novoLoteProduto.prcDescontoMaximo}"
+								 minValue="0"
+								 required="true"							  
+								 step="1" 
+								 inputSize="6"
+								 maxValue="100">														 
+						</rich:inputNumberSpinner>
+					</td>
+					<td align="right" colspan="2" >
+						<a:commandButton id="adicionarLoteProduto" value="Adicionar +" 
+					    	action="#{compraHome.addLoteProduto()}"  
+					    	reRender="loteProdutoList, save, continuar, updateContinuar, loteProduto, dataValidade, qtd_novoLoteProduto, precoCompraProduto, percentLucro, precoVendaProduto" 
+							ajaxSingle="true" 
+						    disabled="#{!compraHome.compraPodeSerAlterada()}"
+							process="procudoSelecionado, loteProduto, dataValidade, qtd_novoLoteProduto, precoCompraProduto, percentLucro, precoVendaProduto, prcDescontoMaximo"/>	
+					</td>
+				</tr>
+			
+			</table>
+						
+			<rich:spacer height="7"/>
+
+<!-- Data table lista lotes  -->			 	
+
+			<rich:dataTable id="loteProdutoList"
+	                var="_loteProdutoComprado"
+	              	value="#{compraHome.loteProdutos}"			           	
+		           	onRowMouseOver="this.style.backgroundColor='#F0F0F0'"
+		           	onRowMouseOut="this.style.backgroundColor='#{a4jSkin.rowBackgroundColor}'"
+		           	columnClasses="center" 
+		           	columnsWidth="*, * , * , *, *, *, *, *, *"
+		           	footerClass="center"
+		           	rowClasses="tableRowOne,tableRowTwo">	
+					
+                    <rich:column  rendered="#{not empty compraHome.loteProdutos}">
+                    	<f:facet name="header">
+               				<h:outputText value="Código Produto" title="Código do produto"/>
+           				</f:facet>  
+                       <h:outputText value="#{_loteProdutoComprado.produto.codProdutoExterno}"/>    
+                        <f:facet name="footer">
+                        	<h:outputText value="Total" styleClass="textoNegrito"/>
+                       </f:facet>   
+                    </rich:column>
+                                     
+                    <rich:column  rendered="#{not empty compraHome.loteProdutos}" sortBy="#{_loteProdutoComprado.produto.nomeProduto}">
+                    	<f:facet name="header">
+               				<h:outputText value="Produto" title="Nome do produto"/>
+           				</f:facet>
+                        <h:outputText value="#{_loteProdutoComprado.produto.nomeProduto}"/>
+                        <f:facet name="footer">
+                           <rich:spacer />                           
+                        </f:facet>
+                    </rich:column>
+                       
+                    <rich:column  rendered="#{not empty compraHome.loteProdutos}">
+                    	<f:facet name="header">
+                    		<h:outputText value="Marca" title="Marca do produto"/>
+           				</f:facet>
+                        <h:outputText value="#{_loteProdutoComprado.produto.marca.nomeMarca}"/>
+                        <f:facet name="footer">
+                            <rich:spacer />
+                        </f:facet>
+                    </rich:column>
+                    
+                     <rich:column sortBy="#{_loteProdutoComprado.identificacaoLote}" rendered="#{not empty compraHome.loteProdutos}">
+                     	<f:facet name="header">
+               				<h:outputText value="Lote" title="Identificacao do Lote"/>
+           				</f:facet>
+                        <h:outputText value="#{_loteProdutoComprado.identificacaoLote}"/>
+                        <f:facet name="footer">
+                            <rich:spacer />
+                        </f:facet>
+                    </rich:column>
+                    
+                    <rich:column  rendered="#{not empty compraHome.loteProdutos}">   
+                    	<f:facet name="header">
+               				<h:outputText value="Dt. Validade" title="Data Validade"/>
+           				</f:facet>                      
+                        <h:outputText value="#{_loteProdutoComprado.dataValidade}"/>
+                        <f:facet name="footer" >                                                         
+                            <rich:spacer />                                                                            	
+                        </f:facet>
+                    </rich:column>
+                    
+                    <rich:column  rendered="#{not empty compraHome.loteProdutos}">  
+                    	<f:facet name="header">
+               				<h:outputText value="Qtd." title="Quantidade"/>
+           				</f:facet>                       
+                        <h:outputText value="#{_loteProdutoComprado.qtdCompra}"/>
+                        <f:facet name="footer" >                             
+                            <h:outputText title="Quantidade total de produtos comprados" value="#{compraHome.instance.qtdTotalProduto}" styleClass="textoNegrito"/>                                                   
+                        </f:facet>
+                    </rich:column>
+                    
+                    <rich:column  rendered="#{not empty compraHome.loteProdutos}">
+                    	<f:facet name="header">
+               				<h:outputText value="Preço Compra Unit." title="Preço de compra unitário"/>
+           				</f:facet>
+                        <h:outputText value="#{_loteProdutoComprado.precoCompraUnidade}">
+                         		<f:convertNumber currencySymbol="R$"  type="currency"  locale="pt_BR"/>
+                        </h:outputText>
+                        <f:facet name="footer">
+                            <h:outputText title="Valor total compra" value="#{compraHome.instance.precoTotal}" styleClass="textoNegrito">
+                            		<f:convertNumber currencySymbol="R$"  type="currency"  locale="pt_BR"/>
+	                     </h:outputText>  
+                        </f:facet>
+                   </rich:column>
+                   
+                   <rich:column  rendered="#{not empty compraHome.loteProdutos}">  
+                   		<f:facet name="header">
+               				<h:outputText value="Desc. Máx." title="Desconto máximo unitário"/>
+           				</f:facet>                       
+                        <h:outputText value="#{_loteProdutoComprado.prcDescontoMaximo}%"/>
+                        <f:facet name="footer" >                             
+                           <rich:spacer />                                                     
+                        </f:facet>
+                    </rich:column>
+                    
+                    
+                    <rich:column  rendered="#{not empty compraHome.loteProdutos}">       
+                    	<f:facet name="header">
+               				<h:outputText value="Lucro Unit." title="Lucro unitário" />
+           				</f:facet>                 
+                        <h:outputText value="#{_loteProdutoComprado.precoVendaUnidade - _loteProdutoComprado.precoCompraUnidade}" rendered="#{(_loteProdutoComprado.precoVendaUnidade - _loteProdutoComprado.precoCompraUnidade) >= 0}">
+                         		<f:convertNumber currencySymbol="R$"  type="currency"  locale="pt_BR"/>
+                        </h:outputText>
+                          
+                        <h:outputText value="#{_loteProdutoComprado.precoVendaUnidade - _loteProdutoComprado.precoCompraUnidade}" styleClass="textoMedioVermelho" rendered="#{ 0 > (_loteProdutoComprado.precoVendaUnidade - _loteProdutoComprado.precoCompraUnidade)}">
+                         		<f:convertNumber currencySymbol="R$"  type="currency"  locale="pt_BR"/>
+                        </h:outputText>
+                         
+                        <f:facet name="footer" >                             
+                           	<h:outputText title="Lucro Total da Compra" value="#{compraHome.instance.lucroTotalCompra}"  styleClass="textoNegrito">
+	                          		<f:convertNumber currencySymbol="R$" type="currency"  locale="pt_BR"/>
+	                         </h:outputText>
+                        </f:facet>
+                    </rich:column>
+                    
+                     <rich:column  rendered="#{not empty compraHome.loteProdutos}">
+                     	<f:facet name="header">
+               				<h:outputText value="Preço Venda Unit." title="Preço de venda unitário"/>
+           				</f:facet>
+                        <h:outputText value="#{_loteProdutoComprado.precoVendaUnidade}">
+                        	<f:convertNumber currencySymbol="R$"  type="currency"  locale="pt_BR"/>
+                        </h:outputText>
+                        <f:facet name="footer">
+                           	  <h:outputText title="Valor total de venda" value="#{compraHome.instance.valorPrecoVendaTotal}"  styleClass="textoNegrito">
+	                          		<f:convertNumber currencySymbol="R$"  type="currency"  locale="pt_BR"/>
+	                          </h:outputText>
+                        </f:facet>
+                    </rich:column>
+                    
+                    <rich:column  rendered="#{not empty compraHome.loteProdutos}">
+                    	<f:facet name="header">
+               				<h:outputText value="Subtotal Produto" title="Subtotal do produto (Qtd X Preco Venda Unit."/>
+           				</f:facet>
+                        <h:outputText value="#{_loteProdutoComprado.qtdCompra * _loteProdutoComprado.precoCompraUnidade}">
+                        	<f:convertNumber currencySymbol="R$"  type="currency"  locale="pt_BR"/>
+                        </h:outputText>
+                        <f:facet name="footer">
+                            <h:outputText title="Valor total compra" value="#{compraHome.instance.precoTotal}" styleClass="textoNegrito5">
+                            		<f:convertNumber currencySymbol="R$"  type="currency"  locale="pt_BR"/>
+	                     </h:outputText>                                                   
+                        </f:facet>
+                    </rich:column>
+                    
+                    <rich:column  rendered="#{not empty compraHome.loteProdutos}">            
+                        <a:commandLink ajaxSingle="true" reRender="loteProdutoList, save, continuar"  
+                       	action="#{compraHome.removeLoteProduto(_loteProdutoComprado)}">
+                        	<h:graphicImage url="/img/lixeira.gif" alt="Excluir"/>
+                    	</a:commandLink>
+                    	 
+                    </rich:column>                       
+		    </rich:dataTable>
+        </rich:panel>
+
+        <div class="actionButtons">
+
+            <h:commandButton id="save"
+                          value="Salvar e Concluir"
+                          alt="Salva uma compra e inclui no estoque - Status Concluída"
+                 actionListener="#{compraHome.setCodStatusCompra(constantes.compraConcluida)}"
+                         action="#{compraHome.persist}"
+                       disabled="#{!compraHome.wired}"
+                       rendered="#{!compraHome.managed and identity.hasRole(transacoes.transacaoCompraInserir)}"/>
+                       
+          <h:commandButton id="continuar"
+                          value="Salvar e Continuar"
+                          alt="Salvar uma compra mas não inclui no estoque - Status Em-Andamento"
+                          actionListener="#{compraHome.setCodStatusCompra(constantes.compraEmAndamento)}"
+                         action="#{compraHome.persist}"
+                       disabled="#{!compraHome.wired}"
+                       rendered="#{!compraHome.managed and identity.hasRole(transacoes.transacaoCompraInserir)}"/>
+
+            <h:commandButton id="update"
+                            value="Salvar e Concluir"
+                          alt="Salva uma compra e inclui no estoque - Status Concluída"
+                 actionListener="#{compraHome.setCodStatusCompra(constantes.compraConcluida)}"
+                         action="#{compraHome.update}"
+                         disabled="#{!compraHome.compraPodeSerAlterada()}"
+                       rendered="#{compraHome.managed and identity.hasRole(transacoes.transacaoCompraEditar)}"/>
+
+			 <h:commandButton id="updateContinuar"
+                            value="Salvar e Continuar"
+                          alt="Salva uma compra mas não inclui no estoque - Status Em-Andamento"
+                 actionListener="#{compraHome.setCodStatusCompra(constantes.compraEmAndamento)}"
+                         action="#{compraHome.update}"
+                       rendered="#{compraHome.managed and compraHome.instance.codStatusCompra == constantes.compraEmAndamento and identity.hasRole(transacoes.transacaoCompraEditar)}"/>
+                       
+                       
+            <h:commandButton id="delete"
+                          value="Excluir"
+                         action="#{compraHome.remove}"
+                        onclick="if (!confirm('Tem certeza que deseja excluir este registro?')) return false"
+                      immediate="true"
+                       disabled="#{!compraHome.compraPodeSerAlterada()}"
+                       rendered="#{compraHome.managed and identity.hasRole(transacoes.transacaoCompraExcluir)}"/>
+
+            <s:button id="cancelEdit"
+                   	value="Voltar"
+            		includePageParams="true" 
+            		propagation="#{empty compraFrom ? 'end' : 'default'}"
+                    view="/#{empty compraFrom ? 'Compra' : compraFrom}.xhtml"
+                    rendered="#{compraHome.managed}"/>
+
+            <s:button id="cancelAdd"
+                   value="Cancelar"
+             propagation="end"
+                    view="/#{empty compraFrom ? 'CompraList' : compraFrom}.xhtml"
+                rendered="#{!compraHome.managed}"/>
+
+        </div>
+    </a:form>
+    
+<!-- Modal EDIT Produto -->		
+	<a:outputPanel id="panelEditLocalizador" ajaxRendered="true">
+	<rich:modalPanel id="editPanel" autosized="true" width="450" onshow="document.getElementById('form:codProdutoExternoLabel:codProdutoExterno').focus()" >
+	        
+	        <f:facet name="header">
+	            <h:outputText value="Editar Localizador"/>
+	        </f:facet>
+	        
+	        <f:facet name="controls">
+	            <h:panelGroup>
+	                <h:graphicImage value="/img/close.png" id="hidelink" style="cursor:pointer;"/>
+	                <rich:componentControl for="editPanel" attachTo="hidelink" operation="hide" event="onclick" />
+	            </h:panelGroup>
+	        </f:facet>
+	        
+            <h:form id="form">
+            
+            <rich:panel id="panelEditProduto" >
+	            <a:outputPanel ajaxRendered="true" id="panelGlobalMessages">
+			         <h:messages id="messages" globalOnly="false" styleClass="message"
+			            errorClass="errormsg" infoClass="infomsg" warnClass="warnmsg"
+			            rendered="#{showGlobalMessages != 'false'}"/>
+			    </a:outputPanel>
+	            
+				<h:panelGrid id="panelGrid" columns="1">
+					
+					<s:decorate id="codProdutoExternoLabel" template="layout/display.xhtml">
+						<ui:define name="label"><h:outputText value="Código do Produto"/></ui:define>
+						<h:inputText maxlength="20" id="codProdutoExterno" value="#{compraHome.novoLoteProduto.produto.codProdutoExterno}" styleClass="defaultInput2" />
+					</s:decorate>
+				
+					<s:decorate id="localizadorLabel" template="layout/display.xhtml">
+						<ui:define name="label"><h:outputText value="Localizador"/></ui:define>
+						<h:inputText maxlength="20" id="localizador" value="#{compraHome.novoLoteProduto.produto.localizadorDefault}" styleClass="defaultInput2" />
+					</s:decorate>
+					
+					<s:decorate template="layout/display.xhtml">
+						<ui:define name="label"><h:outputText value="Código de Barras"/></ui:define>
+						<h:inputText maxlength="40" id="codigoBarrasProduto" value="#{compraHome.novoLoteProduto.produto.codigoBarrasProduto}" styleClass="defaultInput2" />
+					</s:decorate>
+					
+				</h:panelGrid>
+			</rich:panel>
+			
+			<table width="100%" border="0" cellspacing="3">
+				<tr>
+					<td class="right" width="50%">
+						<a:commandButton id="btnSalvarUpdate" value="Salvar" action="#{compraHome.persistProduto()}" 
+							reRender="localizadorProduto, codProduto"
+							oncomplete="#{rich:component('editPanel')}.hide();" />
+						<rich:hotKey key="return" selector="#localizador, #codProdutoExterno, #codigoBarrasProduto" handler="#{rich:element('btnSalvarUpdate')}.click()"/>
+					</td>
+					<td style="align:left">						
+						<input value="Cancelar" type="button" onclick="#{rich:component('editPanel')}.hide();"/>
+						<rich:hotKey key="esc" handler="#{rich:component('editPanel')}.hide();#{rich:element('compra:loteProduto')}.focus()"/>
+					</td>
+				</tr>
+			</table>
+		</h:form>
+    </rich:modalPanel>
+	</a:outputPanel>
+</ui:define>
+
+</ui:composition>

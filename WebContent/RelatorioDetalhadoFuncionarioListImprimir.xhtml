@@ -1,0 +1,71 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+ 
+<rich:modalPanel id="imprimirRelatorioFuncionarioPopUp" minWidth="910" minHeight="530" autosized="true" top="15px"
+		onshow="window.print();alert('Impressão Finalizada. A janela será fechada.');Richfaces.hideModalPanel('imprimirRelatorioFuncionarioPopUp')"
+	xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:s="http://jboss.com/products/seam/taglib"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html" 
+    xmlns:a="http://richfaces.org/a4j"
+    xmlns:rich="http://richfaces.org/rich">
+
+	<style type="text/css">
+	@media print {
+		 body > * {
+		 display: none; 		 
+		 }
+		 
+		 body > .rich-modalpanel {
+		 display: block;
+		 }
+		 
+		 .rich-mpnl_panel, .rich-mpnl_panel > div {
+		 position: static !important;
+		 }
+		 
+		 .rich-mpnl-mask-div, .rich-mpnl-shadow {
+		 display: none !important;
+		 }
+		 
+		 .rich-mp-content {
+		 overflow: visible !important;
+		 width: auto !important;
+		 height: auto !important;
+		 }		 		 
+	}
+		.tabelaPrint {
+			text-align: center;
+		    font-size: 12px;
+		}
+		
+		.footer {
+			color: #000000;
+		    font-family: Verdana,Arial,Helvetica,sans-serif;
+		    font-size: 13px;
+		    font-weight: bold;   
+		}
+		.textoVermelhoPrint {
+		    font-family: Verdana, Arial, Helvetica, sans-serif;
+		    font-size: 12px;
+			color: #bb0000;	
+		}
+		
+		
+	</style>
+	
+	<table width="100%">
+		<tr>
+			<td>
+				<ui:include src="/includes/includeCabecalhoDental.xhtml" />
+			</td>
+		</tr>
+		<tr>
+			<td>			
+				<ui:include src="/RelatorioDetalhadoFuncionarioListInclude.xhtml"/>				
+			</td>
+		</tr>
+	</table>
+	<rich:hotKey key="esc" handler="#{rich:component('imprimirRelatorioFuncionarioPopUp')}.hide();"/>
+</rich:modalPanel>

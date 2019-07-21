@@ -1,0 +1,120 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<rich:modalPanel id="panelPopUp" minWidth="800" minHeight="450" autosized="true" top="15px"
+	xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:s="http://jboss.com/products/seam/taglib"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html" 
+    xmlns:a="http://richfaces.org/a4j"
+    xmlns:rich="http://richfaces.org/rich">
+ 
+	
+	<f:facet name="header">
+        <h:panelGroup>
+            <h:outputText value="Histórico de Vendas do Produto"></h:outputText>
+        </h:panelGroup>
+    </f:facet>
+    
+	<f:facet name="controls">
+		<h:panelGroup>		
+			<h:graphicImage value="/img/close.png" id="hidelink" style="cursor:pointer;"/>
+            <rich:componentControl for="panelPopUp" attachTo="hidelink" operation="hide" event="onclick"/>
+            <rich:hotKey key="esc" handler="#{rich:component('panelPopUp')}.hide()"/>
+		</h:panelGroup>		       
+	</f:facet>
+	<rich:spacer height="5"/>	
+    
+    <a:outputPanel ajaxRendered="true"> 
+   
+     <h:outputText value="Produto: "  styleClass="textoNegrito"/>
+     <h:outputText id="nomeProdutoPesquisado" value=" #{relatorioProdutoList.nomeProdutoPesquisado} " />          
+    
+     <rich:spacer height="5"/>	
+     
+     <h:form prependId="false" id="listForm">
+    
+    <rich:panel style="height:360px" >
+     
+    <f:facet name="header">
+    	<h:outputText id="labelHeader">
+    		Histórico de Vendas
+    	</h:outputText>
+    </f:facet>
+        
+    <rich:dataTable id="listaLotesProduto"  
+           var="_loteProduto" rowKeyVar="row"                     
+           value="#{relatorioProdutoList.listaLotesVendidos}"                   
+           onRowMouseOver="this.style.backgroundColor='#F0F0F0'"
+           onRowMouseOut="this.style.backgroundColor='#{a4jSkin.rowBackgroundColor}'"
+           columnsWidth="0*, *, *, *, *, *, 0*"           
+           columnClasses="center" 
+           footerClass="tableRowTwo"
+           rowClasses="tableRowOne,tableRowTwo"
+           rows="10"> 
+    
+         <rich:column> 
+           <f:facet name="header">
+               <h:outputText value="Código Venda"/>
+           </f:facet> 
+           <h:outputText value="#{_loteProduto.codVenda}"/>                     
+         </rich:column>  
+         
+         <rich:column styleClass="left"> 
+           <f:facet name="header">
+               <h:outputText value="Código Cliente"/>
+           </f:facet> 
+           <h:outputText value="#{_loteProduto.codCliente}"/> 
+         </rich:column>  
+         
+         <rich:column styleClass="left"> 
+           <f:facet name="header">
+               <h:outputText value="Cliente"/>
+           </f:facet> 
+           <h:outputText value="#{_loteProduto.nomeCliente}"/>
+         </rich:column>   
+        
+         <rich:column> 
+           <f:facet name="header">
+               <h:outputText value="Telefone"/>
+           </f:facet> 
+           <h:outputText value="#{_loteProduto.telefoneCliente}"/>
+         </rich:column>                   
+         
+         <rich:column> 
+           <f:facet name="header">
+               <h:outputText value="QTD"/>
+           </f:facet> 
+           <h:outputText value="#{_loteProduto.qtdVendida}"/>
+         </rich:column>
+         
+         <rich:column> 
+           <f:facet name="header">
+               <h:outputText value="Data"/>
+           </f:facet> 
+           
+           <h:outputText value="#{_loteProduto.dataInicioVenda}">
+         	<s:convertDateTime type="date" pattern="dd/MM/yyyy"/>
+           </h:outputText>
+         </rich:column>
+         
+         <rich:column> 
+           <f:facet name="header">
+               <h:outputText value="Preço unit." title="Preço unitário de Venda"/>
+           </f:facet> 
+           <h:outputText value="#{_loteProduto.valorVendaProduto}">
+           		<f:convertNumber currencySymbol="R$"  type="currency"  locale="pt_BR"/>
+           </h:outputText>
+         </rich:column>
+       
+               
+        <f:facet name="footer">
+           <h:outputText value="Não houve compradores para esse produto." styleClass="textoMedioVermelho" rendered="#{relatorioProdutoList.qtdResultados == 0}"/>           
+        </f:facet>        
+       	</rich:dataTable>
+    	<rich:datascroller align="center" for="listaLotesProduto" maxPages="10" id="sc2"/>
+    	
+    </rich:panel>
+	</h:form>	
+    </a:outputPanel>
+</rich:modalPanel>

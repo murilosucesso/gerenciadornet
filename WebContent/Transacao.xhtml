@@ -1,0 +1,55 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:s="http://jboss.com/products/seam/taglib"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:rich="http://richfaces.org/rich"
+    template="layout/template.xhtml">
+
+<ui:define name="body">
+
+    <rich:panel>
+        <f:facet name="header">Detalhes da Transacao</f:facet>
+
+
+        <s:decorate id="siglaTransacao" template="layout/display.xhtml">
+            <ui:define name="label">Sigla transacao</ui:define>
+            <h:outputText value="#{transacaoHome.instance.siglaTransacao}"/>
+        </s:decorate>
+        
+         <s:decorate id="nomeTransacao" template="layout/display.xhtml">
+            <ui:define name="label">Nome transacao</ui:define>
+            <h:outputText value="#{transacaoHome.instance.nome}"/>
+        </s:decorate>
+
+        <s:decorate id="descTransacao" template="layout/display.xhtml">
+            <ui:define name="label">Desc transacao</ui:define>
+            <h:outputText value="#{transacaoHome.instance.descTransacao}"/>
+        </s:decorate>
+
+        <s:decorate id="inExclusao" template="layout/display.xhtml">
+            <ui:define name="label">Desabilitada</ui:define>
+            <h:outputText value="#{transacaoHome.instance.inExclusao}"/>
+        </s:decorate>
+
+        <div style="clear:both"/>
+
+    </rich:panel>
+
+    <div class="actionButtons">
+
+        <s:button view="/TransacaoEdit.xhtml"
+                    id="edit"
+                 value="Editar"/>
+
+        <s:button view="/#{empty transacaoFrom ? 'TransacaoList' : transacaoFrom}.xhtml"
+                    id="done"
+                 value="Voltar"/>
+
+    </div>
+
+</ui:define>
+
+</ui:composition>

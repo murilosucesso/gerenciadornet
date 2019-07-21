@@ -1,0 +1,190 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:s="http://jboss.com/products/seam/taglib"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:rich="http://richfaces.org/rich"
+    xmlns:a="http://richfaces.org/a4j"
+    template="layout/template.xhtml">
+
+<ui:define name="body">
+
+    <h:form id="usuarioSearch" styleClass="edit">
+
+		<ui:include src="/paginas/help/GenericListHelp.xhtml"/>	
+
+        <rich:simpleTogglePanel label="Filtro de pesquisa de Usuários" switchType="client">
+ 
+            <s:decorate template="layout/display.xhtml">
+                <ui:define name="label">Nome</ui:define>
+                <h:inputText id="nomeUsuario" value="#{usuarioList.usuario.nomeUsuario}" styleClass="defaultInput" maxlength="100"/>
+            </s:decorate>
+           
+            <s:decorate template="layout/display.xhtml">
+                <ui:define name="label">Login</ui:define>
+                <h:inputText id="loginUsuario" required="false" styleClass="defaultInput" maxlength="30" value="#{usuarioList.usuario.loginUsuario}"/>
+            </s:decorate>
+             
+            <s:decorate template="layout/display.xhtml">
+                <ui:define name="label">Perfil</ui:define> 
+                 <h:selectOneMenu id="perfil" value="#{usuarioList.usuario.perfil}"  required="false" styleClass="defaultInput">		
+				   <s:selectItems  value="#{perfilList.resultList}" 
+				   				  var="perfil" 			
+				                  label="#{perfil.nomePerfil}"
+				                  noSelectionLabel="Selecione.." 
+				                  />			
+				   <s:convertEntity />	
+				  </h:selectOneMenu>
+            </s:decorate> 
+                   
+            <s:decorate template="layout/display.xhtml">
+                <ui:define name="label">CPF</ui:define>
+                <h:inputText id="cpf" value="#{usuarioList.usuario.cpf}"/>
+            </s:decorate>
+
+            <s:decorate template="layout/display.xhtml">
+                <ui:define name="label">Número RG</ui:define>
+                <h:inputText id="numRg" value="#{usuarioList.usuario.numRg}"/>
+            </s:decorate>
+	
+			</rich:simpleTogglePanel>
+		    
+		    <table border="0" width="10%">
+			<tr>
+				<td nowrap="nowrap">
+		        	<ui:include src="/includes/includeBotoesPesquisarLimpar.xhtml" />
+				</td>
+				<td nowrap="nowrap">    
+				   <s:div styleClass="actionButtons" rendered="#{empty from}">
+				        <s:button view="/UsuarioEdit.xhtml"  rendered="#{identity.hasRole(transacoes.transacaoUsuarioInserir)}"
+				                    id="create"
+				           propagation="none"
+				                 value="Novo Usuário">
+				            <f:param name="usuarioCodUsuario"/>
+						</s:button>
+				    </s:div>
+			   	</td>
+	    	</tr>
+		</table>
+			
+    </h:form>
+	
+	<h:form>
+    <rich:panel>
+    
+    <f:facet name="header">
+		<a:outputPanel  id="panelDiv" ajaxRendered="true">
+	    	Resultado da pesquisa de Usuários (#{empty usuarioList.resultList ? 0 : (usuarioList.paginated ? usuarioList.resultCount : usuarioList.resultList.size)})
+	    </a:outputPanel>
+    </f:facet>
+    
+    <a:outputPanel id="msnListaVazia" ajaxRendered="true">
+   	
+   	<h:outputText value="#{messages['mensagem.pesquisa.vazia']}" rendered="#{empty usuarioList.resultList}"/>
+
+    <rich:dataTable id="resultadoList"
+                var="_usuario"
+              value="#{usuarioList.resultList}"
+           rendered="#{not empty usuarioList.resultList}"
+           onRowMouseOver="this.style.backgroundColor='#F0F0F0'"
+           onRowMouseOut="this.style.backgroundColor='#{a4jSkin.rowBackgroundColor}'"
+           columnClasses="center" 
+           rows="20"
+           rowClasses="tableRowOne,tableRowTwo">           		
+        
+        <a:support event="onRowClick" onsubmit="changeColor(this)" ajaxSingle="true">
+        	<f:param name="currentRow" value="#{_usuario.loginUsuario}"/>
+        </a:support>
+       
+         <rich:column sortBy="#{_usuario.nomeUsuario}" styleClass="left"> 
+           <f:facet name="header">
+               <h:outputText value="Nome"/>
+           </f:facet> 
+           <h:outputText value="#{_usuario.nomeUsuario}"/>
+         </rich:column>         
+         
+         <rich:column sortBy="#{_usuario.loginUsuario}"> 
+           <f:facet name="header">
+               <h:outputText value="Login"/>
+           </f:facet> 
+           <h:outputText value="#{_usuario.loginUsuario}"/>
+         </rich:column>
+         
+         <rich:column sortBy="#{_usuario.perfil.nomePerfil}"> 
+           <f:facet name="header">
+               <h:outputText value="Perfil"/>
+           </f:facet> 
+           <h:outputText value="#{_usuario.perfil.nomePerfil}"/>
+         </rich:column>
+         
+         <rich:column sortBy="#{_usuario.cpf}"> 
+           <f:facet name="header">
+               <h:outputText value="CPF"/>
+           </f:facet> 
+           <h:outputText value="#{_usuario.cpf}"/>
+         </rich:column>   
+         
+         
+         <rich:column sortBy="#{_usuario.numRg}"> 
+           <f:facet name="header">
+               <h:outputText value="Número RG"/>
+           </f:facet> 
+           <h:outputText value="#{_usuario.numRg}"/>
+        </rich:column>      
+                  
+        <rich:column sortBy="#{_usuario.dataNasc}"> 
+           <f:facet name="header">
+               <h:outputText value="Data Nascimento"/>
+           </f:facet>
+           <h:outputText value="#{_usuario.dataNasc}">
+                <s:convertDateTime type="date" pattern="dd/MM/yyyy"/>
+            </h:outputText>
+        </rich:column>   
+        
+        <rich:column sortBy="#{_usuario.inVendedorAtivo}"> 
+           <f:facet name="header">
+               <h:outputText value="Vendedor Ativo" title="Indica se um usuário será exibido em nova venda, ou seja, se é um vendedor ativo." />
+           </f:facet> 
+           <h:outputText value="SIM" rendered="#{_usuario.inVendedorAtivo}"/>
+           <h:outputText value="NAO" rendered="#{!_usuario.inVendedorAtivo}"/>
+        </rich:column> 
+        
+        <rich:column sortBy="#{_usuario.inExclusao}"> 
+           <f:facet name="header">
+               <h:outputText value="Usuário Ativo"/>
+           </f:facet> 
+           <h:outputText value="SIM" rendered="#{!_usuario.inExclusao}"/>
+           <h:outputText value="NAO" rendered="#{_usuario.inExclusao}"/>
+        </rich:column>      	
+                  
+        <rich:column styleClass="action">
+            <f:facet name="header">Visualizar/Editar</f:facet>
+            <s:link view="/#{empty from ? 'Usuario' : from}.xhtml" propagation="#{empty from ? 'none' : 'default'}"
+                      id="usuarioViewId">
+                <h:graphicImage url="/img/binoculo.jpg"/>
+                <f:param name="usuarioCodUsuario" value="#{_usuario.codUsuario}"/>
+            </s:link>
+            <rich:toolTip for="usuarioViewId" value="Visualizar Usuário" direction="top-left"/>
+            
+            #{' '}
+            
+            <s:link view="/UsuarioEdit.xhtml"  propagation="none" id="usuarioEdit" rendered="#{identity.hasRole(transacoes.transacaoUsuarioEditar)}">
+                <h:graphicImage url="/img/editar.jpg"/>
+                <f:param name="usuarioCodUsuario" value="#{_usuario.codUsuario}"/>
+            </s:link>
+            <rich:toolTip for="usuarioEdit" value="Editar Usuário" direction="top-left"/>
+            
+            
+        </rich:column>
+    </rich:dataTable>
+	
+	<ui:include src="/includes/includeDataScroller.xhtml"/>
+	
+    </a:outputPanel>
+    </rich:panel>
+	</h:form>
+</ui:define>
+
+</ui:composition>

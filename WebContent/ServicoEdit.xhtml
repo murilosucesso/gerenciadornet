@@ -1,0 +1,99 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:s="http://jboss.com/products/seam/taglib"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:a="http://richfaces.org/a4j"
+    xmlns:rich="http://richfaces.org/rich"
+    xmlns:easy="http://easyfaces.com.br/easyfaces"
+    template="layout/template.xhtml">
+
+<ui:define name="body">
+
+    <h:form id="servico" styleClass="edit">
+		<ui:include src="/paginas/help/GenericEditHelp.xhtml"/>
+        <rich:panel>
+            <f:facet name="header">#{servicoHome.managed ? 'Editar' : 'Adicionar'} Servico</f:facet>
+
+            <s:decorate id="descServicoField" template="layout/edit.xhtml">
+                <ui:define name="label">Descricao servico</ui:define>
+                <h:inputText id="descServico"
+                       required="true"
+                           size="50"
+                      maxlength="60"
+                          value="#{servicoHome.instance.descServico}">
+                </h:inputText>
+            </s:decorate>
+
+			<s:decorate id="precoCustoField" template="layout/edit.xhtml">
+                <ui:define name="label">Preço Custo</ui:define>
+               
+                <easy:inputCurrency id="precoCusto"
+				    value="#{servicoHome.instance.precoCusto}"
+				    required="true"
+				    decimalSeparator=","
+				    groupSeparator="."
+				    useValidate="false"
+				    returnDecimal="true">				   
+				</easy:inputCurrency>				
+            </s:decorate>
+
+            <s:decorate id="precoServicoField" template="layout/edit.xhtml">
+                <ui:define name="label">Preço Serviço</ui:define>
+               
+                <easy:inputCurrency id="precoServico"
+				    value="#{servicoHome.instance.precoServico}"
+				    required="true"
+				    decimalSeparator=","
+				    groupSeparator="."
+				    useValidate="false"
+				    returnDecimal="true">
+				</easy:inputCurrency>				
+            </s:decorate>
+
+            <div style="clear:both">
+                <span class="required">*</span>
+                Campos obrigatórios
+            </div>
+
+        </rich:panel>
+
+        <div class="actionButtons">
+
+            <h:commandButton id="save"
+                          value="Salvar"
+                         action="#{servicoHome.persist}"
+                       disabled="#{!servicoHome.wired}"
+                       rendered="#{!servicoHome.managed and identity.hasRole(transacoes.transacaoServicoInserir)}"/>
+
+            <h:commandButton id="update"
+                          value="Salvar"
+                         action="#{servicoHome.update}"
+                       rendered="#{servicoHome.managed and identity.hasRole(transacoes.transacaoServicoEditar)}"/>
+
+            <h:commandButton id="delete"
+                          value="Excluir"
+                         action="#{servicoHome.remove}"
+                        onclick="if (!confirm('Tem certeza que deseja Excluir este registro?')) return false"
+                      immediate="true"
+                       rendered="#{servicoHome.managed and identity.hasRole(transacoes.transacaoServicoExcluir)}"/>
+
+            <s:button id="cancelEdit"
+                   value="Voltar"
+             propagation="end"
+                    view="/Servico.xhtml"
+                rendered="#{servicoHome.managed}"/>
+
+            <s:button id="cancelAdd"
+                   value="Voltar"
+             propagation="end"
+                    view="/#{empty servicoFrom ? 'ServicoList' : servicoFrom}.xhtml"
+                rendered="#{!servicoHome.managed}"/>
+
+        </div>
+    </h:form>
+</ui:define>
+
+</ui:composition>

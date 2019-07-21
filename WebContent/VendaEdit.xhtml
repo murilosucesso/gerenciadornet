@@ -1,0 +1,768 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:s="http://jboss.com/products/seam/taglib"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:a="http://richfaces.org/a4j"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:easy="http://easyfaces.com.br/easyfaces"
+	template="layout/template.xhtml">
+
+	<ui:define name="head">		
+		<a:loadScript src="javascript/vendaEdit.js"/>				
+	</ui:define>
+
+	<ui:define name="body">
+	
+		<a:form id="venda" styleClass="edit">
+			<ui:include src="/paginas/help/VendaEditHelp.xhtml" />
+
+			<rich:panel>
+				<f:facet name="header">#{vendaHome.managed ? 'Editar' : 'Adicionar'} Venda / Orçamento</f:facet>
+
+				<h:panelGrid border="0" styleClass="painelGrid" columns="2"
+					width="100%" cellpadding="0" columnClasses="left">
+
+					<h:column>
+						<s:decorate id="nomeUsuarioField" template="layout/display.xhtml">
+							<ui:define name="label"><h:outputLabel value="Vendedor" title="Funcionário que realizou a venda ou serviço." /> </ui:define>                
+			                <h:selectOneMenu id="usuario" value="#{vendaHome.instance.usuario}" rendered="#{user.perfil.codPerfil != constantes.vendedor}" title="Vendedor que realizou a venda" styleClass="defaultInput">		
+							   <s:selectItems value="#{usuarioList.getResultListVendedoresAtivos()}" 
+							   				  var="usuario" 			
+							                  label="#{usuario.nomeUsuario}"
+							                  required="false"
+							                  noSelectionLabel="Selecione.." />							       		
+							   <s:convertEntity />	
+							</h:selectOneMenu>	
+							<h:outputText value="#{user.nomeUsuario}" rendered="#{user.perfil.codPerfil == constantes.vendedor}" />
+						</s:decorate>			
+					</h:column>
+
+					<h:column>
+						<s:decorate id="tipoPagamentoField" template="layout/display.xhtml">
+							<ui:define name="label">Tipo pagamento</ui:define>
+	
+							<h:selectOneMenu value="#{vendaHome.instance.tipoPagamento}" styleClass="defaultInput">	
+								<s:selectItems value="#{tipoPagamentoList.getResultList2()}"
+									var="tipoPagamento" label="#{tipoPagamento.descTipoPagamento}" />
+								<s:convertEntity />
+							</h:selectOneMenu>
+						</s:decorate>
+					
+						<h:outputText value="#{vendaHome.instance.codVenda}" styleClass="textoGrande" rendered="#{vendaHome.managed}" />	
+					</h:column>
+					
+					<h:column>
+						<s:decorate id="pesquisarCliente" template="layout/display.xhtml">
+							<ui:define name="label">Pesquisar Cliente</ui:define>
+							<h:inputText id="pesquisaGeralCliente" name="pesquisaGeralCliente" value="#{clienteList.pesquisaGeral}" onkeyup="habilitarPesquisaCliente()" styleClass="defaultInput"/>
+							<rich:hotKey key="return" selector="#pesquisaGeralCliente" handler="#{rich:element('pesquisarClienteButton')}.click()"/> 
+						</s:decorate>
+							
+						<a:commandButton id="pesquisarClienteButton" value="Buscar"
+							ajaxSingle="true" limitToList="true" oncomplete="focarBotaoAddCliente()" eventsQueue="pesquisaClienteQueue" ignoreDupResponses="true"
+							process="pesquisaGeralCliente" reRender="listaClientes, scPesquisaCliente, textoPesquisadoCliente">
+								<rich:componentControl operation="show" attachTo="pesquisarClienteButton" for="panelPopUpCliente"  event="onclick" />
+						</a:commandButton>
+					
+						<a:region>
+							<s:decorate id="pesquisarCliente2" template="layout/display.xhtml">
+								<ui:define name="label">Cliente</ui:define>
+								<h:outputText id="nomeClienteSelecionado" value="#{vendaHome.instance.cliente.nome}" rendered="#{vendaHome.instance.cliente.nome != null}" styleClass="textoNegrito"/>
+								<h:outputText id="nomeClienteSelecionado1" value="Venda Balcão" rendered="#{vendaHome.instance.cliente.nome == null}" styleClass="textoNegrito"/>
+							</s:decorate>
+							
+							<!-- Popup Detalhar cliente -->
+							<div class="divIcone" >
+							
+								<a:commandLink id="pesquisarClientex" 
+									action="#{vendaHome.detalharCliente()}"
+									ajaxSingle="true" 
+									limitToList="true" 
+									eventsQueue="pesquisaQueueCliente" 
+									ignoreDupResponses="true"
+									reRender="detalhesCliente"
+									process="clienteCombo" 
+									oncomplete="#{rich:component('detalhesClientePopUp')}.show();" >
+									
+									<h:graphicImage id="detalharCliente0" value="/img/binoculo.jpg" alt="Visualizar Detalhes do Cliente"  styleClass="imgLink"/>
+								</a:commandLink>											
+							
+							</div>
+							
+							<a:outputPanel id="detalhesCliente" ajaxRendered="true" >
+								<ui:include src="/includes/includeDetalhesClientePopup.xhtml"/>
+							</a:outputPanel>
+						
+						</a:region>						
+					</h:column>
+					
+					<h:column>
+						<s:decorate id="dataCobrancaPagamento" template="layout/edit.xhtml">
+							<ui:define name="label">Data Cobrança Pagamento</ui:define> 
+			                <rich:calendar id="dataCobrancaPagamento" required="false" value="#{vendaHome.instance.dataCobrancaVenda}" datePattern="dd/MM/yyyy">
+			                	<f:convertDateTime pattern="yyyy-MM-dd"/>
+			                </rich:calendar>
+		                </s:decorate>
+					</h:column>
+					
+					<h:column>
+						<s:decorate id="servicoField" template="layout/display.xhtml">
+							<ui:define name="label">Serviço</ui:define>
+
+							<h:selectOneMenu id="servicoRealizadoField"
+								value="#{vendaHome.servicoRealizado}" required="false"
+								styleClass="defaultInput">
+								<s:selectItems value="#{servicoList.resultList}" var="servico"
+									label="#{servico.descServico} - R$ #{servico.precoServico}"
+									noSelectionLabel="Selecione.." />
+								<a:support event="onchange" reRender="valorServicoRealizado"
+									ajaxSingle="true"
+									actionListener="#{vendaHome.addValorServico()}" />
+								<s:convertEntity />
+							</h:selectOneMenu>
+						</s:decorate>
+					</h:column>
+
+					<h:column>
+						<h:panelGrid border="0" columns="2" width="100%" cellpadding="0" cellspacing="0">
+						
+							<s:decorate id="precoServicoField" template="layout/display.xhtml">
+								<ui:define name="label">Valor cobrado(R$)</ui:define>
+								<easy:inputCurrency id="valorServicoRealizado"
+									value="#{vendaHome.valorServicoRealizado}" required="false"
+									decimalSeparator="," groupSeparator="." useValidate="false"
+									returnDecimal="true" size="10" />
+							</s:decorate>
+							
+							<a:commandButton id="adicionarServico" value="Adicionar Serviço +" style="float:right"
+								action="#{vendaHome.addServico()}"
+								reRender="valorServicoRealizado, servicoList, valorTotalVenda, valorDescontoTotal, valorDescontoTotalVenda, trocoVenda, save"
+								ajaxSingle="true"
+								process="servicoRealizadoField, precoServicoField, descontoTotalField, valorPago" />
+						</h:panelGrid>
+					</h:column>
+
+					<h:column>
+						<s:decorate id="pesquisar" template="layout/display.xhtml">
+							<ui:define name="label">Pesquisar Produto</ui:define>
+							<h:inputText id="pesquisarGeral" name="pesquisarGeral" onkeyup="habilitarPesquisaProduto()"
+								value="#{loteProdutoPopUpList.pesquisaGeral}"
+								styleClass="defaultInput">
+							</h:inputText>
+							<rich:hotKey key="return" selector="#pesquisarGeral"
+		    					handler="#{rich:element('pesquisarProdutos')}.click()"/> 
+						</s:decorate>
+						<a:commandButton id="pesquisarProdutos" 
+							value="Buscar" ajaxSingle="true" limitToList="true" oncomplete="focar()"
+							eventsQueue="pesquisaQueue" ignoreDupResponses="true"
+							process="pesquisarGeral" reRender="listaLotesProduto, sc, textoPesquisado">
+								<rich:componentControl operation="show" attachTo="pesquisarProdutos" for="panelPopUp"  event="onclick" />
+						</a:commandButton>
+					</h:column>
+
+					<h:column>
+						<a:commandButton id="addLoteProduto" value="Adicionar Produto+" style="float:right"
+							action="#{vendaHome.addProduto()}"
+							reRender="produtoList, valorTotalVenda, valorDescontoTotal, valorDescontoTotalVenda, trocoVenda,nomeProdutoField, preco_loteProdutoVendidoSelected, qtd_loteProdutoVendidoSelected, desc_loteProdutoVendidoSelected, save"
+							ajaxSingle="true" oncomplete="focarPesquisa()"
+							process="nome_loteProdutoVendidoSelected, preco_loteProdutoVendidoSelected, qtd_loteProdutoVendidoSelected, desc_loteProdutoVendidoSelected, descontoTotalField, valorPago" />
+					</h:column>
+					
+					<h:column>
+						<s:decorate id="nomeProdutoField" template="layout/display.xhtml">
+							<ui:define name="label">Produto</ui:define>
+							<h:outputText style="width: 350px;float: left;"
+								id="nome_loteProdutoVendidoSelected"
+								value="#{vendaHome.loteProdutoVendidoSelected.loteProduto.produto.nomeProduto} - #{vendaHome.loteProdutoVendidoSelected.loteProduto.identificacaoLote}" />
+						</s:decorate>
+					</h:column>
+
+					<h:column>
+						<h:panelGrid border="0" columns="6" width="100%" style="padding-right: 5px;" columnClasses="left,left,right,right,right,right"
+							cellspacing="0" >
+							<h:column>
+								<h:outputText value="Preço" styleClass="textoNegrito" />
+							</h:column>
+
+							<h:column>
+								<rich:inputNumberSpinner id="preco_loteProdutoVendidoSelected"
+									value="#{vendaHome.loteProdutoVendidoSelected.precoVenda}"
+									minValue="#{vendaHome.loteProdutoVendidoSelected.precoVenda}"
+									maxValue="9999999"
+									step="1.0" inputSize="5" />
+							</h:column>
+							
+							<h:column>
+								<h:outputText value="Qtd." styleClass="textoNegrito" />
+							</h:column>
+
+							<h:column>
+								<rich:inputNumberSpinner id="qtd_loteProdutoVendidoSelected"
+									value="#{vendaHome.loteProdutoVendidoSelected.qtd}"
+									minValue="0"
+									maxValue="#{vendaHome.loteProdutoVendidoSelected.loteProduto.qtdEstoque}"
+									step="1" inputSize="4" />
+							</h:column>
+
+							<h:column>
+								<h:outputText value="Desconto R$" styleClass="textoNegrito" title="Desconto dado em reais para os produtos vendidos." />
+							</h:column>
+
+							<h:column>
+								<easy:inputCurrency id="desc_loteProdutoVendidoSelected" 
+									value="#{vendaHome.loteProdutoVendidoSelected.desconto}"
+									required="false" decimalSeparator="," groupSeparator="."
+									useValidate="false" returnDecimal="true" size="7" />
+							</h:column>
+
+						</h:panelGrid>
+					</h:column>
+
+				</h:panelGrid>
+
+				<rich:spacer height="20" />
+				
+				<h:outputText value="Produtos Pedidos Pelo Cliente" styleClass="textoNegrito" 
+					rendered="#{(not empty vendaHome.produtoPedidos) and (vendaHome.instance.statusVenda.codStatusVenda == constantes.pedido or vendaHome.instance.statusVenda.codStatusVenda == constantes.pedidoAutorizado)}" />
+					
+				<a:commandLink value="Exibir/Ocultar Produtos Pedidos Pelo Cliente" ajaxSingle="true" limitToList="true" 
+					action="#{vendaHome.exibirOcultarProdutosPedidos()}" reRender="produtoListPanel, produtoList2"
+					rendered="#{(vendaHome.instance.statusVenda.codStatusVenda != constantes.pedido and vendaHome.instance.statusVenda.codStatusVenda != constantes.pedidoAutorizado) and (not empty vendaHome.produtoPedidos)}" />
+				
+				<br/>
+				<rich:spacer height="7" />
+				
+				<a:outputPanel id="produtoListPanel" ajaxRendered="true" >
+				
+				<rich:dataTable id="produtoList2" var="_produtoPedido"
+					value="#{vendaHome.produtoPedidos}"
+					onRowMouseOver="this.style.backgroundColor='#F0F0F0'"
+					onRowMouseOut="this.style.backgroundColor='#{a4jSkin.rowBackgroundColor}'"
+					columnClasses="center" 
+					headerClass="tableHeader"
+					columnsWidth="0*, 30%, 20%, 0*, *, *, 12%, 0*"
+					footerClass="tableFooter" 
+					rowClasses="tableRowOne,tableRowThree"
+					rowKeyVar="row"
+					rendered="#{vendaHome.instance.statusVenda.codStatusVenda == constantes.pedido or vendaHome.instance.statusVenda.codStatusVenda == constantes.pedidoAutorizado or vendaHome.exibirProdutosPedidos}">
+		
+					<rich:column rendered="#{not empty vendaHome.produtoPedidos}" styleClass="#{_produtoPedido.inAdicionado? 'tableRowSelecionada center': 'center'}">
+						<f:facet name="header">
+							<h:outputText value="Código Produto" />
+						</f:facet>
+						<h:outputText
+							value="#{_produtoPedido.produto.codProdutoExterno}" />
+						<f:facet name="footer">
+							<h:outputText value="Subtotal" styleClass="textoNegrito" />
+						</f:facet>
+					</rich:column>
+
+					<rich:column rendered="#{not empty vendaHome.produtoPedidos}" styleClass="#{_produtoPedido.inAdicionado? 'tableRowSelecionada left': 'left'}">
+						<f:facet name="header">
+							<h:outputText value="Produto" />
+						</f:facet>
+						<h:outputText
+							value="#{_produtoPedido.produto.nomeProduto}" />
+						<f:facet name="footer">
+							<rich:spacer />
+						</f:facet>
+					</rich:column>
+		
+					<rich:column rendered="#{not empty vendaHome.produtoPedidos}" styleClass="#{_produtoPedido.inAdicionado? 'tableRowSelecionada center': 'center'}">
+						<f:facet name="header">
+							<h:outputText value="Marca" />
+						</f:facet>
+						<h:outputText
+							value="#{_produtoPedido.produto.marca.nomeMarca}" />
+						<f:facet name="footer">
+							<rich:spacer />
+						</f:facet>
+					</rich:column>
+
+					<rich:column rendered="#{not empty vendaHome.produtoPedidos}" styleClass="#{_produtoPedido.inAdicionado? 'tableRowSelecionada center': 'center'}">
+						<f:facet name="header">
+							<h:outputText value="Quantidade" />
+						</f:facet>
+		
+						<h:outputText value="#{_produtoPedido.qtd}" />
+						<f:facet name="footer">
+							<h:outputText value="#{vendaHome.subTotalProdutoPedidoQtd}"
+								styleClass="textoNegrito" />
+						</f:facet>
+					</rich:column>
+		
+					<rich:column rendered="#{not empty vendaHome.produtoPedidos}" styleClass="#{_produtoPedido.inAdicionado? 'tableRowSelecionada center': 'center'}">
+						<f:facet name="header">
+							<h:outputText value="Valor Unit." />
+						</f:facet>
+		
+						<h:outputText value="#{_produtoPedido.precoVenda}">
+							<f:convertNumber currencySymbol="R$" type="currency"
+								locale="pt_BR" />
+						</h:outputText>
+						<f:facet name="footer">
+							<h:outputText value="#{vendaHome.subTotalProdutoPedidoValorUnit}"
+								styleClass="textoNegrito">
+								<f:convertNumber currencySymbol="R$" type="currency"
+									locale="pt_BR" />
+							</h:outputText>
+						</f:facet>
+					</rich:column>
+					
+					<rich:column rendered="#{not empty vendaHome.produtoPedidos}" styleClass="#{_produtoPedido.inAdicionado? 'tableRowSelecionada center': 'center'}">
+						<f:facet name="header">
+							<h:outputText value="Desconto" />
+						</f:facet>
+		
+						<h:outputText value="#{_produtoPedido.desconto}">
+							<f:convertNumber currencySymbol="R$" type="currency"
+								locale="pt_BR" />
+						</h:outputText>
+						
+						<f:facet name="footer">
+							<h:outputText value="#{vendaHome.subTotalProdutoPedidoDesconto}"
+								styleClass="textoNegrito">
+								<f:convertNumber currencySymbol="R$" type="currency"
+									locale="pt_BR" />
+							</h:outputText>
+						</f:facet>
+					</rich:column>
+
+					<rich:column rendered="#{not empty vendaHome.produtoPedidos}" styleClass="#{_produtoPedido.inAdicionado? 'tableRowSelecionada center': 'center'}">
+						<f:facet name="header">
+							<h:outputText value="Subtotal Produto" />
+						</f:facet>
+		
+						<h:outputText
+							value="#{_produtoPedido.getQtd() * _produtoPedido.getPrecoVenda() - _produtoPedido.getDesconto()}">
+							<f:convertNumber currencySymbol="R$" type="currency" locale="pt_BR" />
+						</h:outputText>
+						<f:facet name="footer">
+							<h:outputText value="#{vendaHome.subTotalProdutoPedido}"	styleClass="textoNegrito">
+								<f:convertNumber currencySymbol="R$" type="currency" locale="pt_BR" />
+							</h:outputText>
+						</f:facet>
+					</rich:column>
+					
+					<rich:column rendered="#{not empty vendaHome.produtoPedidos}" styleClass="#{_produtoPedido.inAdicionado? 'tableRowSelecionada center': 'center'}">
+						
+						<a:commandLink id="pesquisarProdutos3"
+							reRender="listaLotesProduto, sc, textoPesquisado, produtoListPanel"
+							ajaxSingle="true"  limitToList="true"
+							action="#{loteProdutoPopUpList.setPesquisaGeral(_produtoPedido.produto.nomeProduto)}"
+							actionListener="#{_produtoPedido.setInAdicionado(true)}">
+
+							<h:graphicImage url="/img/adicionar.png" title="Pesquisar lotes a serem adicionados" />
+							<rich:componentControl operation="show" attachTo="pesquisarProdutos3" for="panelPopUp"  event="onclick" />
+						</a:commandLink>
+						
+					</rich:column>
+				</rich:dataTable>
+				</a:outputPanel>
+								
+				<rich:spacer height="20" />
+				
+				<h:outputText value="Produtos da Venda" styleClass="textoNegrito" rendered="#{not empty vendaHome.produtoPedidos}" />
+
+				<rich:dataTable id="servicoList" var="_servicoRealizado"
+					value="#{vendaHome.servicoRealizados}"
+					onRowMouseOver="this.style.backgroundColor='#F0F0F0'"
+					onRowMouseOut="this.style.backgroundColor='#{a4jSkin.rowBackgroundColor}'"
+					columnClasses="center" footerClass="center"
+					columnsWidth="30%, * , 12% , 0*"
+					rowClasses="tableRowOne,tableRowTwo">
+
+					<f:facet name="header">
+						<rich:columnGroup>
+							<rich:column rendered="#{not empty vendaHome.servicoRealizados}">
+								<h:outputText value="Serviço" />
+							</rich:column>
+							<rich:column rendered="#{not empty vendaHome.servicoRealizados}">
+								<h:outputText value="Valor" />
+							</rich:column>
+							<rich:column rendered="#{not empty vendaHome.servicoRealizados}">
+								<h:outputText value="Valor Cobrado" />
+							</rich:column>
+							<rich:column rendered="#{not empty vendaHome.servicoRealizados}">
+								<rich:spacer />
+							</rich:column>
+						</rich:columnGroup>
+					</f:facet>
+
+					<rich:column rendered="#{not empty vendaHome.servicoRealizados}">
+						<h:outputText value="#{_servicoRealizado.servico.descServico}"></h:outputText>
+						<f:facet name="footer">
+							<h:outputText>
+								<h:outputLabel styleClass="textoNegrito" value="Subtotal"
+									rendered="#{not empty vendaHome.servicoRealizados}" />
+							</h:outputText>
+						</f:facet>
+					</rich:column>
+
+					<rich:column rendered="#{not empty vendaHome.servicoRealizados}">
+						<h:outputText value="#{_servicoRealizado.servico.precoServico}">
+							<f:convertNumber currencySymbol="R$" type="currency"
+								locale="pt_BR" />
+						</h:outputText>
+						<f:facet name="footer">
+							<h:outputText value="#{vendaHome.subTotalvalorServicoRealizado}"
+								styleClass="textoNegrito">
+								<f:convertNumber currencySymbol="R$" type="currency"
+									locale="pt_BR" />
+							</h:outputText>
+						</f:facet>
+					</rich:column>
+
+					<rich:column rendered="#{not empty vendaHome.servicoRealizados}">
+						<h:outputText value="#{_servicoRealizado.preco}">
+							<f:convertNumber currencySymbol="R$" type="currency"
+								locale="pt_BR" />
+						</h:outputText>
+						<f:facet name="footer">
+							<h:outputText value="#{vendaHome.subTotalvalorServicoCobrado}"
+								styleClass="textoNegrito">
+								<f:convertNumber currencySymbol="R$" type="currency"
+									locale="pt_BR" />
+							</h:outputText>
+						</f:facet>
+					</rich:column>
+
+					<rich:column rendered="#{not empty vendaHome.servicoRealizados}">
+						<a:commandLink id="excluirServico"
+							reRender="servicoList, valorTotalVenda, valorTotalVenda, valorDescontoTotal, valorDescontoTotalVenda, trocoVenda, save"
+							ajaxSingle="true" process="descontoTotalField, valorPago"
+							action="#{vendaHome.removeServico()}">
+
+							<h:graphicImage url="/img/lixeira.gif" alt="Excluir" />
+							<a:actionparam name="codServicoSelecionado"
+								value="#{_servicoRealizado.servico.codServico}"
+								assignTo="#{vendaHome.codServicoSelecionado}" />
+						</a:commandLink>
+
+						<rich:toolTip for="excluirServico" direction="top-right"
+							followMouse="true" showDelay="800">
+							<span style="white-space: nowrap"> <strong>Excluir
+									serviço</strong> </span>
+						</rich:toolTip>
+						<f:facet name="footer">
+							<rich:spacer />
+						</f:facet>
+					</rich:column>
+				</rich:dataTable>
+
+				<rich:spacer height="7" />
+
+				<rich:dataTable id="produtoList" var="_produtoVendido"
+					value="#{vendaHome.produtoVendidos}"
+					onRowMouseOver="this.style.backgroundColor='#F0F0F0'"
+					onRowMouseOut="this.style.backgroundColor='#{a4jSkin.rowBackgroundColor}'"
+					columnClasses="center"
+					columnsWidth="0*, 30%, 15% , 5% , 0*, *, *, 12%, 0*"
+					footerClass="center" rowClasses="tableRowOne,tableRowTwo">
+
+					<rich:column rendered="#{not empty vendaHome.produtoVendidos}">
+						<f:facet name="header">
+							<h:outputText value="Código Produto" />
+						</f:facet>
+						
+						<h:outputText
+							value="#{_produtoVendido.loteProduto.produto.codProdutoExterno}" />
+						<f:facet name="footer">
+							<rich:spacer />
+						</f:facet>
+					</rich:column>
+
+					<rich:column rendered="#{not empty vendaHome.produtoVendidos}"
+						styleClass="left">
+						<f:facet name="header">
+							<h:outputText value="Produto" />
+						</f:facet>
+						<h:outputText
+							value="#{_produtoVendido.loteProduto.produto.nomeProduto}" />
+						<f:facet name="footer">
+							<h:outputText value="Subtotal" styleClass="textoNegrito" />
+						</f:facet>
+					</rich:column>
+
+					<rich:column rendered="#{not empty vendaHome.produtoVendidos}">
+						<f:facet name="header">
+							<h:outputText value="Marca" />
+						</f:facet>
+						<h:outputText
+							value="#{_produtoVendido.loteProduto.produto.marca.nomeMarca}" />
+						<f:facet name="footer">
+							<rich:spacer />
+						</f:facet>
+					</rich:column>
+
+					<rich:column rendered="#{not empty vendaHome.produtoVendidos}">
+						<f:facet name="header">
+							<h:outputText value="Lote" />
+						</f:facet>
+						<h:outputText
+							value="#{_produtoVendido.loteProduto.identificacaoLote}" />
+						<f:facet name="footer">
+							<rich:spacer />
+						</f:facet>
+					</rich:column>
+
+					<rich:column rendered="#{not empty vendaHome.produtoVendidos}">
+						<f:facet name="header">
+							<h:outputText value="Quantidade" />
+						</f:facet>
+						<h:outputText value="#{_produtoVendido.qtd}" />
+						<f:facet name="footer">
+							<h:outputText value="#{vendaHome.subTotalProdutoQtd}"
+								styleClass="textoNegrito" />
+						</f:facet>
+					</rich:column>
+
+					<rich:column rendered="#{not empty vendaHome.produtoVendidos}">
+						<f:facet name="header">
+							<h:outputText value="Valor Unit." />
+						</f:facet>
+						<h:outputText value="#{_produtoVendido.precoVenda}">
+							<f:convertNumber currencySymbol="R$" type="currency"
+								locale="pt_BR" />
+						</h:outputText>
+						<f:facet name="footer">
+							<h:outputText value="#{vendaHome.subTotalProdutoValorUnit}"
+								styleClass="textoNegrito">
+								<f:convertNumber currencySymbol="R$" type="currency"
+									locale="pt_BR" />
+							</h:outputText>
+						</f:facet>
+					</rich:column>
+
+					<rich:column rendered="#{not empty vendaHome.produtoVendidos}">
+						<f:facet name="header">
+							<h:outputText value="Desconto" />
+						</f:facet>
+						<h:outputText value="#{_produtoVendido.desconto}">
+							<f:convertNumber currencySymbol="R$" type="currency"
+								locale="pt_BR" />
+						</h:outputText>
+						<f:facet name="footer">
+							<h:outputText value="#{vendaHome.subTotalProdutoDesconto}"
+								styleClass="textoNegrito">
+								<f:convertNumber currencySymbol="R$" type="currency"
+									locale="pt_BR" />
+							</h:outputText>
+						</f:facet>
+					</rich:column>
+
+					<rich:column rendered="#{not empty vendaHome.produtoVendidos}">
+						<f:facet name="header">
+							<h:outputText value="Subtotal Produto" />
+						</f:facet>
+						<h:outputText
+							value="#{_produtoVendido.getQtd() * _produtoVendido.getPrecoVenda() - _produtoVendido.getDesconto()}">
+							<f:convertNumber currencySymbol="R$" type="currency"
+								locale="pt_BR" />
+						</h:outputText>
+						<f:facet name="footer">
+							<h:outputText value="#{vendaHome.subTotalProduto}"
+								styleClass="textoNegrito">
+								<f:convertNumber currencySymbol="R$" type="currency"
+									locale="pt_BR" />
+							</h:outputText>
+						</f:facet>
+					</rich:column>
+
+					<rich:column rendered="#{not empty vendaHome.produtoVendidos}">
+						<a:commandLink ajaxSingle="true"
+							process="descontoTotalField, valorPago"
+							reRender="produtoList, valorTotalVenda, valorDescontoTotal, valorDescontoTotalVenda, trocoVenda, save"
+							action="#{vendaHome.removeProduto()}">
+							<h:graphicImage url="/img/lixeira.gif" alt="Excluir" />
+							<a:actionparam name="codProdutoSelecionado"
+								value="#{_produtoVendido.loteProduto.codLoteProduto}"
+								assignTo="#{vendaHome.codProdutoSelecionado}" />
+						</a:commandLink>
+
+						<rich:toolTip direction="top-right" followMouse="true"
+							showDelay="800">
+							<span style="white-space: nowrap"> <strong>Excluir produto</strong> </span>
+						</rich:toolTip>
+
+						<f:facet name="footer">
+							<rich:spacer />
+						</f:facet>
+
+					</rich:column>
+				</rich:dataTable>
+
+				<rich:spacer height="7" />
+
+				<h:panelGrid columns="2" border="0" width="100%" style="padding-right: 5px;"
+					styleClass="painelGrid" rowClasses="rowPainelGrid">
+
+					<h:outputLabel>
+						<s:decorate id="descontoTotalField" template="layout/edit.xhtml">
+								<ui:define name="label">Desconto Total(%)</ui:define>
+							
+								<h:panelGrid border="0" columns="4" width="200" cellpadding="0" cellspacing="0">
+								
+									<rich:inputNumberSpinner id="descontoTotal"
+										value="#{vendaHome.instance.descontoTotal}" step="1"
+										inputSize="4" maxValue="100">
+										<a:support ajaxSingle="true" event="onchange" limitToList="true"
+											action="#{vendaHome.calcularTotalVenda()}"
+											reRender="valorTotalVenda, valorTotalVenda, valorDescontoTotal, valorDescontoTotalVenda, trocoVenda"
+											attachTo="descontoTotal" />
+									</rich:inputNumberSpinner>	
+									
+									<h:outputLabel/>
+									<h:outputLabel/>
+									<h:outputLabel/>
+										 			
+									</h:panelGrid>
+						</s:decorate>
+					</h:outputLabel>
+						
+					<h:outputLabel>
+						<h:outputText id="valorTotalVenda"
+							value="#{vendaHome.valorTotalVenda}" styleClass="textoNegrito3">
+							<f:convertNumber currencySymbol="R$" type="currency"
+								locale="pt_BR" />
+						</h:outputText>
+						<h:outputLabel value="Valor Total:" styleClass="textoNegrito" />
+					</h:outputLabel>
+
+					<h:outputLabel>
+						<s:decorate id="obsVendaField" template="layout/edit.xhtml">
+							<ui:define name="label">Observação</ui:define>
+							<h:inputText id="obsVenda" maxlength="100" size="80"
+								value="#{vendaHome.instance.obsVenda}">
+							</h:inputText>
+						</s:decorate>
+					</h:outputLabel>
+
+					<h:outputLabel>
+						<h:outputText id="valorDescontoTotal"
+							value="#{vendaHome.valorDescontoTotalVenda}"
+							styleClass="textoNegrito3">
+							<f:convertNumber currencySymbol="R$" type="currency"
+								locale="pt_BR" />
+						</h:outputText>
+						<h:outputText value="Desconto Total:" styleClass="textoNegrito" />
+					</h:outputLabel>
+
+					<h:outputLabel>
+						<s:decorate id="inOrcamentoField" template="layout/display.xhtml"
+							rendered="#{!vendaHome.managed}">
+							<ui:define name="label">Venda / Orçamento</ui:define>
+							<h:selectOneRadio id="inOrcamento"
+								value="#{vendaHome.instance.inOrcamento}"
+								styleClass="textoNegrito" onchange="hideInTroca()" >
+								<f:selectItem itemLabel="Venda" itemValue="false" />
+								<f:selectItem itemLabel="Orçamento" itemValue="true" />
+							</h:selectOneRadio>
+						</s:decorate>
+					</h:outputLabel>
+
+					<h:outputLabel>
+						<h:outputText id="valorDescontoTotalVenda"
+							value="#{vendaHome.valorTotalVendaComDesconto}"
+							styleClass="textoNegrito2">
+							<f:convertNumber currencySymbol="R$" type="currency"
+								locale="pt_BR" />
+						</h:outputText>
+						<h:outputLabel value="Valor Total c/ Desc.:"
+							styleClass="textoNegrito" />
+					</h:outputLabel>
+
+					<h:outputLabel id="finalizarVendaField2">
+						<div id="divInTroca">
+							<!-- Não tá exibindo por causa do fluxo da venda que agora é sempre aberta. -->
+						
+							<s:decorate id="finalizarVendaField" template="layout/display.xhtml" rendered="false" >
+									<ui:define name="label">Finalizar venda</ui:define>
+									<h:selectOneRadio id="finalizarVenda" value="#{vendaHome.finalizarVenda}" styleClass="textoNegrito">
+										<f:selectItem itemLabel="Sim" itemValue="true" />
+										<f:selectItem itemLabel="Nao" itemValue="false" />
+									</h:selectOneRadio>
+								</s:decorate>														
+						
+							<s:decorate id="inTrocaField" template="layout/display.xhtml" rendered="#{!vendaHome.instance.inOrcamento}" >
+								<ui:define name="label">Troca de mercadoria</ui:define>
+								<h:selectOneRadio id="inTroca" value="#{vendaHome.instance.inTroca}" styleClass="textoNegrito">
+									<f:selectItem itemLabel="Não" itemValue="false" />
+									<f:selectItem itemLabel="Sim" itemValue="true" />
+								</h:selectOneRadio>
+							</s:decorate>
+						</div>
+					</h:outputLabel>
+					<h:outputLabel>
+						<easy:inputCurrency id="valorPago" value="#{vendaHome.valorPago}"
+							required="false" decimalSeparator="," groupSeparator="."
+							useValidate="false" returnDecimal="true" size="10"
+							styleClass="textoNegrito2">
+							<a:support event="onchange"
+								action="#{vendaHome.calcularTotalVenda()}" reRender="trocoVenda"
+								attachTo="valorPago" />
+						</easy:inputCurrency>
+						<h:outputLabel value="Valor pago:" styleClass="textoNegrito" />
+					</h:outputLabel>
+
+					<h:outputLabel />
+					<h:outputLabel>
+						<h:outputText id="trocoVenda" value="#{vendaHome.trocoVenda}"
+							styleClass="textoNegrito3">
+							<f:convertNumber currencySymbol="R$" type="currency"
+								locale="pt_BR" />
+						</h:outputText>
+						<h:outputLabel value="Troco:" styleClass="textoNegrito" />
+						<u style="cursor: pointer"><h:outputLabel value="calcular"
+								styleClass="textoNegrito" />
+						</u>
+					</h:outputLabel>
+
+				</h:panelGrid>
+
+			</rich:panel>
+
+			<div class="actionButtons">
+				<a:commandButton id="save" value="Salvar"
+					action="#{vendaHome.validarVenda()}"
+					reRender="panelAutorizacaoConfirmacao"
+					oncomplete="#{rich:component('autorizacaoPopUp')}.show();" 
+					disabled="#{!vendaHome.wired}" 
+					/>
+
+				<h:commandButton id="delete" value="Excluir"
+					action="#{vendaHome.remove}"
+					onclick="if (!confirm('Tem certeza que deseja Excluir este registro?')) return false"
+					immediate="true"
+					rendered="#{(vendaHome.managed and identity.hasRole(transacoes.transacaoVendaExcluir) 
+						and vendaHome.instance.statusVenda.codStatusVenda != constantes.cancelada
+						and vendaHome.instance.statusVenda.codStatusVenda != constantes.concluida) 
+						or user.perfil.codPerfil == constantes.administrador}" />
+				
+				<s:button id="cancelEdit" value="Voltar" propagation="end" actionListener="#{vendaHome.cancelar()}"
+					view="/Venda.xhtml" rendered="#{vendaHome.managed}">
+				</s:button>
+
+				<s:button id="cancelAdd" value="Voltar" propagation="end"
+					view="/#{empty vendaFrom ? 'VendaList' : vendaFrom}.xhtml"
+					rendered="#{!vendaHome.managed}" />
+			</div>
+
+			<script>
+				inicializacao();
+			</script>
+			
+			<rich:hotKey key="esc" 
+				handler="#{rich:component('detalhesClientePopUp')}.hide();#{rich:component('panelPopUpCliente')}.hide();#{rich:component('panelPopUp')}.hide();#{rich:component('autorizacaoPopUp')}.hide();#{rich:component('panelClienteEditPopUp')}.hide();#{rich:element('pesquisarGeral')}.focus()"/> 
+		</a:form>
+		
+		<ui:include src="/LoteProdutoPopUpList.xhtml" />
+		<ui:include src="/ClientePopUpList.xhtml" />
+		<ui:include src="/ClienteEditPopUp.xhtml" />
+		<ui:include src="/AutorizacaoPopUp.xhtml" />
+	</ui:define>
+
+</ui:composition>

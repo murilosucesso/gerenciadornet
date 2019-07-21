@@ -1,0 +1,55 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:s="http://jboss.com/products/seam/taglib"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:rich="http://richfaces.org/rich"
+    xmlns:easy="http://easyfaces.com.br/easyfaces"
+    template="layout/template.xhtml">
+
+<ui:define name="body">
+
+    <rich:panel>
+        <f:facet name="header">Detalhes do Servico</f:facet>
+
+
+        <s:decorate id="descServico" template="layout/display.xhtml">
+            <ui:define name="label">Descricao Servico</ui:define>
+            <h:outputText value="#{servicoHome.instance.descServico}"/>
+        </s:decorate>
+	
+		 <s:decorate id="precoServico" template="layout/display.xhtml">
+            <ui:define name="label">Preco Custo</ui:define>            
+             <h:outputText value="#{servicoHome.instance.precoCusto}">
+	   		 	<f:convertNumber currencySymbol="R$"  type="currency"  locale="pt_BR"/>
+	   		 </h:outputText>
+        </s:decorate>
+
+        <s:decorate id="precoServico" template="layout/display.xhtml">
+            <ui:define name="label">Preco Servico</ui:define>            
+             <h:outputText value="#{servicoHome.instance.precoServico}">
+	   		 	<f:convertNumber currencySymbol="R$"  type="currency"  locale="pt_BR"/>
+	   		 </h:outputText>
+        </s:decorate>
+
+        <div style="clear:both"/>
+
+    </rich:panel>
+
+    <div class="actionButtons">
+
+        <s:button view="/ServicoEdit.xhtml" rendered="#{identity.hasRole(transacoes.transacaoServicoEditar)}"
+                    id="edit"
+                 value="Editar"/>
+
+        <s:button view="/#{empty servicoFrom ? 'ServicoList' : servicoFrom}.xhtml"
+                    id="done"
+                 value="Voltar"/>
+
+    </div>
+
+</ui:define>
+
+</ui:composition>

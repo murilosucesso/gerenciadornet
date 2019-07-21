@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<page xmlns="http://jboss.com/products/seam/pages"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://jboss.com/products/seam/pages http://jboss.com/products/seam/pages-2.2.xsd"
+      login-required="true">
+
+   <begin-conversation join="true" flush-mode="MANUAL"/>
+   
+   <action execute="#{pagamentoHome.carregarListas}"/>
+   
+   <param name="firstResult" 	value="#{pagamentoList.firstResult}"/>
+   <param name="sort" 			value="#{pagamentoList.orderColumn}"/>
+   <param name="dir" 			value="#{pagamentoList.orderDirection}"/>
+   <param name="logic" 			value="#{pagamentoList.restrictionLogicOperator}"/>
+
+   <param name="from"/>
+   
+   <param name="codigoCompra"		value="#{pagamentoList.codigoCompra}"/>
+   <param name="valor" 				value="#{pagamentoList.pagamento.valor}"/>
+   <param name="fornecedor" 		value="#{pagamentoList.pagamento.fornecedor.codFornecedor}"/>
+   <param name="tipoData" 			value="#{pagamentoList.tipoData}"/>
+   <param name="dataInicio" 		value="#{pagamentoList.dataInicio}"/>
+   <param name="dataFim" 			value="#{pagamentoList.dataFim}"/>
+   <param name="inContaFixaAux"		value="#{pagamentoList.inContaFixaAux}"/>
+   <param name="inConferencia"		value="#{pagamentoList.pagamento.inConferencia}"/>
+   <param name="tipoDebito"			value="#{pagamentoList.tipoDebito.codTipoDebito}"/>
+  <!--  <param name="tipoPagamento"		value="#{pagamentoList.tipoPagamento}"/> -->
+   
+   <param name="mostrarResultados" 	value="#{pagamentoList.mostrarResultados}"/>
+   <param name="numeroLinhasDT" 	value="#{pagamentoList.numeroLinhasDT}"/>
+</page>

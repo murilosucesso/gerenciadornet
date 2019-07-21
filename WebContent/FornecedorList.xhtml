@@ -1,0 +1,180 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:s="http://jboss.com/products/seam/taglib"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:rich="http://richfaces.org/rich"
+    xmlns:a="http://richfaces.org/a4j"
+    template="layout/template.xhtml">
+
+<ui:define name="head">	
+	<a:loadScript src="/javascript/maskCpfCnpj.js"/>
+</ui:define>
+
+<ui:define name="body">
+
+    <h:form id="fornecedorSearch" styleClass="edit">
+
+		<ui:include src="/paginas/help/GenericListHelp.xhtml"/>	
+    	
+        <rich:simpleTogglePanel label="Filtro de pesquisa de Fornecedor" switchType="client">
+
+            <s:decorate template="layout/display.xhtml">
+                <ui:define name="label">Nome Fantasia</ui:define>
+                <h:inputText id="nomeFantasia" value="#{fornecedorList.fornecedor.nomeFantasia}" styleClass="defaultInput" />
+            </s:decorate>
+
+            <s:decorate template="layout/display.xhtml">
+                <ui:define name="label">Razão Social</ui:define>
+                <h:inputText id="razaoSocial" value="#{fornecedorList.fornecedor.razaoSocial}" styleClass="defaultInput"/>
+            </s:decorate>
+
+            <s:decorate template="layout/display.xhtml">
+                <ui:define name="label">CPF/CNPJ</ui:define>
+                <h:inputText id="cpjCnpj" value="#{fornecedorList.fornecedor.cpjCnpj}" onkeyup="mascaraTexto(event)" maxlength="18" />
+            </s:decorate>
+
+            <s:decorate template="layout/display.xhtml">
+                <ui:define name="label">Inscrição Estadual</ui:define>
+                <h:inputText id="inscricaoEstadual" value="#{fornecedorList.fornecedor.inscricaoEstadual}"/>
+            </s:decorate>          
+            
+             <s:decorate template="layout/display.xhtml">
+                <ui:define name="label">Status</ui:define>                
+                <h:selectOneMenu id="inExclusao" value="#{fornecedorList.fornecedor.inExclusao}" styleClass="defaultInput2">		
+				  	<f:selectItem itemLabel="Todos" itemValue="" />
+				  	<f:selectItem itemLabel="Ativos" itemValue="false" />
+					<f:selectItem itemLabel="Inativos" itemValue="true" />
+				</h:selectOneMenu>		
+            </s:decorate>
+            
+		</rich:simpleTogglePanel>
+       
+        <ui:include src="/includes/includeBotoesPesquisarLimpar.xhtml" />
+
+    </h:form>
+	<h:form>
+    <rich:panel>
+        
+        <f:facet name="header">
+			<a:outputPanel  id="panelDiv" ajaxRendered="true">
+		    	Resultado da Pesquisa de Fornecedor(#{empty fornecedorList.resultList ? 0 : (fornecedorList.paginated ? fornecedorList.resultCount : fornecedorList.resultList.size)})
+		    </a:outputPanel>
+	    </f:facet>
+        
+    <div class="results">
+
+    <a:outputPanel id="msnListaVazia" ajaxRendered="true">
+    
+   	<h:outputText value="#{messages['mensagem.pesquisa.vazia']}" rendered="#{empty fornecedorList.resultList}"/>
+
+    <rich:dataTable    id="resultadoList"
+                      var="_fornecedor"
+                    value="#{fornecedorList.resultList}"
+           onRowMouseOver="this.style.backgroundColor='#F0F0F0'"
+           onRowMouseOut="this.style.backgroundColor='#{a4jSkin.rowBackgroundColor}'"
+           columnClasses="center"  
+           			rows="15"
+           		 rendered="#{not empty fornecedorList.resultList}"
+           	  rowClasses="tableRowOne,tableRowTwo">
+
+		<rich:column id="nomeFantasia" sortBy="#{_fornecedor.nomeFantasia}" styleClass="left"> 
+           <f:facet name="header">
+               <h:outputText value="Nome fantasia"/>
+           </f:facet> 
+           <h:outputText value="#{_fornecedor.nomeFantasia}"/>
+        </rich:column>  
+         
+        <rich:column id="razaoSocial" sortBy="#{_fornecedor.razaoSocial}"  styleClass="left"> 
+           <f:facet name="header">
+               <h:outputText value="Razão social"/>
+           </f:facet> 
+           <h:outputText value="#{_fornecedor.razaoSocial}"/>
+        </rich:column>  
+        
+        <rich:column id="cpjCnpj"> 
+           <f:facet name="header">
+               <h:outputText value="CPF/CNPJ"/>
+           </f:facet> 
+           <h:outputText value="#{_fornecedor.cpjCnpj}"/>
+        </rich:column>
+        
+        <rich:column id="inscricaoEstadual"> 
+           <f:facet name="header">
+               <h:outputText value="Inscrição Estadual"/>
+           </f:facet> 
+           <h:outputText value="#{_fornecedor.inscricaoEstadual}"/>
+        </rich:column> 
+        
+        <rich:column> 
+           <f:facet name="header">
+               <h:outputText value="Descrição"/>
+           </f:facet> 
+           <h:outputText value="#{_fornecedor.descFornecedor}"/>
+        </rich:column>
+        
+         <rich:column id="inAfeFuncionamento" sortBy="#{_fornecedor.inAfeFuncionamento}"> 
+           <f:facet name="header">
+               <h:outputText value="AFE-Funcionamento"/>
+           </f:facet> 
+           <h:outputText value="SIM"  rendered="#{_fornecedor.inAfeFuncionamento == true}"/>
+		   <h:outputText value="NAO"  rendered="#{_fornecedor.inAfeFuncionamento == false}"/>
+        </rich:column>
+        
+        <rich:column id="inContaFixa" sortBy="#{_fornecedor.inContaFixa}"> 
+           <f:facet name="header">
+               <h:outputText value="Conta Fixa"/>
+           </f:facet> 
+           <h:outputText value="SIM"  rendered="#{_fornecedor.inContaFixa == true}"/>
+		   <h:outputText value="NAO"  rendered="#{_fornecedor.inContaFixa == false}"/>
+        </rich:column>
+        
+        <rich:column id="inExclusao" sortBy="#{_fornecedor.inExclusao}"> 
+           <f:facet name="header">
+               <h:outputText value="Status" title="Fornecedor ativo ou inativo"/>
+           </f:facet> 
+           <h:outputText value="Ativo"  rendered="#{!_fornecedor.inExclusao}"/>
+		   <h:outputText value="Inativo"  rendered="#{_fornecedor.inExclusao}"/>
+        </rich:column>
+       
+        <rich:column styleClass="action">
+            <f:facet name="header">Visualizar/Editar</f:facet>
+            <s:link view="/#{empty from ? 'Fornecedor' : from}.xhtml" propagation="#{empty from ? 'none' : 'default'}"
+                      id="fornecedorViewId">                
+                <h:graphicImage url="/img/binoculo.jpg"/>    
+                <f:param name="fornecedorCodFornecedor" value="#{_fornecedor.codFornecedor}"/>
+            </s:link>
+            <rich:toolTip for="fornecedorViewId" value="Visualizar Fornecedor" direction="top-left"/>
+            
+            #{' '}
+            
+            <s:link view="/FornecedorEdit.xhtml" propagation="none" id="fornecedorEdit"  rendered="#{empty from}">
+            	<h:graphicImage url="/img/editar.jpg"/>
+                <f:param name="fornecedorCodFornecedor" value="#{_fornecedor.codFornecedor}"/>
+            </s:link>
+            <rich:toolTip for="fornecedorEdit" value="Editar Fornecedor" direction="top-left"/>
+             
+        </rich:column>
+    </rich:dataTable>
+    
+	<ui:include src="/includes/includeDataScroller.xhtml"/>
+	
+	</a:outputPanel>
+    </div>
+    </rich:panel>
+	</h:form>
+	
+       <s:div styleClass="actionButtons" rendered="#{empty from}">
+        <s:button view="/FornecedorEdit.xhtml"
+                    id="create"
+           propagation="none"
+                 value="Novo Fornecedor">
+            <f:param name="fornecedorCodFornecedor"/>
+        </s:button>
+    </s:div>
+
+</ui:define>
+
+</ui:composition>

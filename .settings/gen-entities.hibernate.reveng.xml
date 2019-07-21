@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-reverse-engineering PUBLIC "-//Hibernate/Hibernate Reverse Engineering DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-reverse-engineering-3.0.dtd" >
+
+<hibernate-reverse-engineering>
+<table-filter match-name="categoria" match-schema=".*" match-catalog="gerenciadornet"></table-filter>
+<table-filter match-name="cliente" match-schema=".*" match-catalog="gerenciadornet"></table-filter>
+<table-filter match-name="compra" match-schema=".*" match-catalog="gerenciadornet"></table-filter>
+<table-filter match-name="empresa" match-schema=".*" match-catalog="gerenciadornet"></table-filter>
+<table-filter match-name="endereco" match-schema=".*" match-catalog="gerenciadornet"></table-filter>
+<table-filter match-name="fornecedor" match-schema=".*" match-catalog="gerenciadornet"></table-filter>
+<table-filter match-name="historico" match-schema=".*" match-catalog="gerenciadornet"></table-filter>
+<table-filter match-name="lote_produto" match-schema=".*" match-catalog="gerenciadornet"></table-filter>
+<table-filter match-name="marca" match-schema=".*" match-catalog="gerenciadornet"></table-filter>
+<table-filter match-name="produto" match-schema=".*" match-catalog="gerenciadornet"></table-filter>
+<table-filter match-name="produto_vendido" match-schema=".*" match-catalog="gerenciadornet"></table-filter>
+<table-filter match-name="servico" match-schema=".*" match-catalog="gerenciadornet"></table-filter>
+<table-filter match-name="servico_realizado" match-schema=".*" match-catalog="gerenciadornet"></table-filter>
+<table-filter match-name="tipo_pagamento" match-schema=".*" match-catalog="gerenciadornet"></table-filter>
+<table-filter match-name="usuario" match-schema=".*" match-catalog="gerenciadornet"></table-filter>
+<table-filter match-name="venda" match-schema=".*" match-catalog="gerenciadornet"></table-filter>
+<table-filter match-name="vendedor" match-schema=".*" match-catalog="gerenciadornet"></table-filter>
+</hibernate-reverse-engineering>

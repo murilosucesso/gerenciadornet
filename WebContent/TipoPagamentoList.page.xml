@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<page xmlns="http://jboss.com/products/seam/pages" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://jboss.com/products/seam/pages http://jboss.com/products/seam/pages-2.2.xsd"
+	login-required="true">
+
+	<restrict>#{identity.hasRole(transacoes.transacaoTipoPagamentoConsultar)}</restrict>
+
+	<begin-conversation join="true" flush-mode="MANUAL" />
+
+	<param name="firstResult" value="#{tipoPagamentoList.firstResult}" />
+	<param name="sort" value="#{tipoPagamentoList.orderColumn}" />
+	<param name="dir" value="#{tipoPagamentoList.orderDirection}" />
+	<param name="logic" value="#{tipoPagamentoList.restrictionLogicOperator}" />
+
+	<param name="from" />
+	
+	<param name="descTipoPagamento"
+		value="#{tipoPagamentoList.tipoPagamento.descTipoPagamento}" />
+
+</page>

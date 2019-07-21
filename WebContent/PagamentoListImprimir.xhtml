@@ -1,0 +1,161 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<rich:modalPanel id="imprimirPagamentoPopUp" minWidth="900" minHeight="530" autosized="true" top="15px"
+		onshow="window.print();alert('Impressão Finalizada. A janela será fechada.'),Richfaces.hideModalPanel('imprimirPagamentoPopUp')"
+	xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:s="http://jboss.com/products/seam/taglib"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html" 
+    xmlns:a="http://richfaces.org/a4j"
+    xmlns:rich="http://richfaces.org/rich">
+
+	<style type="text/css">
+	@media print {
+		 body > * {
+		 display: none;
+		 }
+		 
+		 body > .rich-modalpanel {
+		 display: block;
+		 }
+		 
+		 .rich-mpnl_panel, .rich-mpnl_panel > div {
+		 position: static !important;
+		 }
+		 
+		 .rich-mpnl-mask-div, .rich-mpnl-shadow{
+		 display: none !important;
+		 }
+		 
+		 .rich-mp-content {
+		 overflow: visible !important;
+		 width: auto !important;
+		 height: auto !important;
+		 }
+	}
+	</style>
+	
+	<div>
+		
+		<table width="100%">
+		<tr>
+			<td width="25%">
+				<h:graphicImage url="/img#{facesContext.externalContext.requestContextPath}/logo-imprimir.jpg" />
+			</td>
+			<td style="text-align: center">
+				<h:outputLabel value="RELATÓRIO DE PAGAMENTOS" styleClass="textoMedioCinza left" />
+				<br/>
+				<h:outputLabel value="PERÍODO:" styleClass="textoMedioCinza left" />
+				<h:outputLabel value="#{pagamentoList.dataInicio}" styleClass="textoMedioCinza left"> 
+					<f:convertDateTime pattern="dd/MM/yyyy" />
+				</h:outputLabel>
+				<h:outputLabel value=" À " styleClass="textoMedioCinza left"/>
+				<h:outputLabel value="#{pagamentoList.dataFim}" styleClass="textoMedioCinza left">
+					<f:convertDateTime pattern="dd/MM/yyyy" />
+				</h:outputLabel> 
+			</td>
+		</tr>
+		</table>
+
+		<a:outputPanel id="panelResultado2" ajaxRendered="true">
+		<h:form id="resultadoForm2">
+
+			<f:facet name="header">
+	    	Resultado da pesquisa por Pagamento(#{pagamentoList.qtdResultados})
+    		</f:facet>
+			
+			<rich:dataTable id="resultadoList2" var="_pagamento"
+				value="#{pagamentoList.pagamentosList}"
+				rendered="#{not empty pagamentoList.pagamentosList}"
+				onRowMouseOver="this.style.backgroundColor='#F0F0F0'"
+				onRowMouseOut="this.style.backgroundColor='#{a4jSkin.rowBackgroundColor}'"
+				footerClass="center"
+				rowClasses="tableRowOne,tableRowTwo"
+				rowKeyVar="row">
+
+				<rich:column sortBy="#{_pagamento.compra.codCompra}"
+							styleClass="#{_pagamento.inConferencia ? 'tableRowSelecionada center': 'center'}">
+							<f:facet name="header">
+								<h:outputText value="Compra" />
+							</f:facet>
+							<h:outputText value="#{_pagamento.compra.codCompra}" styleClass="#{_pagamento.dataBalancete == null ? 'textoMedioVermelho': ''}" />
+				</rich:column>
+
+				<rich:column styleClass="#{_pagamento.inConferencia ? 'tableRowSelecionada left': 'left'}">
+					<f:facet name="header">
+						<h:outputText value="Cedente" />
+					</f:facet>
+					<h:outputText value="#{_pagamento.fornecedor.nomeFantasia}" styleClass="#{_pagamento.dataBalancete == null ? 'textoMedioVermelho': ''}"/>
+					<h:outputText value="(Conta Fixa)" rendered="#{_pagamento.fornecedor.inContaFixa}" styleClass="#{_pagamento.dataBalancete == null ? 'textoMedioVermelho': ''}"/>
+				</rich:column>
+
+				<rich:column styleClass="#{_pagamento.inConferencia ? 'tableRowSelecionada center': 'center'}">
+					<f:facet name="header">
+						<h:outputText value="Data Vencimento"/>
+					</f:facet>
+					<h:outputText value="#{_pagamento.dataVencimento}" styleClass="#{_pagamento.dataBalancete == null ? 'textoMedioVermelho': ''}">
+						<s:convertDateTime type="date" pattern="dd/MM/yyyy"/>
+					</h:outputText>
+				</rich:column>
+				
+				<rich:column styleClass="#{_pagamento.inConferencia ? 'tableRowSelecionada center': 'center'}">
+					<f:facet name="header">
+						<h:outputText value="Data Balancete"/>
+					</f:facet>
+
+					<h:outputText value="#{_pagamento.dataBalancete}" styleClass="#{_pagamento.dataBalancete == null ? 'textoMedioVermelho': ''}">
+						<s:convertDateTime type="date" pattern="dd/MM/yyyy"/>
+					</h:outputText>
+				</rich:column>
+			
+				<rich:column styleClass="#{_pagamento.inConferencia ? 'tableRowSelecionada left': 'left'}">
+					<f:facet name="header">
+						<h:outputText value="Observação"/>
+					</f:facet>
+					<h:outputText value="#{_pagamento.observacao}" styleClass="#{_pagamento.dataBalancete == null ? 'textoMedioVermelho': ''}"/>
+				</rich:column>
+				
+				<rich:column styleClass="#{_pagamento.inConferencia ? 'tableRowSelecionada left': 'left'}">
+					<f:facet name="header">
+						<h:outputText value="Valor"/>
+					</f:facet>
+
+					<h:outputText value="#{_pagamento.valor}" styleClass="#{_pagamento.dataBalancete == null ? 'textoMedioVermelho': ''}">
+						<f:convertNumber currencySymbol="R$" type="currency" locale="pt_BR" />
+					</h:outputText>
+
+					<f:facet name="footer">
+						<h:outputText styleClass="textoNegrito" value="#{pagamentoList.valorTotal}">
+							<f:convertNumber currencySymbol="R$" type="currency" locale="pt_BR" />
+						</h:outputText>
+					</f:facet>
+				</rich:column>
+				
+				
+				<rich:column styleClass="#{_pagamento.inConferencia ? 'tableRowSelecionada center': 'center'}">
+					<f:facet name="header">
+						<h:outputText value="Conferido"/>
+					</f:facet>
+
+<!-- img iconBlueCheck -->		           		 
+					<h:graphicImage url="/img/iconBlueCheck.gif" style="border:0" rendered="#{_pagamento.inConferencia}"/>                   
+                    
+				</rich:column>
+			</rich:dataTable>
+			
+			<rich:spacer height="30px"/>
+			
+			<h:panelGrid border="0" width="100%" cellpadding="0" columnClasses="center">
+			
+				<h:outputLabel value="Documento Impresso" styleClass="textoImpressaoNegrito"/>
+			
+				<h:outputLabel value="#{pagamentoList.dataAtual}" styleClass="textoImpressaoNegrito">
+					<f:convertDateTime pattern="dd/MM/yyyy" />
+				</h:outputLabel> 			
+			</h:panelGrid>
+			
+		</h:form>
+		</a:outputPanel>
+	</div>
+</rich:modalPanel>

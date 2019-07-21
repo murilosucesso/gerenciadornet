@@ -1,0 +1,547 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:s="http://jboss.com/products/seam/taglib"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:rich="http://richfaces.org/rich"
+    xmlns:easy="http://easyfaces.com.br/easyfaces"
+    xmlns:a="http://richfaces.org/a4j"
+    template="layout/template.xhtml">
+
+	
+<ui:define name="body">
+	
+	<a:form id="venda">
+	
+	<h:messages id="messages" globalOnly="false" styleClass="message"
+					errorClass="errormsg" infoClass="infomsg" warnClass="warnmsg"
+					rendered="#{showGlobalMessages != 'false'}" />
+	
+    <rich:panel>
+    	
+        <f:facet name="header">Detalhes da Venda</f:facet>
+
+        <div style="clear:both"/>
+		<div id="blocoImpressao">
+		 
+		<ui:include src="/VendaImprimirEstoque.xhtml" />
+		<ui:include src="/VendaImprimirCupomFiscal.xhtml" />
+		<ui:include src="/VendaImprimirCupomFiscalTeste.xhtml" />
+		<ui:include src="/VendaImprimirFinanceiro.xhtml" />
+		<ui:include src="/includes/includeCabecalhoDental.xhtml" />
+		
+		<h:panelGrid border="0" styleClass="painelGridCinza" columns="3" width="100%" cellpadding="0" columnClasses="left">
+		
+			 <h:outputLabel>					
+				<s:decorate id="nomeUsuarioField" template="layout/display.xhtml">
+					<ui:define name="label">Vendedor/Responsável</ui:define>	
+					<h:outputText value="#{vendaHome.instance.usuario.nomeUsuario}" />/
+					<h:outputText value="#{vendaHome.instance.cliente.usuario.nomeUsuario}" />							
+				</s:decorate>					 
+			 </h:outputLabel>
+			 
+			 <h:outputLabel>					 	
+	 		 	<s:decorate  id="clienteField"  template="layout/display.xhtml">
+					<ui:define name="label">Cliente</ui:define>	
+					<h:outputText value="#{vendaHome.instance.cliente.nome}" />												
+				</s:decorate>				
+			 </h:outputLabel>		
+			 
+			 <h:outputLabel>							
+					<s:decorate id="dataCobrancaVenda" template="layout/display.xhtml">
+					<ui:define name="label">Data Cobrança Pagamento</ui:define>	
+					<h:outputText value="#{vendaHome.instance.dataCobrancaVenda}">
+						<s:convertDateTime type="date" pattern="dd/MM/yyyy"/>
+	             	</h:outputText>	
+					</s:decorate>			
+			 </h:outputLabel>	
+			 
+			 <h:outputLabel>
+				<s:decorate id="tipoPagamentoField"	template="layout/display.xhtml">
+					<ui:define name="label">Tipo pagamento</ui:define>
+				   <h:outputText value="#{vendaHome.instance.tipoPagamento.descTipoPagamento}" />												
+				</s:decorate>
+			 </h:outputLabel>
+			 		 
+	         <s:decorate id="dataInicioVenda" template="layout/display.xhtml">
+	            <ui:define name="label">Data início</ui:define>	            
+	             <h:outputText value="#{vendaHome.instance.dataInicioVenda}" >
+	                <s:convertDateTime type="date" pattern="dd/MM/yyyy"/>
+	             </h:outputText>
+	         </s:decorate>
+	
+	         <s:decorate id="dataFimVenda" template="layout/display.xhtml">
+	            <ui:define name="label">Data fim</ui:define>	            
+	            <h:outputText value="#{vendaHome.instance.dataFimVenda}" >
+	                <s:convertDateTime type="date" pattern="dd/MM/yyyy"/>
+	            </h:outputText>
+	         </s:decorate>			
+			 	
+			<s:decorate id="obsVendaField" template="layout/display.xhtml">
+				<ui:define name="label">Observação</ui:define>
+				<h:outputText value="#{vendaHome.instance.obsVenda}" />							
+			</s:decorate> 
+			
+			<h:outputLabel>		 
+				<s:decorate id="inTrocaField" template="layout/display.xhtml">
+					<ui:define name="label">Troca de mercadoria</ui:define>
+					<h:outputText value="Não" rendered="#{!vendaHome.instance.inTroca}" />
+					<h:outputText value="Sim" rendered="#{vendaHome.instance.inTroca}" />							
+				</s:decorate> 
+			</h:outputLabel>
+			
+			<s:decorate id="inNfe" template="layout/display.xhtml">
+				<ui:define name="label">Número Nfe/NFe Emitida</ui:define>
+				<h:outputText value="#{vendaHome.instance.numNotaFiscal}/Não" rendered="#{!vendaHome.instance.inNfeEmitida}" />				
+				<h:outputText value="#{vendaHome.instance.numNotaFiscal}/Sim" rendered="#{vendaHome.instance.inNfeEmitida}" style="valign:middle" />						
+			</s:decorate>
+			
+		</h:panelGrid>
+		
+		<rich:spacer height="20"/>	
+		
+		<h:outputText value="Produtos Pedidos Pelo Cliente" styleClass="textoNegrito" 
+					rendered="#{(not empty vendaHome.produtoPedidos) and (vendaHome.instance.statusVenda.codStatusVenda == constantes.pedido or vendaHome.instance.statusVenda.codStatusVenda == constantes.pedidoAutorizado)}" />
+					
+		<a:commandLink value="Exibir/Ocultar Produtos Pedidos Pelo Cliente" ajaxSingle="true" limitToList="true" 
+			action="#{vendaHome.exibirOcultarProdutosPedidos()}" reRender="produtoListPanel"
+			rendered="#{(vendaHome.instance.statusVenda.codStatusVenda != constantes.pedido and vendaHome.instance.statusVenda.codStatusVenda != constantes.pedidoAutorizado) and (not empty vendaHome.produtoPedidos)}" />
+		
+		<br/>
+		<rich:spacer height="7" />
+		
+		<a:outputPanel id="produtoListPanel" ajaxRendered="true" >
+		
+		<rich:dataTable id="produtoList2" var="_produtoPedido"
+					value="#{vendaHome.produtoPedidos}"
+					onRowMouseOver="this.style.backgroundColor='#F0F0F0'"
+					onRowMouseOut="this.style.backgroundColor='#{a4jSkin.rowBackgroundColor}'"
+					columnClasses="center" 
+					headerClass="tableHeader"
+					columnsWidth="10%, 30%, 20%, 0*, *, *, 12%"
+					footerClass="tableFooter" 
+					rowClasses="tableRowOne,tableRowThree"
+					rendered="#{vendaHome.instance.statusVenda.codStatusVenda == constantes.pedido or vendaHome.instance.statusVenda.codStatusVenda == constantes.pedidoAutorizado or vendaHome.exibirProdutosPedidos}">
+					
+			<rich:column rendered="#{not empty vendaHome.produtoPedidos}">
+				<f:facet name="header">
+					<h:outputText value="Código Produto" />
+				</f:facet>
+				<h:outputText
+					value="#{_produtoPedido.produto.codProduto}" />
+				<f:facet name="footer">
+					<h:outputText value="Subtotal" styleClass="textoNegrito" />
+				</f:facet>
+			</rich:column>
+
+			<rich:column rendered="#{not empty vendaHome.produtoPedidos}"
+				styleClass="left">
+				<f:facet name="header">
+					<h:outputText value="Produto" />
+				</f:facet>
+				<h:outputText
+					value="#{_produtoPedido.produto.nomeProduto}" />
+				<f:facet name="footer">
+					<rich:spacer />
+				</f:facet>
+			</rich:column>
+
+			<rich:column rendered="#{not empty vendaHome.produtoPedidos}">
+				<f:facet name="header">
+					<h:outputText value="Marca" />
+				</f:facet>
+				<h:outputText
+					value="#{_produtoPedido.produto.marca.nomeMarca}" />
+				<f:facet name="footer">
+					<rich:spacer />
+				</f:facet>
+			</rich:column>
+
+			<rich:column rendered="#{not empty vendaHome.produtoPedidos}">
+				<f:facet name="header">
+					<h:outputText value="Quantidade" />
+				</f:facet>
+
+				<h:outputText value="#{_produtoPedido.qtd}" />
+				<f:facet name="footer">
+					<h:outputText value="#{vendaHome.subTotalProdutoPedidoQtd}"
+						styleClass="textoNegrito" />
+				</f:facet>
+			</rich:column>
+
+			<rich:column rendered="#{not empty vendaHome.produtoPedidos}">
+				<f:facet name="header">
+					<h:outputText value="Valor Unit." />
+				</f:facet>
+
+				<h:outputText value="#{_produtoPedido.precoVenda}">
+					<f:convertNumber currencySymbol="R$" type="currency"
+						locale="pt_BR" />
+				</h:outputText>
+				<f:facet name="footer">
+					<h:outputText value="#{vendaHome.subTotalProdutoPedidoValorUnit}"
+						styleClass="textoNegrito">
+						<f:convertNumber currencySymbol="R$" type="currency"
+							locale="pt_BR" />
+					</h:outputText>
+				</f:facet>
+			</rich:column>
+			
+			 <rich:column rendered="#{not empty vendaHome.produtoPedidos}">
+				<f:facet name="header">
+					<h:outputText value="Desconto" />
+				</f:facet>
+
+				<h:outputText value="#{_produtoPedido.desconto}">
+					<f:convertNumber currencySymbol="R$" type="currency"
+						locale="pt_BR" />
+				</h:outputText>
+				<f:facet name="footer">
+					<h:outputText value="#{vendaHome.subTotalProdutoPedidoDesconto}"
+						styleClass="textoNegrito">
+						<f:convertNumber currencySymbol="R$" type="currency"
+							locale="pt_BR" />
+					</h:outputText>
+				</f:facet>
+			</rich:column>
+
+			<rich:column rendered="#{not empty vendaHome.produtoPedidos}">
+				<f:facet name="header">
+					<h:outputText value="Subtotal Produto" />
+				</f:facet>
+
+				<h:outputText
+					value="#{_produtoPedido.getQtd() * _produtoPedido.getPrecoVenda() - _produtoPedido.getDesconto()}">
+					<f:convertNumber currencySymbol="R$" type="currency" locale="pt_BR" />
+				</h:outputText>
+				<f:facet name="footer">
+					<h:outputText value="#{vendaHome.subTotalProdutoPedido}"	styleClass="textoNegrito">
+						<f:convertNumber currencySymbol="R$" type="currency" locale="pt_BR" />
+					</h:outputText>
+				</f:facet>
+			</rich:column>
+		</rich:dataTable>
+		</a:outputPanel>
+		
+		<rich:spacer height="20"/>			   
+	   	
+	   	<h:outputText value="Serviços da Venda" styleClass="textoNegrito" rendered="#{not empty vendaHome.servicoRealizados}" /> 
+				
+		<rich:dataTable id="servicoList"
+                var="_servicoRealizado"
+              	value="#{vendaHome.servicoRealizados}"			           	
+	           	onRowMouseOver="this.style.backgroundColor='#F0F0F0'"
+	           	onRowMouseOut="this.style.backgroundColor='#{a4jSkin.rowBackgroundColor}'"
+	           	columnClasses="center" 
+	           	footerClass="center"
+	           	columnsWidth="* , 12%"
+	           	rowClasses="tableRowOne,tableRowTwo">	
+
+	         <f:facet name="header">
+                      <rich:columnGroup>                                                       
+                          <rich:column rendered="#{not empty vendaHome.servicoRealizados}">
+                              <h:outputText value="Serviço" />
+                          </rich:column >                                                        
+                         
+                          <rich:column rendered="#{not empty vendaHome.servicoRealizados}">
+                              <h:outputText value="Valor Cobrado" />
+                          </rich:column> 
+                      </rich:columnGroup>
+                  </f:facet>		         
+                 
+                   <rich:column rendered="#{not empty vendaHome.servicoRealizados}">
+                       <h:outputText value="#{_servicoRealizado.servico.descServico}"></h:outputText>
+                       <f:facet name="footer">
+                         <h:outputText>
+                         	<h:outputLabel styleClass="textoNegrito" 
+                         			value="Subtotal" rendered="#{not empty vendaHome.servicoRealizados}"/>
+                         	</h:outputText>
+                       </f:facet>
+                   </rich:column>
+                                      
+                   <rich:column rendered="#{not empty vendaHome.servicoRealizados}">                         
+                        <h:outputText value="#{_servicoRealizado.preco}">
+                        	<f:convertNumber currencySymbol="R$"  type="currency"  locale="pt_BR"/>
+                        </h:outputText>                         
+                        <f:facet name="footer"> 
+                       <h:outputText value="#{vendaHome.subTotalvalorServicoCobrado}" styleClass="textoNegrito">
+                    		<f:convertNumber currencySymbol="R$"  type="currency"  locale="pt_BR"/>
+                  		</h:outputText> 
+                       </f:facet>
+                   </rich:column>                                         
+                                                         
+	    </rich:dataTable>			
+	    
+	   	<rich:spacer height="20"/>			   
+	   	
+	   	<h:outputText value="Produtos da Venda" styleClass="textoNegrito" rendered="#{not empty vendaHome.produtoVendidos}" /> 
+	    
+	    <rich:dataTable id="produtoList"
+                var="_produtoVendido"
+              	value="#{vendaHome.produtoVendidos}"			           	
+	           	onRowMouseOver="this.style.backgroundColor='#F0F0F0'"
+	           	onRowMouseOut="this.style.backgroundColor='#{a4jSkin.rowBackgroundColor}'"
+	           	columnClasses="center" 
+	           	columnsWidth="10%, 30%, 15% , 5% , 0*, *, *, 12%"
+	           	footerClass="center"
+	           	rowClasses="tableRowOne,tableRowTwo">	
+				
+	         <f:facet name="header">
+                      <rich:columnGroup> 
+                      	   <rich:column rendered="#{not empty vendaHome.produtoVendidos}">
+                              <h:outputText value="Código Produto" />
+                          </rich:column>                                                        
+                          <rich:column rendered="#{not empty vendaHome.produtoVendidos}">
+                              <h:outputText value="Produto" />
+                          </rich:column>   
+                          <rich:column rendered="#{not empty vendaHome.produtoVendidos}">
+                              <h:outputText value="Marca" />
+                          </rich:column>  
+                           <rich:column rendered="#{not empty vendaHome.produtoVendidos}">
+                              <h:outputText value="Lote" />
+                          </rich:column>                                                        
+                          <rich:column rendered="#{not empty vendaHome.produtoVendidos}">
+                              <h:outputText value="Quantidade" />
+                          </rich:column>
+                          <rich:column rendered="#{not empty vendaHome.produtoVendidos}">
+                              <h:outputText value="Valor Unit." />
+                          </rich:column>      
+                           <rich:column rendered="#{not empty vendaHome.produtoVendidos}">
+                              <h:outputText value="Desconto" />
+                          </rich:column>
+                           <rich:column rendered="#{not empty vendaHome.produtoVendidos}">
+                              <h:outputText value="Subtotal Produto" />
+                          </rich:column>                                                                  
+                      </rich:columnGroup>
+                  </f:facet>		         
+                 
+                  	<rich:column  rendered="#{not empty vendaHome.produtoVendidos}">
+                         <h:outputText value="#{_produtoVendido.loteProduto.produto.codProdutoExterno}"/>    
+                          <f:facet name="footer">
+                             <h:outputText value="Subtotal" styleClass="textoNegrito"/>
+                         </f:facet>                    
+                  	</rich:column>
+                     
+                   <rich:column  rendered="#{not empty vendaHome.produtoVendidos}" styleClass="left">
+                       <h:outputText value="#{_produtoVendido.loteProduto.produto.nomeProduto}"/>
+                       <f:facet name="footer">
+                         	<rich:spacer />
+                       </f:facet>
+                   </rich:column>
+                      
+                   <rich:column  rendered="#{not empty vendaHome.produtoVendidos}">
+                       <h:outputText value="#{_produtoVendido.loteProduto.produto.marca.nomeMarca}"/>
+                       <f:facet name="footer">
+                           <rich:spacer />
+                       </f:facet>
+                   </rich:column>
+                   
+                    <rich:column  rendered="#{not empty vendaHome.produtoVendidos}">
+                       <h:outputText value="#{_produtoVendido.loteProduto.identificacaoLote}"/>
+                       <f:facet name="footer">
+                           <rich:spacer />
+                       </f:facet>
+                   </rich:column>
+                   
+                   <rich:column  rendered="#{not empty vendaHome.produtoVendidos}">                         
+                        <h:outputText value="#{_produtoVendido.qtd}"/>
+                       <f:facet name="footer" >                             
+                           <h:outputText value="#{vendaHome.subTotalProdutoQtd}" styleClass="textoNegrito"/>
+                       </f:facet>
+                   </rich:column>
+                   
+                    <rich:column  rendered="#{not empty vendaHome.produtoVendidos}">
+                        <h:outputText value="#{_produtoVendido.precoVenda}">
+                        	<f:convertNumber currencySymbol="R$"  type="currency"  locale="pt_BR"/>
+                        </h:outputText>
+                       <f:facet name="footer">
+                          <h:outputText value="#{vendaHome.subTotalProdutoValorUnit}" styleClass="textoNegrito">
+                          	<f:convertNumber currencySymbol="R$"  type="currency"  locale="pt_BR"/>
+                          </h:outputText>
+                       </f:facet>
+                   </rich:column>
+                   
+                    <rich:column rendered="#{not empty vendaHome.produtoVendidos}">
+                        <h:outputText value="#{_produtoVendido.desconto}">
+                        	<f:convertNumber currencySymbol="R$"  type="currency"  locale="pt_BR"/>
+                        </h:outputText>
+                       <f:facet name="footer">
+                            <h:outputText value="#{vendaHome.subTotalProdutoDesconto}" styleClass="textoNegrito">
+                          	<f:convertNumber currencySymbol="R$"  type="currency"  locale="pt_BR"/>
+                            </h:outputText>
+                       </f:facet>
+                   </rich:column>
+                   
+                   <rich:column  rendered="#{not empty vendaHome.produtoVendidos}">
+                       <h:outputText value="#{_produtoVendido.getQtd() * _produtoVendido.getPrecoVenda() - _produtoVendido.getDesconto()}">
+                       	<f:convertNumber currencySymbol="R$"  type="currency"  locale="pt_BR"/>
+                       </h:outputText>
+                       <f:facet name="footer">
+                           <h:outputText value="#{vendaHome.subTotalProduto}" styleClass="textoNegrito">
+                          	<f:convertNumber currencySymbol="R$"  type="currency"  locale="pt_BR"/>
+                            </h:outputText>
+                       </f:facet>
+                   </rich:column>                                    
+	    </rich:dataTable>
+				
+		<rich:spacer height="7"/>
+		
+		<ui:include src="/includes/includePainelTotaisVenda.xhtml"/>
+		
+		<table width="100%" cellspacing="3">
+			<tr>
+				<td width="50%"><h:outputText value="Andamentos" styleClass="textoNegrito"/></td>
+				<td width="50%"><h:outputText value="Recebimentos" styleClass="textoNegrito"/></td>
+			</tr>
+			<tr>
+				<td style="vertical-align: top;">
+					<a:outputPanel rendered="#{not empty vendaHome.instance.acompanhamentos}">
+						<rich:dataTable id="acompanhamento"
+				              	value="#{vendaHome.acompanhamentos}"			           	
+				                var="acompanhamento"
+					           	onRowMouseOver="this.style.backgroundColor='#F0F0F0'"
+					           	onRowMouseOut="this.style.backgroundColor='#{a4jSkin.rowBackgroundColor}'"
+					           	columnClasses="center" 
+					           	rowClasses="tableRowOne,tableRowTwo">	
+					           	
+				                <rich:column styleClass="left" >
+				                  <f:facet name="header">
+				                      <h:outputText value="Usuário"/>
+				                  </f:facet>
+				                  <h:outputText value="#{acompanhamento.usuario.nomeUsuario}"/>
+				                </rich:column>      
+				                
+					           	<rich:column>
+				                  <f:facet name="header">
+				                      <h:outputText value="Andamento"/>
+				                  </f:facet>
+				                  <h:outputText value="#{acompanhamento.observacao}"/>
+				                </rich:column> 
+				                
+				                <rich:column>
+				                  <f:facet name="header">
+				                      <h:outputText value="Data/Hora"/>
+				                  </f:facet>
+				                  <h:outputText value="#{acompanhamento.dataAcompanhamento}">
+				                  		<s:convertDateTime type="date" pattern="dd/MM/yyyy HH:mm"/>
+				                  </h:outputText>
+				                </rich:column>       
+					    </rich:dataTable>
+			    	</a:outputPanel>
+				</td>    
+				<td style="vertical-align: top;">
+					<a:outputPanel rendered="#{not empty vendaHome.instance.recebimentos}">
+				
+						<rich:dataTable id="pagamento"
+				              	value="#{vendaHome.recebimentos}"			           	
+				                var="recebimento"
+					           	onRowMouseOver="this.style.backgroundColor='#F0F0F0'"
+					           	onRowMouseOut="this.style.backgroundColor='#{a4jSkin.rowBackgroundColor}'"
+					           	columnClasses="center" 
+					           	rowClasses="tableRowOne,tableRowTwo">	
+				               	
+				               	<rich:column styleClass="#{recebimento.inConferencia ? 'tableRowSelecionada center': 'center'}">
+				                  <f:facet name="header">
+				                      <h:outputText value="Data Ag. Rec."
+										title="Data Agendamento do Recebimento. Data prevista de recebimento da parcela. " />
+				                  </f:facet>
+				                  <h:outputText value="#{recebimento.dataAgendamentoRecebimento}">
+				                  		<s:convertDateTime type="date" pattern="dd/MM/yyyy"/>
+				                  </h:outputText>
+				                </rich:column> 
+				                
+				                <rich:column styleClass="#{recebimento.inConferencia ? 'tableRowSelecionada center': 'center'}">
+				                  <f:facet name="header">
+				                      <h:outputText value="Data Balancete"
+									title="Data em que o recebimento foi realmente efetivado" id="dataBalancete"/>
+				                  </f:facet>
+				                  <h:outputText value="#{recebimento.dataBalancete}">
+				                  		<s:convertDateTime type="date" pattern="dd/MM/yyyy"/>
+				                  </h:outputText>
+				                </rich:column>   
+				                
+				                <rich:column styleClass="#{recebimento.inConferencia ? 'tableRowSelecionada center': 'center'}" >
+				                  <f:facet name="header">
+				                      <h:outputText value="Valor"/>
+				                  </f:facet>
+				                  <h:outputText value="#{recebimento.valorAReceber}">
+				                  		<f:convertNumber currencySymbol="R$"  type="currency"  locale="pt_BR"/>
+				                  </h:outputText>
+				                </rich:column>  
+				                
+				                <rich:column styleClass="#{recebimento.inConferencia ? 'tableRowSelecionada center': 'center'}" >
+				                	<f:facet name="header">
+				                      <h:outputText value="Conferido"/>
+				                  </f:facet>
+				                	<h:graphicImage url="/img/iconBlueCheck.gif" style="border:0" title="Confirmado o Recebimento" rendered="#{recebimento.inConferencia}"/>    
+					 	    		<h:graphicImage url="/img/cancelada.jpg" style="border:0" title="NÃO Confirmado o Recebimento" rendered="#{!recebimento.inConferencia}"/>    
+					
+					     		</rich:column>  
+					    </rich:dataTable>
+				    </a:outputPanel>
+				</td>
+			</tr>
+		</table>
+		
+		</div>
+	</rich:panel>
+	
+    <div class="actionButtons">
+    
+    <a:outputPanel id="butoes" ajaxRendered="true" >
+    
+    <table width="100%" cellspacing="3" border="0">
+	<tr>
+	    <td>
+	    	<!-- Andamentos -->
+	        <a:commandButton styleClass="right" value=" Confirmar Pagamento " title="Confirmar Pagamento / Finalizar Venda" action="#{vendaHome.andamentoFinalizarVenda()}" onclick="if (!confirm('Confirma o Recebimento do Pagamento/Finalizar Venda?')) return false" rendered="#{identity.hasRole(transacoes.transacaoVendaFinalizar) and vendaHome.instance.statusVenda.codStatusVenda == constantes.confirmadaEstoque}"/>
+	        
+	        <a:commandButton styleClass="right" value=" Extornar Venda " title="Volta a venda para o status Confirmada Estoque" action="#{vendaHome.desfazerVendaFinalizada()}" onclick="if (!confirm('Confirma o EXTORNO da Venda?')) return false" rendered="#{user.perfil.codPerfil == constantes.administrador and vendaHome.instance.statusVenda.codStatusVenda == constantes.concluida}"/>
+	        
+	        <a:commandButton styleClass="right" value=" Realizar Venda " title="Efetiva o orçamento o transformando em venda" action="#{vendaHome.realizarVenda()}" rendered="#{vendaHome.instance.inOrcamento}" />
+	        
+	        <a:commandButton styleClass="right" value=" Realizar Pedido " title="Efetiva o Pedido do cliente o transformando em venda" action="#{vendaHome.realizarPedido()}"
+	        	rendered="#{!vendaHome.instance.inOrcamento and (vendaHome.instance.statusVenda.codStatusVenda == constantes.pedido or vendaHome.instance.statusVenda.codStatusVenda == constantes.pedidoAutorizado)}" />
+	       
+	        <a:commandButton styleClass="right" value=" Liberar Edição " title="Libera a venda para ser editada." reRender="butoes" ajaxSingle="true" limitToList="true"
+	        	action="#{vendaHome.liberarEdicaoVenda()}" onclick="if (!confirm('A venda será liberada para EDIÇÃO. Favor comunicar o Setor Financeiro!')) return false" rendered="#{!vendaHome.instance.inOrcamento and vendaHome.instance.inTrava and (identity.hasRole(transacoes.transacaoLiberarEdicaoVenda) or user.perfil.codPerfil == constantes.administrador)}"/>
+	       
+	        <s:button view="/#{empty vendaFrom ? 'VendaList' : vendaFrom}.xhtml" includePageParams="true" propagation="join" id="done" value="Voltar" />               
+        </td>
+        
+        <td>
+	        <h:commandButton styleClass="right" value="Baixar Arquivo NFe" title="Fazer o Download do Arquivo para Nota Fiscal Eletrônica" action="#{vendaHome.gerarArquivoNFe()}" onclick="if (!confirm('Verifique o preenchimento correto dos dados do Cliente e do número da nota fiscal. Baixar Arquivo?')) return false" rendered="#{!vendaHome.instance.inOrcamento and (identity.hasRole(transacoes.transacaoNfeGerarArquivo) or user.perfil.codPerfil == constantes.administrador)}"/>
+        	
+        	<a:commandButton styleClass="right" value=" Cancelar Emissão NFe " title="Cancelar Emissão da NFE" reRender="venda" ajaxSingle="true" limitToList="true"
+        		action="#{vendaHome.cancelarEmissaoNfe()}" onclick="if (!confirm('Cancelar a emissão da Nota Fiscal Eletrônica?')) return false" rendered="#{!vendaHome.instance.inOrcamento and (identity.hasRole(transacoes.transacaoNfeCancelarEmissao) or user.perfil.codPerfil == constantes.administrador)}"/>
+        </td>
+        
+        <td align="right">	
+	        <a:region>
+	        	<a:commandButton id="btnImprimirCupomTeste" ajaxSingle="true" value="Imprimir Cupom Teste" title="Imprimi a venda no formato de cupom fiscal" rendered="#{user.codUsuario == 1}" >
+					<rich:componentControl for="vendaImprimirCupomFiscalPopUpTeste" attachTo="btnImprimirCupomTeste"  operation="show" event="onclick"/>								
+				</a:commandButton>
+				
+		         <a:commandButton id="btnImprimirCupom" ajaxSingle="true" value="Imprimir Cupom" title="Imprimi a venda no formato de cupom fiscal" >
+					<rich:componentControl for="vendaImprimirCupomFiscalPopUp" attachTo="btnImprimirCupom"  operation="show" event="onclick"/>								
+				</a:commandButton>
+		        
+		        <a:commandButton id="btnImprimir" ajaxSingle="true" value="Imprimir Financeiro" title="Imprimi a venda no formato esperado pelo financeiro" >
+					<rich:componentControl for="imprimirFinanceiroPopUp" attachTo="btnImprimir"  operation="show" event="onclick"/>								
+				</a:commandButton>
+				
+				<a:commandButton id="btnImprimirEstoque" ajaxSingle="true" value="Imprimir Para Estoque" title="Imprimi a venda no formato esperado pelo estoque">
+					<rich:componentControl for="imprimirEstoquePopUp" attachTo="btnImprimirEstoque"  operation="show" event="onclick"/>								
+				</a:commandButton>
+	        </a:region>        
+        </td>
+    </tr>
+    </table>
+    </a:outputPanel>
+    </div>
+	</a:form>
+</ui:define> 
+
+</ui:composition>

@@ -1,0 +1,120 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:s="http://jboss.com/products/seam/taglib"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:rich="http://richfaces.org/rich"
+    xmlns:a="http://richfaces.org/a4j"
+    template="layout/template.xhtml">
+
+<ui:define name="body">
+
+    <h:form id="fontePagadoraSearch" styleClass="edit">
+
+		<ui:include src="/paginas/help/GenericListHelp.xhtml"/>	
+
+        <rich:simpleTogglePanel label="Filtro de pesquisa de Fonte Pagadora" switchType="client">
+
+            <s:decorate template="layout/display.xhtml">
+                <ui:define name="label">Fonte Pagadora</ui:define>
+                <h:inputText id="descFontePagadora" value="#{fontePagadoraList.fontePagadora.descFontePagadora}" size="50"/>
+            </s:decorate>
+
+        </rich:simpleTogglePanel>
+        
+	    <table border="0" width="10%">
+			<tr>
+				<td nowrap="nowrap">
+		        	<ui:include src="/includes/includeBotoesPesquisarLimpar.xhtml" />
+				</td>
+				<td nowrap="nowrap">    
+				  <s:div styleClass="actionButtons">
+			        <s:button view="/FontePagadoraEdit.xhtml"
+			                    id="create"
+			           propagation="none"
+			                 value="Nova Fonte Pagadora">
+			            <f:param name="fontePagadoraCodFontePagadora"/>
+			        </s:button>
+			    </s:div>
+			   	</td>
+	    	</tr>
+		</table>
+    
+    </h:form>
+
+	<h:form>
+    <rich:panel>
+    
+    <f:facet name="header">
+		<a:outputPanel  id="panelDiv" ajaxRendered="true">
+	        Resultado da pesquisa por Fonte Pagadora (#{empty fontePagadoraList.resultList ? 0 : (fontePagadoraList.paginated ? fontePagadoraList.resultCount : fontePagadoraList.resultList.size)})
+	    </a:outputPanel>
+    </f:facet>
+    
+    <a:outputPanel id="msnListaVazia" ajaxRendered="true">
+   	
+	<h:outputText value="#{messages['mensagem.pesquisa.vazia']}" rendered="#{empty fontePagadoraList.resultList}" />
+
+    <rich:dataTable id="resultadoList"
+                var="_fontePagadora"
+              value="#{fontePagadoraList.resultList}"
+     onRowMouseOver="this.style.backgroundColor='#F0F0F0'"
+      onRowMouseOut="this.style.backgroundColor='#{a4jSkin.rowBackgroundColor}'"
+      columnClasses="left, center"  
+      		   rows="15"
+      	   rendered="#{not empty fontePagadoraList.resultList}"
+         rowClasses="tableRowOne,tableRowTwo">
+                   
+       <rich:column sortBy="#{_fontePagadora.descFontePagadora}"> 
+           <f:facet name="header">
+               <h:outputText value="Fonte Pagadora"/>
+           </f:facet> 
+           <h:outputText value="#{_fontePagadora.descFontePagadora}"/>
+        </rich:column>
+        
+         <rich:column sortBy="#{_fontePagadora.inExclusao}"> 
+           <f:facet name="header">
+               <h:outputText value="Ativa"/>
+           </f:facet> 
+           <h:outputText value="SIM" rendered="#{!_fontePagadora.inExclusao}"/>
+           <h:outputText value="NÃO" rendered="#{_fontePagadora.inExclusao}"/>
+        </rich:column>
+              
+        
+        <rich:column styleClass="action">
+        
+            <f:facet name="header">Visualizar/Editar</f:facet>
+        
+            <s:link view="/FontePagadora.xhtml" propagation="default"
+                      id="fontePagadoraViewId">
+                <h:graphicImage url="/img/binoculo.jpg"/>
+                <f:param name="fontePagadoraCodFontePagadora" value="#{_fontePagadora.codFontePagadora}"/>
+                <f:param name="from" value="TipoPagamentoList"/>
+            </s:link>
+            
+            <rich:toolTip for="fontePagadoraViewId" value="Visualizar Fonte Pagadora" direction="top-left"/>
+            
+            #{' '}
+            
+            <s:link view="/FontePagadoraEdit.xhtml" propagation="default" id="fontePagadoraEdit">
+                <h:graphicImage url="/img/editar.jpg"/>
+                <f:param name="fontePagadoraCodFontePagadora" value="#{_fontePagadora.codFontePagadora}"/>
+                <f:param name="from" value="FontePagadoraList"/>
+            </s:link>
+            
+            <rich:toolTip for="fontePagadoraEdit" value="Editar Fonte Pagadora" direction="top-left"/>
+            
+        </rich:column>
+    </rich:dataTable>
+	
+	<ui:include src="/includes/includeDataScroller.xhtml"/>
+	
+    </a:outputPanel>
+    </rich:panel>
+	</h:form>
+<rich:jQuery selector="#descFontePagadora" timing="onload" query="focus()" />
+</ui:define>
+
+</ui:composition>

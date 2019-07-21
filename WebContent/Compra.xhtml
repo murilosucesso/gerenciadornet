@@ -1,0 +1,227 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:s="http://jboss.com/products/seam/taglib"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:rich="http://richfaces.org/rich"
+    xmlns:a="http://richfaces.org/a4j"
+    template="layout/template.xhtml">
+
+<ui:define name="body">
+
+    <rich:panel>
+        <f:facet name="header">Detalhes da Compra</f:facet>
+
+        <h:panelGrid border="0" styleClass="painelGrid" columns="3" width="100%" cellpadding="0" columnClasses="left">
+				
+			<s:decorate id="nomeUsuarioField" template="layout/display.xhtml">
+				<ui:define name="label">Vendedor(Usuário)</ui:define>	
+				<h:outputText value="#{compraHome.instance.usuario.nomeUsuario}"/>							
+			</s:decorate>					 
+										
+			<s:decorate id="dataCompraField" template="layout/display.xhtml">
+				 <ui:define name="label">Data compra</ui:define>	
+                 <h:outputText value="#{compraHome.instance.dataCompra}" >
+	                <s:convertDateTime type="date" pattern="dd/MM/yyyy"/>
+	             </h:outputText>	       
+			</s:decorate>		
+			
+			<h:outputLabel>
+					<h:outputText value="Compra" styleClass="textoMedio"/>										
+			</h:outputLabel>
+			
+			
+			<s:decorate id="forncedorField"	template="layout/display.xhtml">
+				<ui:define name="label">Fornecedor/Vendedor</ui:define>				  						
+				<h:outputText value="#{compraHome.instance.vendedor.fornecedor.nomeFantasia}" />
+				<h:outputText value=" - #{compraHome.instance.vendedor.nomeVendedor}" />									
+			</s:decorate>
+		 			 		 
+			<s:decorate id="tipoPagamentoField"	template="layout/display.xhtml">
+				<ui:define name="label">Tipo pagamento</ui:define>				  						
+				<h:outputText value="#{compraHome.instance.tipoPagamento.descTipoPagamento}" />									
+			</s:decorate>		
+			
+			<h:outputLabel>
+				<h:outputText value="#{compraHome.instance.codCompra}" styleClass="textoGrande"/>
+			</h:outputLabel>
+						 
+		 	<s:decorate id="numeroNotaFiscalField" template="layout/display.xhtml">
+				<ui:define name="label">Número nota fiscal</ui:define>						
+				<h:outputText value="#{compraHome.instance.numeroNotaFiscal}" />
+			</s:decorate>	
+		 			
+            <s:decorate id="obsCompraField" template="layout/display.xhtml">
+                <ui:define name="label">Observação</ui:define>	                	                
+				<h:outputText value="#{compraHome.instance.obsCompra}" />
+            </s:decorate>
+            <s:decorate/>          		
+		</h:panelGrid>
+			
+        <rich:spacer height="7"/>
+		
+		<h:form id="lotesProdutoForm">
+		 	
+		<rich:dataTable id="loteProdutoList"
+                var="_loteProdutoComprado"
+              	value="#{compraHome.loteProdutos}"			           	
+	           	onRowMouseOver="this.style.backgroundColor='#F0F0F0'"
+	           	onRowMouseOut="this.style.backgroundColor='#{a4jSkin.rowBackgroundColor}'"
+	           	columnClasses="center" 
+	           	footerClass="center"
+	           	rowClasses="tableRowOne,tableRowTwo">	
+				
+                  <rich:column sortBy="#{_loteProdutoComprado.produto.codProdutoExterno}" rendered="#{not empty compraHome.loteProdutos}">
+                  		<f:facet name="header"><h:outputText value="Código Produto" /></f:facet>
+                        <h:outputText value="#{_loteProdutoComprado.produto.codProdutoExterno}"/>    
+                         <f:facet name="footer">
+                         	<h:outputText value="Total" styleClass="textoNegrito"/>
+                        </f:facet>                    
+                  </rich:column>
+                   
+                  <rich:column sortBy="#{_loteProdutoComprado.produto.nomeProduto}" rendered="#{not empty compraHome.loteProdutos}">
+                  	  <f:facet name="header"><h:outputText value="Produto" /></f:facet>
+                      <h:outputText value="#{_loteProdutoComprado.produto.nomeProduto}"/>
+                      <f:facet name="footer">
+                         <rich:spacer />
+                      </f:facet>
+                  </rich:column>
+                  
+                      
+                  <rich:column  rendered="#{not empty compraHome.loteProdutos}">
+                  	   <f:facet name="header"><h:outputText value="Marca" /></f:facet>
+                      <h:outputText value="#{_loteProdutoComprado.produto.marca.nomeMarca}"/>
+                      <f:facet name="footer">
+                          <rich:spacer />
+                      </f:facet>
+                  </rich:column>
+                   
+                   <rich:column sortBy="#{_loteProdutoComprado.identificacaoLote}"  rendered="#{not empty compraHome.loteProdutos}">
+                   	   <f:facet name="header"><h:outputText value="Lote" /></f:facet>
+                      <h:outputText value="#{_loteProdutoComprado.identificacaoLote}"/>
+                      <f:facet name="footer">
+                          <rich:spacer />
+                      </f:facet>
+                  </rich:column>
+                   
+                  <rich:column  rendered="#{not empty compraHome.loteProdutos}">      
+                  	   <f:facet name="header"><h:outputText value="Data Validade" /></f:facet>                   
+                      <h:outputText value="#{_loteProdutoComprado.dataValidade}"/>
+                      <f:facet name="footer" >                                                         
+                          <rich:spacer />                                                                            	
+                      </f:facet>
+                  </rich:column>
+                   
+                  <rich:column  rendered="#{not empty compraHome.loteProdutos}">              
+                  		<f:facet name="header"><h:outputText value="Qtd." /></f:facet>           
+                       	<h:outputText value="#{_loteProdutoComprado.qtdCompra}"/>
+                      	<f:facet name="footer" ><rich:spacer /></f:facet>
+                  </rich:column>
+                   
+                  <rich:column  rendered="#{not empty compraHome.loteProdutos}">
+                  	   <f:facet name="header"><h:outputText value="Preço Compra Unt." /></f:facet>     
+                       <h:outputText value="#{_loteProdutoComprado.precoCompraUnidade}">
+                       		<f:convertNumber currencySymbol="R$"  type="currency"  locale="pt_BR"/>
+                       </h:outputText>
+                 </rich:column>
+                   
+                 <rich:column  rendered="#{not empty compraHome.loteProdutos}">                        
+                       <f:facet name="header"><h:outputText value="Lucro Unit." /></f:facet>     
+                       <h:outputText value="#{_loteProdutoComprado.precoVendaUnidade - _loteProdutoComprado.precoCompraUnidade}" >
+                       		<f:convertNumber currencySymbol="R$"  type="currency"  locale="pt_BR"/>
+                       </h:outputText>
+                  </rich:column>
+                   
+                  <rich:column  rendered="#{not empty compraHome.loteProdutos}">
+                       <f:facet name="header"> <h:outputText value="Preço Venda Unit." /></f:facet>     
+                       <h:outputText value="#{_loteProdutoComprado.precoVendaUnidade}">
+                       		<f:convertNumber currencySymbol="R$"  type="currency"  locale="pt_BR"/>
+                       </h:outputText>
+                  </rich:column>
+                   
+                  <rich:column  rendered="#{not empty compraHome.loteProdutos}">
+                       <f:facet name="header"><h:outputText value="Subtotal Produto" /></f:facet>     
+                       <h:outputText value="#{_loteProdutoComprado.qtdCompra * _loteProdutoComprado.precoCompraUnidade}">
+                       		<f:convertNumber currencySymbol="R$"  type="currency"  locale="pt_BR"/>
+                       </h:outputText>
+                       
+                      <f:facet name="footer">
+                        <h:outputText title="Valor total compra" value="#{compraHome.instance.precoTotal}" styleClass="textoNegrito5">
+                      		<f:convertNumber currencySymbol="R$"  type="currency"  locale="pt_BR"/>
+                    	</h:outputText>                                                   
+                      </f:facet>
+                   </rich:column>                                        
+	    </rich:dataTable>
+
+		<a:outputPanel rendered="#{not empty compraHome.instance.pagamentos}">
+				<br/>
+				<h:outputText value="Pagamentos" styleClass="textoNegrito"/>
+				<br/>
+				<rich:dataTable id="pagamento"
+		              	value="#{compraHome.pagamentos}"			           	
+		                var="pagamento"
+			           	onRowMouseOver="this.style.backgroundColor='#F0F0F0'"
+			           	onRowMouseOut="this.style.backgroundColor='#{a4jSkin.rowBackgroundColor}'"
+			           	columnClasses="center" 
+			           	rowClasses="tableRowOne,tableRowTwo">	
+		               	
+		               	<rich:column>
+		                  <f:facet name="header">
+		                      <h:outputText value="Data Vencimento"/>
+		                  </f:facet>
+		                  <h:outputText value="#{pagamento.dataVencimento}">
+		                  		<s:convertDateTime type="date" pattern="dd/MM/yyyy"/>
+		                  </h:outputText>
+		                </rich:column>  
+		                
+		                <rich:column>
+		                  <f:facet name="header">
+		                      <h:outputText value="Data Balancete"/>
+		                  </f:facet>
+		                  <h:outputText value="#{pagamento.dataBalancete}">
+		                  		<s:convertDateTime type="date" pattern="dd/MM/yyyy"/>
+		                  </h:outputText>
+		                </rich:column>  
+		                
+		                <rich:column>
+		                  <f:facet name="header">
+		                      <h:outputText value="Tipo Débito"/>
+		                  </f:facet>
+							<h:outputText value="#{pagamento.tipoDebito.descTipoDebito}"/>
+		                </rich:column>    
+		                
+		                 <rich:column>
+		                  <f:facet name="header">
+		                      <h:outputText value="Observação"/>
+		                  </f:facet>
+		                  <h:outputText value="#{pagamento.observacao}"/>
+		                </rich:column>  
+		                
+		                <rich:column styleClass="center" >
+		                  <f:facet name="header">
+		                      <h:outputText value="Valor"/>
+		                  </f:facet>
+		                  
+		                  <h:outputText value="#{pagamento.valor}">
+		                  		<f:convertNumber currencySymbol="R$"  type="currency"  locale="pt_BR"/>
+		                  </h:outputText>
+		                </rich:column>      
+			    </rich:dataTable>
+			</a:outputPanel>
+		</h:form>
+    </rich:panel>
+
+    <div class="actionButtons">
+    <!-- Comentado pois nao esta carregando a lista de produtos. verificar depois
+        <s:button view="/CompraEdit.xhtml" propagation="default" id="edit" value="Editar" rendered="#{identity.hasRole(transacoes.transacaoCompraEditar)}">
+        	<f:param name="compraFrom" value="Compra" />
+        	<f:param name="compraCodCompra" value="#{compraHome.instance.codCompra}"/>            
+        </s:button>
+                     -->
+		<s:button view="/#{empty compraFrom ? 'CompraList' : compraFrom}.xhtml" value="Voltar" includePageParams="true" propagation="#{empty compraFrom ? 'end' : 'default'}"/>
+		
+    </div>
+</ui:define>
+</ui:composition>

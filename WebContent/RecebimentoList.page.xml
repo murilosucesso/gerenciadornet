@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<page xmlns="http://jboss.com/products/seam/pages"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://jboss.com/products/seam/pages http://jboss.com/products/seam/pages-2.2.xsd"
+      login-required="true">
+
+   <begin-conversation join="true" flush-mode="MANUAL"/>
+   
+   <param name="firstResult" 	value="#{recebimentoList.firstResult}"/>
+   <param name="sort" 			value="#{recebimentoList.orderColumn}"/>
+   <param name="dir" 			value="#{recebimentoList.orderDirection}"/>
+   <param name="logic" 			value="#{recebimentoList.restrictionLogicOperator}"/>
+
+   <param name="from"/>
+   <param name="codVenda" 			value="#{recebimentoList.recebimento.venda.codVenda}"/>
+   <param name="valorAReceber" 		value="#{recebimentoList.recebimento.valorAReceber}"/>
+   <param name="numDocumento" 		value="#{recebimentoList.recebimento.numDocumento}"/>
+   <param name="cliente" 			value="#{recebimentoList.recebimento.venda.cliente.codCliente}"/>
+   <param name="vendedor" 			value="#{recebimentoList.recebimento.venda.usuario.codUsuario}"/>
+   <param name="inConferencia" 		value="#{recebimentoList.recebimento.inConferencia}"/>
+   
+   <param name="tipoData" 			value="#{recebimentoList.tipoData}"/>
+   <param name="dataInicio" 		value="#{recebimentoList.dataInicio}"/>
+   <param name="dataFim" 			value="#{recebimentoList.dataFim}"/>
+   <param name="tipoPagamento"		value="#{recebimentoList.tipoPagamento}"/>
+   <param name="mostrarResultados" 	value="#{recebimentoList.mostrarResultados}"/>
+   <param name="numeroLinhasDT" 	value="#{recebimentoList.numeroLinhasDT}"/>
+    
+</page>

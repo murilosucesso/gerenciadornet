@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<page xmlns="http://jboss.com/products/seam/pages"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://jboss.com/products/seam/pages http://jboss.com/products/seam/pages-2.2.xsd"
+      no-conversation-view-id="/CompraList.xhtml"
+      login-required="true">
+
+   <restrict>#{identity.hasRole(transacoes.transacaoCompraInserir) or identity.hasRole(transacoes.transacaoCompraEditar)}</restrict>
+	
+   <begin-conversation join="true" flush-mode="MANUAL"/>
+
+   <action execute="#{compraHome.wire}"/>
+
+   <param name="compraFrom"/>
+   <param name="compraCodCompra" value="#{compraHome.compraCodCompra}"/>
+   
+   <param name="vendedorFrom"/>
+   <param name="vendedorCodVendedor" value="#{vendedorHome.vendedorId.codVendedor}"/>
+   <param name="vendedorCodFornecedor" value="#{vendedorHome.vendedorId.codFornecedor}"/>
+   
+   <param name="fornecedorFrom"/>
+   <param name="fornecedorCodFornecedor" value="#{fornecedorHome.fornecedorCodFornecedor}"/>
+
+
+   <param name="tipoPagamentoFrom"/>
+   <param name="tipoPagamentoCodTipoPagamento" value="#{tipoPagamentoHome.tipoPagamentoCodTipoPagamento}"/>
+
+   <param name="usuarioFrom"/>
+   <param name="usuarioCodUsuario" value="#{usuarioHome.usuarioCodUsuario}"/>
+   
+   <navigation from-action="#{compraHome.persist}">
+      <rule if-outcome="persisted">
+         <end-conversation/>
+         <redirect view-id="/Compra.xhtml"/>
+      </rule>
+   </navigation>
+
+   <navigation from-action="#{compraHome.update}">
+      <rule if-outcome="updated">
+         <end-conversation/>
+         <redirect view-id="/Compra.xhtml"/>
+      </rule>
+   </navigation>
+
+   <navigation from-action="#{compraHome.remove}">
+      <rule if-outcome="removed">
+         <end-conversation/>
+         <redirect view-id="/CompraList.xhtml"/>
+      </rule>
+   </navigation>
+
+</page>

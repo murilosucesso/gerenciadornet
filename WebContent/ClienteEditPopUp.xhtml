@@ -1,0 +1,57 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<rich:modalPanel id="panelClienteEditPopUp" minWidth="550" minHeight="450" autosized="true" top="15px"
+	xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:s="http://jboss.com/products/seam/taglib"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html" 
+    xmlns:a="http://richfaces.org/a4j"
+    xmlns:rich="http://richfaces.org/rich">
+ 
+ 	<a:loadScript src="javascript/cliente.js"/>
+	<a:loadScript src="javascript/maskCpfCnpj.js"/>
+	<a:loadScript src="javascript/util.js"/>
+
+	<script>
+	function focarProduto2(){
+    		Richfaces.hideModalPanel('panelClienteEditPopUp');
+    		document.getElementById('venda:pesquisarCliente:pesquisaGeralCliente').value = "";
+    		document.getElementById('venda:pesquisar:pesquisarGeral').focus();
+    		document.getElementById("cliente").reset(); 
+      	}
+	</script>
+	
+	<f:facet name="header">
+        <h:panelGroup>
+            <h:outputText value="Novo Cliente"></h:outputText>
+        </h:panelGroup>
+    </f:facet>
+    
+	<f:facet name="controls">
+		<h:panelGroup>								
+			<h:graphicImage value="/img/close.png" id="clienteEditHidelink" style="cursor:pointer;"/>
+            <rich:componentControl for="panelClienteEditPopUp" attachTo="clienteEditHidelink" operation="hide" event="onclick"/>
+		</h:panelGroup>		       
+	</f:facet>
+	<rich:spacer height="5"/>
+
+	<h:form id="cliente" styleClass="edit">
+
+		<ui:include src="/includes/includeFormEditCliente.xhtml" />
+		
+		<br/>
+		
+		<table width="100%">
+			<tr>
+				<td align="center">
+					<a:commandButton id="salvarCliente" value="Salvar" action="#{vendaHome.persistClientePopUp()}"  
+						oncomplete="focarProduto2()" reRender="pesquisarCliente2" />
+								
+					<rich:hotKey key="return" selector="#cliente"
+							handler="#{rich:element('salvarCliente')}.click()" />								
+				</td>
+			</tr>
+		</table>		
+	</h:form>
+</rich:modalPanel>

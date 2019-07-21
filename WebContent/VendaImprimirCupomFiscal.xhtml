@@ -1,0 +1,271 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<rich:modalPanel id="vendaImprimirCupomFiscalPopUp" width="285" minHeight="330" autosized="true" top="15px" 
+		onshow="window.print();alert('Impressão Finalizada. A janela será fechada.');Richfaces.hideModalPanel('vendaImprimirCupomFiscalPopUp')"
+	xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:s="http://jboss.com/products/seam/taglib"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html" 
+    xmlns:a="http://richfaces.org/a4j"
+    xmlns:rich="http://richfaces.org/rich">
+
+	<style type="text/css">
+	@media print {
+		 body > * {
+		 display: none; 
+		 }
+		 
+		 body > .rich-modalpanel {
+		 display: block;
+		 }
+		 
+		 .rich-mpnl_panel, .rich-mpnl_panel > div {
+		 position: static !important;
+		 }
+		 
+		 .rich-mpnl-mask-div, .rich-mpnl-shadow {
+		 display: none !important;
+		 }
+		 
+		 .rich-mp-content {
+		 overflow: visible !important;
+		 width: auto !important;
+		 height: auto !important;
+		 }
+		.noRowBorders
+		{
+		   border-bottom-width:0px;
+		    border-top-width:0px;
+		    border-left-width:0px;
+		    border-right-width:0px;
+		}
+		.dr-mpnl-pnl {
+    	 	border-width: 0px !important;   	 
+		}
+	}
+	</style>
+		
+	<div>
+	<a:form>
+	
+		<h:panelGrid border="0" columns="1" width="100%" cellpadding="0" columnClasses="center">
+ 
+			<h:column headerClass="col1">
+				<h:graphicImage url="img#{facesContext.externalContext.requestContextPath}/logo.jpg"/>
+			</h:column>
+			
+			 <h:column headerClass="col2">
+				<h:outputLabel value="#{empresa.nomeFantasia}" styleClass="textoNegrito6" />
+				<br />
+				<h:outputLabel value="#{empresa.razaoSocial}" styleClass="textoNegrito6" />
+				<br />
+				<h:outputLabel value="CNPJ: #{empresa.cnpj}"	styleClass="textoMedioCinza4" />
+				<br />
+				<h:outputLabel value="#{empresa.endereco}"	styleClass="textoMedioCinza4" />
+				<br />
+				<h:outputLabel value="INSC.: #{empresa.inscricaoEstadual}"	styleClass="textoMedioCinza4" />
+				<br />
+				<h:outputLabel value="#{empresa.cidade} - #{empresa.estado} , CEP: #{empresa.cep}"	styleClass="textoMedioCinza4" />
+				<br />
+				<h:outputLabel value="Fone: #{empresa.telefone}" styleClass="textoMedioCinza4" />
+				<br />
+				<h:outputLabel value="" styleClass="textoNegrito" />
+				<br />
+			</h:column>
+	
+			<h:column>
+				<h:outputLabel value="Orçamento" styleClass="textoMedio" rendered="#{vendaHome.instance.inOrcamento}" />
+				
+				<h:outputLabel value="Venda" styleClass="center textoMedio2" 
+					rendered="#{!vendaHome.instance.inOrcamento and vendaHome.instance.statusVenda.codStatusVenda != constantes.pedido and vendaHome.instance.statusVenda.codStatusVenda != constantes.pedidoAutorizado and vendaHome.instance.codVenda != null}" />
+				
+				<h:outputLabel value="Pedido" styleClass="center textoMedio2" 
+					rendered="#{!vendaHome.instance.inOrcamento and (vendaHome.instance.statusVenda.codStatusVenda == constantes.pedido or vendaHome.instance.statusVenda.codStatusVenda == constantes.pedidoAutorizado)}" />
+			</h:column>
+			<h:column>			
+				<h:outputText value="#{vendaHome.instance.codVenda}" styleClass="center textoNegrito6" />			
+			</h:column>
+
+		</h:panelGrid>
+
+				
+		<h:panelGrid border="0" columns="1" width="100%" cellpadding="0" columnClasses="left">
+		
+			 <h:column>					
+					<h:outputLabel styleClass="textoImpressaoNegritoP" value="Cliente: "/>	
+					<h:outputText value="#{vendaHome.instance.cliente.nome}" styleClass="textoImpressaoNegritoP"/>							
+			 </h:column>
+			 
+			  <h:column>					
+					<h:outputLabel styleClass="textoImpressaoNegritoP" value="CPF: " rendered="#{vendaHome.instance.cliente.tipoPessoa}"/>
+					<h:outputLabel styleClass="textoImpressaoNegritoP" value="CNPJ: " rendered="#{!vendaHome.instance.cliente.tipoPessoa}"/>	
+					<h:outputText value="#{vendaHome.instance.cliente.cpfCnpj}" styleClass="textoImpressaoP"/>	
+					<h:outputLabel styleClass="textoImpressaoNegritoP" rendered="#{vendaHome.instance.cliente.tipoPessoa}" value="RG: "/>
+					<h:outputLabel styleClass="textoImpressaoNegritoP" rendered="#{!vendaHome.instance.cliente.tipoPessoa}" value="I.E: "/>		
+					<h:outputText value="#{vendaHome.instance.cliente.rgIe}" styleClass="textoImpressaoP"/>						
+			 </h:column>
+					
+			 
+			 <h:column>					
+					<h:outputLabel styleClass="textoImpressaoNegritoP" value="Data: "/>	
+					<h:outputText value="#{vendaHome.instance.dataInicioVenda}" styleClass="textoImpressaoP">
+						 <s:convertDateTime type="date" pattern="dd/MM/yyyy"/>
+					</h:outputText>							
+					<h:outputLabel styleClass="textoImpressaoNegritoP" value=" Tipo pag.: "/>	
+					<h:outputText value="#{vendaHome.instance.tipoPagamento.descTipoPagamento}" styleClass="textoImpressaoP"/>
+			 </h:column>
+			 
+			 <h:column>					
+					<h:outputLabel styleClass="textoImpressaoNegritoP" value="Vendedor: "/>	
+					<h:outputText value="#{vendaHome.instance.usuario.nomeUsuario}" styleClass="textoImpressaoP" />							
+			 </h:column>
+			
+		</h:panelGrid>
+		
+		<h:outputText value="-------------------------------------------------------------------------" rendered="#{not empty vendaHome.servicoRealizados }"/>
+		<br/>
+		<h:outputText value="Serviço(s)" styleClass="textoImpressaoNegritoP" rendered="#{not empty vendaHome.servicoRealizados }"/>
+		
+		<rich:dataTable  var="_servicoRealizado"
+              	value="#{vendaHome.servicoRealizados}"			           		          
+	           	columnClasses="left"	   
+	           	styleClass="noRowBorders"
+	           	columnsWidth="5%,70%,25%"
+	           	footerClass="noRowBorders"        	
+	           	rowKeyVar="linha"
+	           		 	           	   
+	           	rendered="#{not empty vendaHome.servicoRealizados }">	
+                
+                <rich:column styleClass="noRowBorders" >	
+                	<h:outputText value="#{linha + 1}" styleClass="textoImpressaoP" />		
+                </rich:column >
+                
+                 <rich:column styleClass="noRowBorders" >
+                	 <h:outputText value="#{_servicoRealizado.servico.descServico}  " styleClass="textoImpressaoP"/>
+                	 
+                	 <f:facet name="footer"> 
+                	 	<h:outputText value="Subtotal  " styleClass="textoImpressaoP"/>
+                	 </f:facet>
+                </rich:column >
+                
+                <rich:column styleClass="noRowBorders" style="white-space: nowrap;" >
+                	<h:outputText value="#{_servicoRealizado.servico.precoServico}" styleClass="textoImpressaoP">
+                		<f:convertNumber currencySymbol="R$" type="currency" locale="pt_BR" />
+                	</h:outputText>
+                	
+					<f:facet name="footer"> 
+                       <h:outputText value="#{vendaHome.subTotalvalorServicoCobrado}" styleClass="textoImpressaoNegritoP">
+                    		<f:convertNumber currencySymbol="R$"  type="currency"  locale="pt_BR"/>
+                  		</h:outputText> 
+					</f:facet>
+               </rich:column >
+                 
+               
+                        
+	    </rich:dataTable >			
+	    
+	    <h:outputText value="-------------------------------------------------------------------------" rendered="#{not empty vendaHome.produtoVendidos}"/>
+	    <br/>
+	    <h:outputText value="Produto(s)"  styleClass="textoImpressaoNegritoP" rendered="#{not empty vendaHome.produtoVendidos}"/>
+	     
+	    <rich:dataTable 
+                var="_produtoVendido"
+              	value="#{vendaHome.getProdutoVendidosOrdenados()}"		
+              	rowKeyVar="linha"		
+              	styleClass="noRowBorders"
+	           	footerClass="noRowBorders"   
+	           	columnsWidth="5%,*,1%,25%"         	
+	           	columnClasses="left">	
+	           	
+					<rich:column styleClass="noRowBorders" >
+                		<h:outputText value="#{linha + 1}" styleClass="textoImpressaoP" />		
+                	</rich:column>
+                	
+                	<rich:column styleClass="noRowBorders" >
+                		<h:outputText value="#{_produtoVendido.loteProduto.produto.nomeProduto} - #{_produtoVendido.loteProduto.produto.marca.nomeMarca}" styleClass="textoImpressaoP"/>	
+                		
+                		<f:facet name="footer"> 
+                	 		<h:outputText value="Subtotal  " styleClass="textoImpressaoP"/>
+                	 	</f:facet>	
+                	</rich:column>
+                	
+                	<rich:column styleClass="noRowBorders" >
+                		<h:outputText value="#{_produtoVendido.getQtd()}" styleClass="textoImpressaoP"/>		
+                		
+                		<f:facet name="footer" >                             
+                           <h:outputText value="#{vendaHome.subTotalProdutoQtd}" styleClass="textoImpressaoP"/>
+                       </f:facet>
+                	</rich:column>
+                	
+                	<rich:column styleClass="noRowBorders" style="white-space: nowrap;" >
+                		 <h:outputText styleClass="textoImpressaoP"
+							value="#{_produtoVendido.getQtd() * _produtoVendido.getPrecoVenda() - _produtoVendido.getDesconto()}">
+								<f:convertNumber currencySymbol="R$" type="currency" locale="pt_BR" />
+						</h:outputText>	
+						
+						<f:facet name="footer">
+                           <h:outputText value="#{vendaHome.subTotalProduto}" styleClass="textoImpressaoNegritoP">
+                          		<f:convertNumber currencySymbol="R$"  type="currency"  locale="pt_BR"/>
+                           </h:outputText>
+                       </f:facet>
+                	</rich:column>
+		</rich:dataTable>
+		
+		<h:outputText value="-------------------------------------------------------------------------"/>
+
+			<h:panelGrid border="0" columns="2" width="100%" cellpadding="0"
+				columnClasses="left right">
+								
+				<h:column>
+					<h:outputText value="Valor Total" styleClass="textoImpressaoNegritoP" />
+				</h:column>
+
+				<h:column>
+					<h:outputText id="valorTotalVenda"
+						value="#{vendaHome.valorTotalVenda}" styleClass="textoNegrito3">
+						<f:convertNumber currencySymbol="R$" type="currency" locale="pt_BR" />
+					</h:outputText>
+				</h:column>
+
+				<h:column>
+					<h:outputText value="Desconto" styleClass="textoImpressaoNegritoP"/>	
+				</h:column>
+
+				<h:column>
+					<h:outputText id="valorDescontoTotal" value="#{vendaHome.valorDescontoTotalVenda}" styleClass="textoNegrito3">
+						<f:convertNumber currencySymbol="R$"  type="currency"  locale="pt_BR"/>
+					</h:outputText>
+				</h:column>								
+				
+				<h:column>
+					<h:outputText value="Valor Total c/ Desc." styleClass="textoImpressaoNegritoP"/>		
+				</h:column>
+				
+				<h:column>
+					<h:outputText id="valorDescontoTotalVenda" value="#{vendaHome.valorTotalVendaComDesconto}" styleClass="textoNegrito3">
+                          	<f:convertNumber currencySymbol="R$"  type="currency"  locale="pt_BR"/>
+                    </h:outputText>
+				</h:column>
+
+			</h:panelGrid>
+		
+		<br/>
+			<h:panelGrid border="0" width="100%" cellpadding="0" columnClasses="center">
+				<h:outputText value="#{vendaHome.dataAtual}" styleClass="textoImpressaoNegritoP">
+					 <s:convertDateTime type="date" pattern="dd/MM/yyyy"/>
+				</h:outputText> 
+				<h:outputText value="Este cupom não tem valor fiscal" styleClass="textoImpressaoNegritoP" />
+				<br/>
+				<h:outputText value="Caro cliente," styleClass="textoImpressaoNegritoP" />
+				<h:outputText value="confira as mercadorias no ato da entrega." styleClass="textoImpressaoNegritoP" />
+				<h:outputText value="Não serão aceitas reclamações posteriores." styleClass="textoImpressaoNegritoP" />
+				<h:outputText value="Troca em até 7 dias." styleClass="textoImpressaoNegritoP" />
+				<h:outputText value="Não serão aceitas mercadorias com " styleClass="textoImpressaoNegritoP" />
+				<h:outputText value="o lacre violado ou embalagens danificadas." styleClass="textoImpressaoNegritoP" />
+			</h:panelGrid>
+	
+	</a:form>
+	</div>
+	
+</rich:modalPanel>

@@ -1,0 +1,70 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<f:view xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:a="http://richfaces.org/a4j"
+	xmlns:s="http://jboss.com/products/seam/taglib" contentType="text/html">
+	<html>
+	
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<title>Gerenciador Net</title>
+	
+	<link id="favicon" rel="icon" href="img#{facesContext.externalContext.requestContextPath}/favicon.ico"/>
+	
+	<a:loadStyle src="resource:///stylesheet/theme.xcss" />
+	<a:loadStyle src="/stylesheet/theme.css" />
+	<a:loadStyle src="/stylesheet/gerenciadornet.css" />
+	<f:loadBundle basename="messages_en" var="messages" />
+	<ui:insert name="head" /> 
+	
+	<script>
+		function escreverTitle() {
+		   	path = window.location.pathname.substring(1, window.location.pathname.indexOf("/",2));
+		   	document.head = document.head || document.getElementsByTagName('head')[0];		
+
+		   	document.title = "GN-" + path.toUpperCase();			   				
+		}		
+	</script>
+</head>
+
+<body class="larguraPagina" onload="escreverTitle()">
+
+	<a:outputPanel rendered="#{identity.loggedIn}" >
+		<ui:include src="testeira.xhtml">
+			<ui:param name="projectName" value="DENTAL DF LTDA" />
+		</ui:include>
+	</a:outputPanel>
+	
+	<ui:include src="menu.xhtml" />
+
+	<ui:include src="/carregando.popup.xhtml" />
+
+	<div id="body" class="body">
+
+		<a:outputPanel ajaxRendered="true" id="panelGlobalMessages">
+			<h:messages id="messages" globalOnly="false" styleClass="message"
+				errorClass="errormsg" infoClass="infomsg" warnClass="warnmsg"
+				rendered="#{showGlobalMessages != 'false'}" />
+		</a:outputPanel>
+
+		<ui:insert name="body" />
+
+	</div>
+
+	<div class="footer">
+		<p class="textoMedioCinza" align="center">
+			<a href="#" class="textoMedioCinza">Sobre a Empresa</a> | <a href="#"
+				class="textoMedioCinza">Aplicações</a> | <a href="#"
+				class="textoMedioCinza">Entre em Contato</a>
+		</p>
+		<p class="textoMedioCinza" align="center">Desenvolvido por AHAUS
+			TECNOLOGIA DA INFORMAÇÃO - AHAUSTI &#174;</p>
+	</div>
+
+</body>
+</html>
+</f:view>
+

@@ -1,0 +1,132 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:s="http://jboss.com/products/seam/taglib"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:a="http://richfaces.org/a4j" template="layout/template.xhtml">
+
+	<ui:define name="head">
+		
+		<a:loadScript src="https://www.google.com/jsapi"/>  
+		
+		<script type="text/javascript">
+		Array.prototype.reduce = undefined;
+		google.load('visualization', '1', {packages: ['corechart', 'table']});
+
+		// ----------------------------------------- Gráfico 1 - Barras - --------------------------------------	  
+		google.setOnLoadCallback(drawVisualization);
+		function drawVisualization() {
+			
+		    // Create and populate the data table.
+		   var data = google.visualization.arrayToDataTable(
+	          [ #{relatorioGraficoVendasList.respostaColumnChart} 		 
+	          ]);
+
+		   var options = {
+			          animation:{duration:1000,easing:'out'},
+			          title: 'Comparativo Total X Lucro #{relatorioGraficoVendasList.anoAtual}',
+		              hAxis: {title: 'Meses'},
+		              chartArea:{left:100,top:50,width:"75%",height:"75%"},
+		              colors:['#3366cc','#990099']
+			        };
+	        
+		    // Create and draw the visualization.
+		    new google.visualization.ColumnChart(document.getElementById('visualization')).
+		        draw(data,options);
+		  }
+
+		// ----------------------------------------- Gráfico 1 - Tabela - --------------------------------------	
+		google.setOnLoadCallback(drawTable);
+		function drawTable() {
+	    	var data = new google.visualization.DataTable();
+			data.addColumn('string', 'Mês');
+	        data.addColumn('string', 'Total');
+	        data.addColumn('string', 'Lucro');
+	        data.addColumn('string', '% Lucro');
+	        data.addRows([#{relatorioGraficoVendasList.respostaDataTable} 
+	        ]);
+
+	        var table = new google.visualization.Table(document.getElementById('table_div'));
+	        table.draw(data, {showRowNumber: true});
+		}
+		
+		
+		// ----------------------------------------- Gráfico 2 - Areas - --------------------------------------	    
+		google.setOnLoadCallback(drawChart);
+		function drawChart() {
+			var data = google.visualization.arrayToDataTable(
+	          [ #{relatorioGraficoVendasList.respostaAreaChart} 		 
+	          ]);
+	
+	        var options = {
+	          animation:{duration:1000,easing:'out'},
+	          title: 'Comparativo #{relatorioGraficoVendasList.anoAnterior} x #{relatorioGraficoVendasList.anoAtual}',
+              hAxis: {title: 'Meses',  titleTextStyle: {color: 'black'}},
+              chartArea:{left:100,top:50,width:"75%",height:"75%"},
+              colors:['#3377dd','#11bb22']
+	        };
+
+	        var chart = new google.visualization.AreaChart(document.getElementById('chart_div'));
+	        chart.draw(data, options);
+		}
+
+
+		// ----------------------------------------- Gráfico 2 - Tabela  - --------------------------------------	
+		google.setOnLoadCallback(drawTable2);
+		function drawTable2() {
+	    	var data = new google.visualization.DataTable();
+			data.addColumn('string', 'Mês');
+	        data.addColumn('string', '#{relatorioGraficoVendasList.anoAnterior}');
+	        data.addColumn('string', '#{relatorioGraficoVendasList.anoAtual}');
+	        data.addColumn('string', 'Crescimento');
+	        data.addRows([#{relatorioGraficoVendasList.respostaDataTable2} 
+	        ]);
+
+	        var table = new google.visualization.Table(document.getElementById('table_div2'));
+	        table.draw(data, {showRowNumber: true});
+		}
+		
+		</script>
+	</ui:define>
+	
+	<ui:define name="body">
+	
+	<rich:panel header="Relatório de Vendas Anual">
+		<h:form id="formulario">
+			<table border="0" align="center">
+				<tr><td> <h:outputLabel value="Ano" styleClass="textoNegrito" /> </td>
+				<td>
+					<h:selectOneMenu id="anoPesquisado" value="#{relatorioGraficoVendasList.anoPesquisado}"
+						styleClass="defaultInput2 textoNegrito" onchange="document.getElementById('formulario').submit();" >
+						
+						<f:selectItems value="#{relatorioGraficoVendasList.listaAnos}"/>
+					</h:selectOneMenu>
+				</td>
+				</tr>
+			</table>
+		</h:form>
+	
+       	<table border="0" width="100%">
+       		<tr>
+       			<td ><div id="visualization" style="width: 800px; height: 500px; float: center"/></td>
+       			<td>
+       				<h:outputText value="% Crescimento em comparação ao mesmo período do ano anterior." />
+       				<div id='table_div'  style="width: 400px;"/>
+       			</td>
+       		</tr>
+       		<tr>
+       			<td><div id="chart_div" style="width: 800px; height: 500px;"/></td>
+       			<td>
+       				<h:outputText value="Comparativos entre os anos #{relatorioGraficoVendasList.anoAnterior} x #{relatorioGraficoVendasList.anoAtual}" />
+       				<div id='table_div2'  style="width: 400px;"/>
+       			</td>
+       		</tr>
+       	</table>
+	</rich:panel>
+		
+	</ui:define>
+
+</ui:composition>

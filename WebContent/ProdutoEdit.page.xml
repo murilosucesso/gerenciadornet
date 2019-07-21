@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<page xmlns="http://jboss.com/products/seam/pages"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://jboss.com/products/seam/pages http://jboss.com/products/seam/pages-2.2.xsd"
+      no-conversation-view-id="/ProdutoList.xhtml"
+      login-required="true">
+
+   <restrict>#{identity.hasRole(transacoes.transacaoProdutoEditar) or identity.hasRole(transacoes.transacaoProdutoInserir)}</restrict>
+
+   <begin-conversation join="true" flush-mode="MANUAL"/>
+
+   <action execute="#{produtoHome.wire}"/>
+
+   <param name="produtoFrom"/>
+   <param name="produtoCodProduto" value="#{produtoHome.produtoCodProduto}"/>
+   <param name="categoriaFrom"/>
+   <param name="categoriaCodCategoria" value="#{categoriaHome.categoriaCodCategoria}"/>
+
+   <param name="marcaFrom"/>
+   <param name="marcaCodMarca" value="#{marcaHome.marcaCodMarca}"/>
+
+
+
+   <navigation from-action="#{produtoHome.persist}">
+      <rule if-outcome="persisted">
+         <end-conversation/>
+         <redirect view-id="/Produto.xhtml"/>
+      </rule>
+   </navigation>
+
+   <navigation from-action="#{produtoHome.update}">
+      <rule if-outcome="updated">
+         <end-conversation/>
+         <redirect view-id="/Produto.xhtml"/>
+      </rule>
+   </navigation>
+
+   <navigation from-action="#{produtoHome.remove}">
+      <rule if-outcome="removed">
+         <end-conversation/>
+         <redirect view-id="/ProdutoList.xhtml"/>
+      </rule>
+   </navigation>
+
+</page>

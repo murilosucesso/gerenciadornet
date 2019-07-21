@@ -1,0 +1,163 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:s="http://jboss.com/products/seam/taglib"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:a="http://richfaces.org/a4j"
+    xmlns:rich="http://richfaces.org/rich"
+    template="layout/template.xhtml">
+
+<ui:define name="body">
+
+    <h:form id="categoria" styleClass="edit">
+		<ui:include src="/paginas/help/GenericEditHelp.xhtml"/>
+        <rich:panel>
+            <f:facet name="header">#{categoriaHome.managed ? 'Editar' : 'Adicionar'} Categoria</f:facet>
+
+            <s:decorate id="nomeCategoriaField" template="layout/edit.xhtml">
+                <ui:define name="label">Nome Categoria</ui:define>
+                <h:inputText id="nomeCategoria"
+                       required="true"
+                           size="50"
+                      maxlength="60"
+                          value="#{categoriaHome.instance.nomeCategoria}">
+                </h:inputText>
+            </s:decorate>
+            
+            <div style="clear:both">
+                <span class="required">*</span>
+                Campos obrigatórios
+            </div>
+
+        </rich:panel>
+
+        <div class="actionButtons">
+
+            <h:commandButton id="save"
+                          value="Salvar"
+                         action="#{categoriaHome.persist}"
+                       disabled="#{!categoriaHome.wired}"
+                       rendered="#{!categoriaHome.managed and identity.hasRole(transacoes.transacaoCategoriaInserir)}"/>
+
+            <h:commandButton id="update"
+                          value="Salvar"
+                         action="#{categoriaHome.update}"
+                       rendered="#{categoriaHome.managed and identity.hasRole(transacoes.transacaoCategoriaEditar)}"/>
+
+            <h:commandButton id="delete"
+                          value="Excluir"
+                         action="#{categoriaHome.remove}"
+                        onclick="if (!confirm('Tem certeza que deseja excluir este registro?')) return false"
+                      immediate="true"
+                       rendered="#{categoriaHome.managed and identity.hasRole(transacoes.transacaoCategoriaExcluir)}"/>
+
+            <s:button id="cancelEdit"
+                   value="Voltar"
+             propagation="end"
+                    view="/Categoria.xhtml"
+                rendered="#{categoriaHome.managed}"/>
+
+            <s:button id="cancelAdd"
+                   value="Voltar"
+             propagation="end"
+                    view="/#{empty categoriaFrom ? 'CategoriaList' : categoriaFrom}.xhtml"
+                rendered="#{!categoriaHome.managed}"/>
+
+        </div>
+    </h:form>
+
+<rich:tabPanel switchType="ajax">
+
+    <rich:tab label="Produtos">
+        <h:form styleClass="association" id="produtosChildren">
+
+            <h:outputText value="Não existem produtos associados a esta Categoria."
+                       rendered="#{empty categoriaHome.produtos}"/>
+
+            <rich:dataTable value="#{categoriaHome.produtos}"
+                           var="_produto"
+                      rendered="#{not empty categoriaHome.produtos}"
+                            id="resultadoList"
+				onRowMouseOver="this.style.backgroundColor='#F0F0F0'"
+           		 onRowMouseOut="this.style.backgroundColor='#{a4jSkin.rowBackgroundColor}'"
+           		 columnClasses="center" 
+           		 		  rows="15"
+           			rowClasses="tableRowOne,tableRowTwo">
+                            
+                            
+    			<rich:column sortBy="#{_produto.codProdutoExterno}">
+                    <f:facet name="header">Código produto</f:facet>
+                    <h:outputText value="#{_produto.codProdutoExterno}"/>
+                </rich:column>
+                
+                <rich:column sortBy="#{_produto.nomeProduto}">
+                    <f:facet name="header">Nome produto</f:facet>
+                    <h:outputText value="#{_produto.nomeProduto}"/>
+                </rich:column>         
+                
+                 <rich:column sortBy="#{_produto.categoria.nomeCategoria}"> 
+		           <f:facet name="header">
+		               <h:outputText value="Categoria"/>
+		           </f:facet> 
+		           <h:outputText value="#{_produto.categoria.nomeCategoria}"/>
+		         </rich:column>
+		        
+		         <rich:column sortBy="#{_produto.marca.nomeMarca}"> 
+		           <f:facet name="header">
+		               <h:outputText value="Marca"/>
+		           </f:facet> 
+		           <h:outputText value="#{_produto.marca.nomeMarca}"/>
+		         </rich:column>
+         
+                <rich:column sortBy="#{_produto.descProduto}">
+                    <f:facet name="header">Descrição produto</f:facet>
+                    <h:outputText value="#{_produto.descProduto}"/>
+                </rich:column>
+                
+                <rich:column sortBy="#{_produto.inExclusao}">
+                    <f:facet name="header">Ativo</f:facet>
+                    <h:outputText value="#{!_produto.inExclusao}"/>
+                </rich:column>
+                
+                <rich:column styleClass="action">
+		            <f:facet name="header">Visualizar/Editar</f:facet>
+		            <s:link view="/#{empty from ? 'Produto' : from}.xhtml"
+		                   value="#{empty from ? 'View' : 'Select'}"
+		             propagation="#{empty from ? 'none' : 'default'}"
+		                      id="produtoViewId">
+		                <f:param name="produtoCodProduto"
+		                        value="#{_produto.codProduto}"/>
+		            </s:link>
+		            #{' '}
+		            <s:link view="/ProdutoEdit.xhtml"
+		                   value="Edit"
+		             propagation="none"
+		                      id="produtoEdit"
+		                rendered="#{empty from}">
+		                <f:param name="produtoCodProduto"
+		                        value="#{_produto.codProduto}"/>
+		            </s:link>
+		        </rich:column>
+            </rich:dataTable>
+			<ui:include src="/includes/includeDataScroller.xhtml"/>
+        </h:form>
+
+        <f:subview rendered="#{categoriaHome.managed}" id="produtos">
+        <div class="actionButtons">
+            <s:button id="addproduto"
+                   value="Novo Produto"
+                    view="/ProdutoEdit.xhtml"
+             propagation="none">
+                 <f:param name="categoriaCodCategoria"
+                         value="#{categoriaHome.instance.codCategoria}"/>
+                 <f:param name="produtoFrom" value="Categoria"/>
+            </s:button>
+        </div>
+        </f:subview>
+    </rich:tab>
+</rich:tabPanel>
+</ui:define>
+
+</ui:composition>

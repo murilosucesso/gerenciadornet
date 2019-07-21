@@ -1,0 +1,126 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:s="http://jboss.com/products/seam/taglib"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:rich="http://richfaces.org/rich"
+    xmlns:a="http://richfaces.org/a4j"
+    template="layout/template.xhtml">
+
+<ui:define name="body">
+
+    <a:form id="marcaSearch" styleClass="edit">
+
+		<ui:include src="/paginas/help/GenericListHelp.xhtml"/>	
+    	
+        <rich:simpleTogglePanel label="#{messages['page.marca.titulo.pesquisa']}" switchType="client">
+           
+            <s:decorate template="layout/display.xhtml">
+                <ui:define name="label">Fornecedor</ui:define> 
+                 <h:selectOneMenu id="fornecedor" value="#{marcaList.marca.fornecedor}"  required="false" styleClass="defaultInput">		
+				   <s:selectItems  value="#{fornecedorList.resultList}" 
+				   				  var="fornecedor" 			
+				                  label="#{fornecedor.nomeFantasia}"
+				                  noSelectionLabel="Selecione.." 
+				                  />			
+				   <s:convertEntity />	 
+				  </h:selectOneMenu>
+            </s:decorate> 
+
+			 <s:decorate template="layout/display.xhtml">
+                <ui:define name="label">Marca</ui:define>
+                <h:inputText id="nomeMarca" value="#{marcaList.marca.nomeMarca}" styleClass="defaultInput"  maxlength="50"/>
+            </s:decorate>
+            
+        </rich:simpleTogglePanel>
+
+		<table border="0" width="10%">
+			<tr>
+				<td nowrap="nowrap">
+		        	<ui:include src="/includes/includeBotoesPesquisarLimpar.xhtml" />
+				</td>
+				<td nowrap="nowrap">    
+				    <s:div styleClass="actionButtons" rendered="#{identity.hasRole(transacoes.transacaoMarcaInserir)}">
+				        <s:button view="/MarcaEdit.xhtml"
+				                    id="create"
+				           propagation="none"
+				                 value="Nova Marca">
+				            <f:param name="marcaCodMarca"/>
+				        </s:button>
+				    </s:div>
+			   	</td>
+	    	</tr>
+		</table>
+		 
+    </a:form>
+
+	<h:form>
+    <rich:panel>
+    
+    <f:facet name="header">
+		<a:outputPanel  id="panelDiv" ajaxRendered="true">
+	    	Resultado da pesquisa por Marca(#{empty marcaList.resultList ? 0 : (marcaList.paginated ? marcaList.resultCount : marcaList.resultList.size)})
+	    </a:outputPanel>
+    </f:facet>
+    
+    <a:outputPanel id="msnListaVazia" ajaxRendered="true">
+   	
+   	<h:outputText value="#{messages['mensagem.pesquisa.vazia']}" rendered="#{empty marcaList.resultList}"/>
+  
+    <rich:dataTable id="resultadoList"
+                	var="_marca"
+              		value="#{marcaList.resultList}"
+		            rendered="#{not empty marcaList.resultList}"
+		            onRowMouseOver="this.style.backgroundColor='#F0F0F0'"
+		            onRowMouseOut="this.style.backgroundColor='#{a4jSkin.rowBackgroundColor}'"
+		            columnClasses="center"  
+		            rows="15"
+		            rowClasses="tableRowOne,tableRowTwo">
+                
+               
+         <rich:column sortBy="#{_marca.nomeMarca}" styleClass="left"> 
+           <f:facet name="header">
+               <h:outputText value="Nome Marca"/>
+           </f:facet> 
+           <h:outputText value="#{_marca.nomeMarca}"/>
+         </rich:column> 
+         
+          <rich:column sortBy="#{_marca.fornecedor.nomeFantasia}" styleClass="left"> 
+           <f:facet name="header">
+               <h:outputText value="Fornecedor"/> 
+           </f:facet> 
+           <h:outputText value="#{_marca.fornecedor.nomeFantasia}"/>
+         </rich:column> 
+        
+        
+        <rich:column styleClass="action">
+            <f:facet name="header">Visualizar/Editar</f:facet>
+            <s:link view="/#{empty from ? 'Marca' : from}.xhtml" propagation="#{empty from ? 'none' : 'default'}"
+                      id="marcaViewId">
+                <h:graphicImage url="/img/binoculo.jpg"/>     
+                <f:param name="marcaCodMarca" value="#{_marca.codMarca}"/>
+            </s:link>
+            <rich:toolTip for="marcaViewId" value="Visualizar Marca" direction="top-left"/>
+            
+            #{' '}
+            
+            <s:link view="/MarcaEdit.xhtml"  propagation="none" id="marcaEdit" rendered="#{identity.hasRole(transacoes.transacaoMarcaEditar)}">
+            	<h:graphicImage url="/img/editar.jpg"/>
+                <f:param name="marcaCodMarca" value="#{_marca.codMarca}"/>
+            </s:link>
+            <rich:toolTip for="marcaEdit" value="Editar Marca" direction="top-left"/>
+            
+        </rich:column>
+    </rich:dataTable>
+	
+	<ui:include src="/includes/includeDataScroller.xhtml"/>
+	
+    </a:outputPanel>
+    </rich:panel>
+	</h:form>
+   
+</ui:define>
+
+</ui:composition>

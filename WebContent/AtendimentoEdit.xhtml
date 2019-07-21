@@ -1,0 +1,126 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:s="http://jboss.com/products/seam/taglib"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:a="http://richfaces.org/a4j"
+    xmlns:rich="http://richfaces.org/rich"
+    template="layout/template.xhtml">
+
+<ui:define name="body">
+
+    <h:form id="atendimentoForm" styleClass="edit">
+		
+        <rich:panel>
+            <f:facet name="header">#{atendimentoHome.managed ? 'Editar' : 'Adicionar'} Atendimento</f:facet>
+		                               
+            <s:decorate template="layout/display.xhtml">
+                <ui:define name="label">Funcionário</ui:define>                
+                <h:outputText value="#{atendimentoHome.instance.usuario.nomeUsuario}" rendered="#{atendimentoHome.managed}" />
+				<h:outputText value="#{user.nomeUsuario}" rendered="#{!atendimentoHome.managed}" />
+            </s:decorate>
+            
+            <s:decorate id="clienteField" template="layout/edit.xhtml">
+				<ui:define name="label">Cliente</ui:define>
+	
+				<h:selectOneMenu value="#{atendimentoHome.instance.cliente}" required="true" requiredMessage="Campo Cliente Obrigatório."
+					styleClass="defaultInput">
+					<s:selectItems value="#{clienteList.resultList}"
+						var="cliente" label="#{cliente.nome} - (#{cliente.grupo.nomeGrupo}) #{cliente.inAdimplente ? '' : '- (Inadimplente)'}"
+						noSelectionLabel="Selecione Cliente.." />
+					<s:convertEntity />
+				</h:selectOneMenu>
+			</s:decorate>
+						
+<!-- Popup Detalhar cliente - INÍCIO -->
+<!-- 			<div class="divIcone" >
+			
+				<h:graphicImage id="detalharCliente" value="/img/binoculo.jpg" alt="Visualizar Detalhes do Cliente"  styleClass="imgLink" />
+			
+			</div>
+			<rich:componentControl operation="show" attachTo="detalharCliente" for="detalhesClientePopUp"  event="onclick" />
+			
+			<a:outputPanel id="detalhesCliente" ajaxRendered="true" >
+				<ui:include src="/includes/includeDetalhesClientePopup.xhtml"/>
+			</a:outputPanel> -->
+<!-- Popup Detalhar cliente - FIM -->	
+
+			 <s:decorate template="layout/edit.xhtml">
+                <ui:define name="label">Tipo Atendimento</ui:define>                
+                 <h:selectOneMenu id="codTipoAtendimento" value="#{atendimentoHome.instance.codTipoAtendimento}" styleClass="defaultInput" required="true">		
+					<f:selectItem itemLabel="Ativo" itemValue="1" />
+				  	<f:selectItem itemLabel="Receptivo" itemValue="2" />
+				  	<f:selectItem itemLabel="Revenda" itemValue="3" />
+				  	<f:selectItem itemLabel="Cotação" itemValue="4" />
+				</h:selectOneMenu>		
+            </s:decorate>
+
+ 			<s:decorate template="layout/display.xhtml">
+                <ui:define name="label">Descrição Atendimento</ui:define>    
+                <rich:editor height="300" width="600" value="#{atendimentoHome.instance.descAtendimento}"></rich:editor>                           
+            </s:decorate>
+						
+            <s:decorate template="layout/edit.xhtml">
+                <ui:define name="label">Situação Atendimento</ui:define>    
+                            
+                <h:selectOneRadio id="statusAtendimento" value="#{atendimentoHome.instance.statusAtendimento}" required="true" styleClass="textoNegrito">		
+				  	<f:selectItem itemLabel="Concluído" itemValue="1" />
+					<f:selectItem itemLabel="Pendente" itemValue="0" />
+				</h:selectOneRadio>		
+            </s:decorate>
+            
+             <s:decorate template="layout/edit.xhtml">
+                <ui:define name="label">Obtenção de Êxito</ui:define>                
+                                				
+				<h:selectOneRadio id="inObtencaoExito" value="#{atendimentoHome.instance.inObtencaoExito}" required="true" styleClass="textoNegrito">					
+					<f:selectItem itemLabel="Sim" itemValue="true" />		
+					<f:selectItem itemLabel="Não" itemValue="false"/>
+				</h:selectOneRadio>	
+            </s:decorate>
+                     
+            <div style="clear:both">
+                <span class="required">*</span>
+                Campos obrigatórios
+            </div>
+
+        </rich:panel>
+
+        <div class="actionButtons">
+
+            <h:commandButton id="save"
+                          value="Salvar"
+                         action="#{atendimentoHome.persist}"
+                       disabled="#{!atendimentoHome.wired}"
+                       rendered="#{!atendimentoHome.managed}"/>
+
+            <h:commandButton id="update"
+                          value="Salvar"
+                         action="#{atendimentoHome.update}"
+                       rendered="#{atendimentoHome.managed}"/>
+
+            <h:commandButton id="delete"
+                          value="Excluir"
+                         action="#{atendimentoHome.remove}"
+                         onclick="if (!confirm('Tem certeza que deseja Excluir este registro?')) return false"
+                      immediate="true"
+                       rendered="#{atendimentoHome.managed}"/>
+
+            <s:button id="cancelEdit"
+                   value="Voltar"
+             propagation="end"
+                    view="/Atendimento.xhtml"
+                rendered="#{atendimentoHome.managed}"/>
+
+            <s:button id="cancelAdd"
+                   value="Voltar"
+             propagation="end"
+                    view="/AtendimentoList.xhtml"
+                rendered="#{!atendimentoHome.managed}"/>
+
+        </div>
+    </h:form>
+</ui:define>
+
+</ui:composition>

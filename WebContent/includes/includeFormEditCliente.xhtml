@@ -1,0 +1,217 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:s="http://jboss.com/products/seam/taglib"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:easy="http://easyfaces.com.br/easyfaces"  
+    xmlns:a="http://richfaces.org/a4j"
+    xmlns:rich="http://richfaces.org/rich">
+     
+ 	<h:outputLabel>											
+				<s:decorate id="tipoPessoaField" template="../layout/display.xhtml">
+					<ui:define name="label"></ui:define>
+					<h:selectOneRadio id="tipoPessoa" value="#{clienteHome.instance.tipoPessoa}" styleClass="textoNegrito" onchange="hideCampos()">
+						<f:selectItem itemLabel="Pessoa Física" itemValue="false" />
+						<f:selectItem itemLabel="Pessoa Jurídica" itemValue="true" />	
+					</h:selectOneRadio>						 
+				</s:decorate>
+			</h:outputLabel>
+		 <!--  	
+		 	
+			<div id="estudanteSelectDiv">		
+				<h:outputLabel>											
+					<s:decorate id="estudandeField" template="layout/display.xhtml">
+						<ui:define name="label">Estudante</ui:define>
+						<h:selectOneRadio id="estudante" value="#{clienteHome.instance.inEstudante}" styleClass="textoNegrito" onchange="hideCamposEstudante()">
+							<f:selectItem itemLabel="Não" itemValue="false" />	
+							<f:selectItem itemLabel="Sim" itemValue="true" />
+						</h:selectOneRadio>						 
+					</s:decorate>
+				</h:outputLabel>	
+			</div> -->
+			
+            <s:decorate id="nomeField" template="../layout/display.xhtml">
+                <ui:define name="label" >
+                	<span id="labelNome">Nome</span>	                	
+				</ui:define>
+                <h:inputText id="nome"
+                       required="true"
+                     styleClass="defaultInput"
+                      maxlength="100"
+                          value="#{clienteHome.instance.nome}">
+                </h:inputText>
+            </s:decorate>
+            
+            <s:decorate id="nomeFantasiaApelidoField" template="../layout/display.xhtml">
+                <ui:define name="label" >
+                	<span id="labelNomeFantasiaApelido">Apelido</span>	                	
+				</ui:define>
+                <h:inputText id="nomeFantasiaApelido"
+                       required="false"
+                     styleClass="defaultInput"
+                      maxlength="100"
+                          value="#{clienteHome.instance.nomeFantasiaApelido}">
+                </h:inputText>
+            </s:decorate>
+            
+            <!-- Div com os campos de estudante -->
+			
+			<!-- <div id="estudanteDiv">		
+            <s:decorate id="responsavelField" template="../layout/display.xhtml" rendered="#{clienteHome.instance.tipoPessoa == false}">
+                <ui:define name="label" >
+                	<span id="labelNomeResponsavel">Nome Responsável</span>	                	
+				</ui:define>
+                <h:inputText id="nomeResponsavel"
+                       required="false"
+                     styleClass="defaultInput"
+                      maxlength="100"
+                          value="#{clienteHome.instance.nomeResponsavel}">
+                </h:inputText>
+            </s:decorate>
+            
+            <s:decorate id="matriculaField" template="../layout/display.xhtml" rendered="#{clienteHome.instance.tipoPessoa == false}">
+                <ui:define name="label" >
+                	<span id="labelMatricula">Matrícula</span>	                	
+				</ui:define>
+                <h:inputText id="matricula"
+                       required="false"
+                     styleClass="defaultInput"
+                      maxlength="10"
+                          value="#{clienteHome.instance.matriculaEstudante}">
+                </h:inputText>
+            </s:decorate>
+	        
+            <s:decorate template="../layout/display.xhtml" rendered="#{clienteHome.instance.tipoPessoa == false}">
+                <ui:define name="label"><h:outputText value="Entidade" title="Universidade, Faculdade e etc"/></ui:define>                
+                
+retirado h:selectOneMenu id="entidade" pra evitar consulta desnecessária ao BD mesmo com código comentado
+                
+            </s:decorate> 
+            
+            <s:decorate id="grauCursoField" template="../layout/display.xhtml" rendered="#{clienteHome.instance.tipoPessoa == false}">
+	                <ui:define name="label">
+	                	<h:outputText value="Grau Curso"/>
+					</ui:define>
+	                <h:selectOneMenu  value="#{clienteHome.instance.grauCurso}" styleClass="defaultInput">
+	                	 <f:selectItem itemLabel="Selecione.."/>
+					     <f:selectItem itemValue="1" itemLabel="Graduação"/>
+					     <f:selectItem itemValue="2" itemLabel="Pós-Graduação"/>
+					     <f:selectItem itemValue="3" itemLabel="Mestrado"/>
+					     <f:selectItem itemValue="4" itemLabel="Doutorado"/>
+					     <f:selectItem itemValue="5" itemLabel="Pós-Doutorado"/>
+	      	        </h:selectOneMenu>
+	        </s:decorate>
+            </div> -->
+            
+            <div id="sexo">
+	            <s:decorate id="sexoField" template="../layout/display.xhtml" rendered="#{clienteHome.instance.tipoPessoa == false}">
+	                <ui:define name="label">
+	                	<h:outputText value="Sexo"/>
+					</ui:define>
+	                <h:selectOneMenu  value="#{clienteHome.instance.sexo}"  styleClass="defaultInput">
+					     <f:selectItem itemValue="M" itemLabel="Masculino"/>
+					     <f:selectItem itemValue="F" itemLabel="Feminino"/>			 
+	      	        </h:selectOneMenu>
+	            </s:decorate>
+            </div>
+	            
+            <s:decorate id="cpfCnpjField" template="../layout/display.xhtml">
+                <ui:define name="label">
+                	<span id="labelCpfCnpj">C.P.F</span> 
+                </ui:define>
+               
+                <div id="divCPF">
+                	<h:inputText id="cpfCnpj" required="false" value="#{clienteHome.instance.cpfCnpj}" maxlength="18" onkeyup="mascaraTexto(event)"/>
+                </div>
+            </s:decorate>
+	            
+            <s:decorate id="rgIeField" template="../layout/display.xhtml">
+                <ui:define name="label">
+                	<span id="labelRgIE">R.G</span> 
+				</ui:define>
+				
+                <h:inputText id="rgIe" required="false" styleClass="defaultInput2" maxlength="20" value="#{clienteHome.instance.rgIe}"/>
+            </s:decorate>
+
+			<div id="divDataNascimento">
+			<s:decorate id="dataNascField" template="../layout/display.xhtml" rendered="#{clienteHome.instance.tipoPessoa  == false}">
+                <ui:define name="label">Data Nascimento</ui:define>
+                <rich:calendar id="dataNasc"
+                          value="#{clienteHome.instance.dtNascimento}" datePattern="dd/MM/yyyy"/>
+            </s:decorate>
+            </div>
+            
+            <s:decorate id="telefoneField" template="../layout/display.xhtml">
+                <ui:define name="label">Telefone</ui:define>
+             	<h:inputText id="telefone" required="false" maxlength="15" onkeypress="mascara( this, mtel )" value="#{clienteHome.instance.telefone}"/>
+            </s:decorate>
+			
+            <s:decorate id="emailField" template="../layout/display.xhtml">
+                <ui:define name="label">Email</ui:define>              
+	               
+	            <easy:inputEmail id="inputEmail"
+	                   value="#{clienteHome.instance.email}"
+	                required="false"
+	             useValidate="true" 
+	              styleClass="defaultInput"
+	               maxlength="100"/>
+            </s:decorate>
+            
+            <s:decorate id="diaCobrancaPagamento" template="../layout/display.xhtml">
+                <ui:define name="label">
+                	<span id="labelRgIE">Dia cobrança pagamento</span> 
+				</ui:define>
+				
+                <h:inputText id="rgIe" required="false" styleClass="defaultInput2" maxlength="2" value="#{clienteHome.instance.diaCobrancaPagamento}"/>
+            </s:decorate>
+
+			<s:decorate template="../layout/display.xhtml">
+                <ui:define name="label"><h:outputLabel value=" Func. Responsável"  title="Funcionário Responsável pelo cliente"/></ui:define>                
+                <h:selectOneMenu id="usuario" value="#{clienteHome.instance.usuario}" styleClass="defaultInput" rendered="#{identity.hasRole(transacoes.transacaoAlterarVendedorResp)}">		
+				   <s:selectItems value="#{usuarioList.resultList}" 
+				   				  var="usuario" 			
+				                  label="#{usuario.nomeUsuario}"
+				                  required="false"
+				                  noSelectionLabel="Selecione.." />							       		
+				   <s:convertEntity />			
+				</h:selectOneMenu>		
+				<h:outputText value="#{clienteHome.instance.usuario.nomeUsuario}" rendered="#{!identity.hasRole(transacoes.transacaoAlterarVendedorResp)}"/>
+            </s:decorate> 
+            
+            <s:decorate template="../layout/display.xhtml">
+	            <ui:define name="label">Situação Financeira</ui:define>
+	            <h:selectOneMenu id="inAdimplente" value="#{clienteHome.instance.inAdimplente}" styleClass="defaultInput" 
+	            	rendered="#{identity.hasRole(transacoes.transacaoAlterarSituacaoFinanceira)}">
+	            	<f:selectItem itemLabel="Adimplente" itemValue="true" />
+					<f:selectItem itemLabel="Inadimplente" itemValue="false" />
+	            </h:selectOneMenu>
+	             <h:outputText value="Adimplente" rendered="#{!identity.hasRole(transacoes.transacaoAlterarSituacaoFinanceira) and clienteHome.instance.inAdimplente == true}"/>
+	             <h:outputText value="Inadimplente" rendered="#{!identity.hasRole(transacoes.transacaoAlterarSituacaoFinanceira) and clienteHome.instance.inAdimplente == false}" styleClass="textoGrandeVermelho"/>
+	        </s:decorate>
+
+<!-- NAO REENDERIZADO PARA AGILIZAR O CADASTRO E EVITAR MAIS UMA CONSULTA AO BD. TABELA GRUPO  -->
+            <s:decorate template="../layout/display.xhtml">
+                <ui:define name="label">Grupo(Carteira)</ui:define>                
+                <h:selectOneMenu id="usuario" value="#{clienteHome.instance.grupo}" styleClass="defaultInput">		
+				   <s:selectItems value="#{grupoList.resultList}" 
+				   				  var="grupo" 			
+				                  label="#{grupo.nomeGrupo}"
+				                  required="false"
+				                  noSelectionLabel="Selecione.." />							       		
+				   <s:convertEntity />			
+				</h:selectOneMenu>		
+            </s:decorate> 
+            
+            <s:decorate id="observacaoField" template="../layout/display.xhtml">
+                <ui:define name="label">Observação</ui:define>
+                <h:inputText id="observacao"
+                     styleClass="defaultInput"
+                      maxlength="100"
+                          value="#{clienteHome.instance.observacao}">               
+                </h:inputText>
+            </s:decorate>
+ 	
+</ui:composition>

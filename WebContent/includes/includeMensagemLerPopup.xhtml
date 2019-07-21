@@ -1,0 +1,47 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<rich:modalPanel id="lerMensagemPopUp" minWidth="520" minHeight="300"
+	autosized="true" top="150px"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:s="http://jboss.com/products/seam/taglib"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:a="http://richfaces.org/a4j"
+	xmlns:rich="http://richfaces.org/rich">
+
+	<f:facet name="header">
+		<h:panelGroup>
+			<h:outputText value="Mensagem"></h:outputText>
+		</h:panelGroup>
+	</f:facet> 
+
+	<f:facet name="controls">
+		<h:panelGroup>
+			<h:graphicImage value="/img/close.png" id="closeLerMsgPopUp" styleClass="closeIcon" />
+			<rich:componentControl for="lerMensagemPopUp" attachTo="closeLerMsgPopUp" operation="hide" event="onclick" />
+		</h:panelGroup>
+	</f:facet>
+
+	<a:outputPanel id="anotacoesPanel" ajaxRendered="true">
+	<rich:panel> 
+			<h:panelGrid columns="2" rowClasses="prop"
+				columnClasses="name,value">
+	
+				<h:outputLabel for="quemId" styleClass="textoNegrito6">Quem:</h:outputLabel>
+				<h:outputText id="quemId" value="#{mensagemUsuarioHome.mensagem.nomeUsuarioRemetente}" styleClass="textoMedioCinza4" />
+	
+				<h:outputLabel for="assuntoId" styleClass="textoNegrito6">Assunto:</h:outputLabel>
+				<h:outputText id="assuntoId" value="#{mensagemUsuarioHome.mensagem.assunto}" styleClass="defaultInput" maxlength="100" />
+				
+			</h:panelGrid>
+			
+			<h:inputTextarea value="#{mensagemUsuarioHome.mensagem.mensagem}" cols="60" rows="7" readonly="true"/>
+			
+			<div align="center">
+				<input value="Fechar" type="button" onclick="#{rich:component('lerMensagemPopUp')}.hide();"/>
+			</div>
+	</rich:panel> 
+</a:outputPanel>
+
+</rich:modalPanel>

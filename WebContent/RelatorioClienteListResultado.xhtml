@@ -1,0 +1,147 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:component xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:s="http://jboss.com/products/seam/taglib"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:rich="http://richfaces.org/rich"
+    xmlns:a="http://richfaces.org/a4j">
+       
+	<table width="100%" border="0">
+		<tr>
+			<td height="30px">
+				<h:outputLabel styleClass="textoNegrito5" value="Cliente: "/>
+				<h:outputLabel styleClass="textoMedio2" value="#{relatorioList.venda.cliente.nome}"/>
+			</td>
+			<td>
+				<h:outputLabel styleClass="textoNegrito5" value="CPF/CNPJ:"/>
+				<h:outputLabel styleClass="textoMedio2" value="#{relatorioList.venda.cliente.cpfCnpj}"/>
+			</td>
+			<td>
+				<h:outputLabel styleClass="textoNegrito5" value=" RG/I.E: "/>	
+				<h:outputText value="#{relatorioList.venda.cliente.rgIe}" styleClass="textoMedio2" />	
+			</td>
+		</tr>
+		
+		<tr>
+			<td height="30px">
+				<h:outputLabel styleClass="textoNegrito5" value="Vendedor Responsável:"/>
+				<h:outputLabel styleClass="textoMedio2" value="#{relatorioList.venda.cliente.usuario.nomeUsuario}"/>
+			</td>
+			<td>
+				<h:outputLabel styleClass="textoNegrito5" value="Telefone: "/>	
+				<h:outputText value="#{relatorioList.venda.cliente.telefone}" styleClass="textoMedio2" />	
+			</td>	
+			<td>	
+			<!-- ÚNICA CÉLULA DIFERENTE DA DE RelatorioClienteListImprimir -->				
+					<h:outputLabel styleClass="textoNegrito5" value="Situação Financeira: "/>
+					<h:outputText value="Adimplente" rendered="#{relatorioList.venda.cliente.inAdimplente}" styleClass="textoMedio2"/>
+					<h:outputText value="Inadimplente" rendered="#{!relatorioList.venda.cliente.inAdimplente}" styleClass="textoGrandeVermelho"/>
+			</td>		
+		</tr>		
+		
+		<tr>
+			<td colspan="3">
+				<h:outputText value="Endereços" styleClass="textoNegrito"/>
+				<br/>
+				<h:outputText value="Nao existem endereços associados a este cliente."  styleClass="textoMedioVermelho" 
+					rendered="#{empty relatorioList.getEnderecosCliente()}" />
+		
+				<rich:dataTable value="#{relatorioList.getEnderecosCliente()}"
+					var="_endereco"
+					rendered="#{not empty relatorioList.getEnderecosCliente()}"
+					id="enderecosTable"
+					onRowMouseOver="this.style.backgroundColor='#F1F1F1'"
+					onRowMouseOut="this.style.backgroundColor='#{a4jSkin.rowBackgroundColor}'"
+					columnClasses="center" 
+					rowClasses="tableRowOne,tableRowTwo">
+		
+					<ui:include src="/includes/includeListarEnderecos.xhtml" />
+		
+				</rich:dataTable>
+			</td>
+		</tr>
+	</table>
+	
+	<br/>
+	<h:outputText value="Vendas"  styleClass="textoNegrito" />
+	<br/>
+	<h:outputText value="O Cliente não realizou compras no período informado." styleClass="textoMedioVermelho" rendered="#{empty relatorioList.resultList}"/>
+	<br/>
+	<br/>
+		    
+    <rich:dataTable id="resultadoList" width="100%"
+		                var="_venda"
+		              	value="#{relatorioList.resultList}"			           	
+			           	onRowMouseOver="this.style.backgroundColor='#F0F0F0'"
+			           	onRowMouseOut="this.style.backgroundColor='#{a4jSkin.rowBackgroundColor}'"
+			           	columnClasses="center" 
+			           	footerClass="center"	
+			           	columnsWidth="20%,20%,20%,20%,5%,15%"
+			           	rendered="#{not empty relatorioList.resultList}"	     	
+			           	rowClasses="tableRowOne,tableRowTwo">
+         
+          
+         <rich:column sortBy="#{_venda.dataInicioVenda}">
+           <f:facet name="header">
+               <h:outputText value="Data Venda" title="Data de abertura da venda"/>
+           </f:facet> 
+           <h:outputText value="#{_venda.dataInicioVenda}">
+           		<s:convertDateTime type="date" pattern="dd/MM/yyyy HH:mm"/>
+           </h:outputText>
+         </rich:column>
+                  
+         <rich:column sortBy="#{_venda.codVenda}"> 
+           <f:facet name="header">
+               <h:outputText value="Venda"/>
+           </f:facet> 
+           <h:outputText value="#{_venda.codVenda}"/>
+         </rich:column>      
+		                
+         <rich:column sortBy="#{_venda.usuario.nomeUsuario}" styleClass="left"> 
+           <f:facet name="header">
+               <h:outputText value="Vendedor" title="Vendedor que realizou a venda"/>
+           </f:facet> 
+           <h:outputText value="#{_venda.usuario.nomeUsuario}"/>
+         </rich:column>    
+        
+		<rich:column sortBy="#{_venda.statusVenda.descStatusVenda}"> 
+           <f:facet name="header">
+               <h:outputText value="Situação"/>
+           </f:facet> 
+           <h:outputText value="CANCELADA" rendered="#{_venda.statusVenda.codStatusVenda == constantes.cancelada}" styleClass="textoMedioVermelho"/>
+           <h:outputText value="PAGA" rendered="#{_venda.statusVenda.codStatusVenda == constantes.concluida}"/>
+           <h:outputText value="EM ABERTO" rendered="#{_venda.statusVenda.codStatusVenda != constantes.concluida and _venda.statusVenda.codStatusVenda != constantes.cancelada}"/>
+           <f:facet name="footer">
+             <h:outputText>
+             		<h:outputLabel styleClass="textoNegrito" value="Total"/>
+             </h:outputText>
+           </f:facet>
+         </rich:column> 
+         	
+         <rich:column>
+         	<f:facet name="header"><h:outputLabel value="NFe" title="Nota Fiscal Eletrônica" /></f:facet>
+           	<h:graphicImage  id="nfe"  url="/img/nfe.jpg" rendered="#{_venda.inNfeEmitida}"/> 
+           	<rich:toolTip for="nfe" value="Nota Fiscal Eletrônica Emitida" direction="top-left"  rendered="#{_venda.inNfeEmitida}"/>
+         </rich:column>
+         
+         <rich:column  sortBy="#{_venda.valorTotalVenda}"> 
+           <f:facet name="header">
+               <h:outputText value="Valor Venda"/>
+           </f:facet> 
+           <h:outputText value="#{_venda.valorTotalVenda}" title="Valor total da venda" rendered="#{_venda.statusVenda.codStatusVenda == constantes.cancelada}" styleClass="textoMedioVermelho">
+           		<f:convertNumber currencySymbol="R$"  type="currency"  locale="pt_BR"/>
+           </h:outputText> 
+           <h:outputText value="#{_venda.valorTotalVenda}" title="Valor total da venda" rendered="#{_venda.statusVenda.codStatusVenda != constantes.cancelada}">
+           		<f:convertNumber currencySymbol="R$"  type="currency"  locale="pt_BR"/>
+           </h:outputText>          
+           <f:facet name="footer">
+           		<h:outputText styleClass="textoNegrito" value="#{relatorioList.valorTotal}">
+           			<f:convertNumber currencySymbol="R$"  type="currency"  locale="pt_BR"/>
+           		</h:outputText>             		
+           </f:facet>
+         </rich:column>    
+       		
+    </rich:dataTable>
+</ui:component>

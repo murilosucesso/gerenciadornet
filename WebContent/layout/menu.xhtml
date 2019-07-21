@@ -1,0 +1,338 @@
+<rich:toolBar
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:s="http://jboss.com/products/seam/taglib"
+    xmlns:a="http://richfaces.org/a4j"
+    xmlns:rich="http://richfaces.org/rich" rendered="#{identity.loggedIn}">
+
+
+<!-- Menu Dashboards -->	
+	<rich:dropDownMenu hideDelay="0" submitMode="none">
+		<f:facet name="label">
+			<s:link id="dashboards" view="/home.xhtml" value="Inicial" action="#{conversation.killAllOthers()}"
+				propagation="none" includePageParams="false" />																	
+		</f:facet>	
+	</rich:dropDownMenu>
+	
+
+<!-- Menu Nova Venda/Orçamento -->	
+<!-- Se o Perfil for Vendedor vamos ter o menu Nova Venda como atalho. -->	        
+    <rich:dropDownMenu hideDelay="0" submitMode="none" rendered="#{identity.hasRole(transacoes.transacaoVendaInserir)}">
+		<f:facet name="label">
+			<s:link id="novaVenda" view="/VendaEdit.xhtml" value="Nova Venda/Orçamento" action="#{conversation.killAllOthers()}"
+				propagation="none" includePageParams="false" />																	
+		</f:facet>
+	</rich:dropDownMenu>
+
+<!-- Menu Confirmacao de Entrega -->
+<!-- Se o Perfil for Estoquista vamos ter a Confirmacao de Entrega como atalho no menu -->	
+ 	<rich:dropDownMenu showDelay="100" hideDelay="0" submitMode="none" rendered="#{identity.hasRole(transacoes.transacaoConfirmarEntrega)  and user.perfil.codPerfil == constantes.estoque and  empresa.inFluxo == constantes.inFluxoCompleto}">
+		<f:facet name="label">
+			<s:link view="/VendaList.xhtml" value="Confirmar Entrega" title="Confirmar entrega de mercadoria" action="#{conversation.killAllOthers()}"
+				id="confirmarEntregaEstoquistaId" includePageParams="false" propagation="none">
+					<f:param name="statusVendaDefault" value="#{constantes.confirmadaFinanceiro}"/>
+			</s:link>
+		</f:facet>
+	</rich:dropDownMenu> 
+
+<!-- Menu Vendas -->		
+	<rich:dropDownMenu hideDelay="0" submitMode="none">		
+		<f:facet name="label">Vendas..</f:facet>
+		
+		<rich:menuItem rendered="#{identity.hasRole(transacoes.transacaoVendaInserir)}" icon="/img/novaVenda.jpg">
+			<s:link view="/VendaEdit.xhtml" value="Nova Venda/Orçamento"  action="#{conversation.killAllOthers()}"
+				id="NovaVendaOrcamentoId" includePageParams="false" propagation="none" />
+		</rich:menuItem>
+		
+		<rich:menuItem rendered="#{identity.hasRole(transacoes.transacaoVendaConsultar)}" icon="/img/binoculo.jpg">
+			<s:link view="/VendaList.xhtml" value="Consultar Vendas/Pedidos/Orçamentos" action="#{conversation.killAllOthers()}"
+				id="ConsultarVendasId" includePageParams="false" propagation="none" />
+		</rich:menuItem> 	
+		
+<!-- venda fluxo completo - inicio -->		
+		<rich:menuItem rendered="#{identity.hasRole(transacoes.transacaoConfirmarPagamento) and empresa.inFluxo == constantes.inFluxoCompleto}" icon="/img/novaVenda.gif">
+			<s:link view="/VendaList.xhtml"  value="Liberar Entrega" title="Financeiro libera a entrega da mercadoria pelo estoque" action="#{conversation.killAllOthers()}"
+				id="confirmarPagamentoId" includePageParams="false" propagation="none">
+					<f:param name="statusVendaDefault" value="#{constantes.aberta}"/>
+			</s:link>
+		</rich:menuItem>
+		
+		<rich:menuItem rendered="#{identity.hasRole(transacoes.transacaoConfirmarEntrega) and empresa.inFluxo == constantes.inFluxoCompleto}" icon="/img/confirmarEntrega.jpg">
+			<s:link view="/VendaList.xhtml" value="Confirmar Entrega" title="Confirmar entrega de mercadoria" action="#{conversation.killAllOthers()}"
+				id="confirmarEntregaId" includePageParams="false" propagation="none">
+					<f:param name="statusVendaDefault" value="#{constantes.confirmadaFinanceiro}"/>
+			</s:link>
+		</rich:menuItem>
+<!-- venda fluxo completo - FIM -->		
+		
+		<rich:menuItem rendered="#{identity.hasRole(transacoes.transacaoConfirmarPagamento)}" icon="/img/confirmarPagamento.jpg">
+			<s:link view="/VendaList.xhtml"  value="Confirmar Pagamento/Finalizar Venda" title="Confirmar Recebimento de Pagamento/Finalizar Venda" action="#{conversation.killAllOthers()}"
+				 includePageParams="false" propagation="none">
+					<f:param name="statusVendaDefault" value="#{constantes.confirmadaEstoque}"/>
+			</s:link>
+		</rich:menuItem>
+		
+		<rich:menuItem rendered="#{identity.hasRole(transacoes.transacaoServicoConsultar)}" icon="/img/icoFerramenta.png">
+			<s:link view="/ServicoList.xhtml" value="Administrar Serviços" action="#{conversation.killAllOthers()}"
+				id="AdministrarServicos" includePageParams="false" propagation="none" />
+		</rich:menuItem>		
+		
+		<rich:menuItem icon="/img/relatorio_funci.gif" rendered="#{identity.hasRole(transacoes.transacaoRelatorioRealizacoesFuncionario)}">
+			<s:link id="relatorioDetalhadoVendedor" view="/RelatorioDetalhadoFuncionarioList.xhtml" includePageParams="false" 
+				value="Relatório Realizações X Funcionário" propagation="none" action="#{conversation.killAllOthers()}"/>			
+		</rich:menuItem>	
+		
+	</rich:dropDownMenu>
+
+<!-- Menu Financeiro -->	
+	<rich:dropDownMenu hideDelay="0" submitMode="none" rendered="#{identity.hasRole(transacoes.transacaoConfirmarPagamento) 
+			or identity.hasRole(transacoes.transacaoVendaFinalizar) or identity.hasRole(transacoes.transacaoGerenciarRecebimentos) or identity.hasRole(transacoes.transacaoTipoPagamentoConsultar)}">		
+		<f:facet name="label">Financeiro..</f:facet>
+				
+		<rich:menuItem rendered="#{identity.hasRole(transacoes.transacaoGerenciarPagamentos)}" icon="/img/boleto.jpg">
+			<s:link view="/PagamentoList.xhtml" value="Gerenciar Pagamentos" title="Consulta e administra as contas a pagar" 
+						id="pagamentoId" includePageParams="false" propagation="none" action="#{conversation.killAllOthers()}">
+			</s:link>
+		</rich:menuItem>	
+		
+		<rich:menuItem rendered="#{identity.hasRole(transacoes.transacaoGerenciarRecebimentos)}" icon="/img/dolar.gif">
+			<s:link view="/RecebimentoList.xhtml" value="Gerenciar Recebimentos" title="Consulta e administra os recebimentos relacionados às vendas" 
+						id="recebimentoId" includePageParams="false" propagation="none" action="#{conversation.killAllOthers()}">
+			</s:link>
+		</rich:menuItem>		
+		
+		<rich:menuItem rendered="#{identity.hasRole(transacoes.transacaoConfirmarPagamento)}" icon="/img/novaVenda.gif">
+			<s:link view="/VendaList.xhtml" value="Liberar Entrega" title="Financeiro libera a entrega da mercadoria pelo estoque" action="#{conversation.killAllOthers()}"
+						id="confirmarPagamentoFinanceiroId" includePageParams="false" propagation="none">
+							<f:param name="statusVendaDefault" value="#{constantes.aberta}"/>
+			</s:link>
+		</rich:menuItem> 
+		
+		<rich:menuItem rendered="#{identity.hasRole(transacoes.transacaoVendaFinalizar)}" icon="/img/confirmarPagamento.jpg">
+			<s:link view="/VendaList.xhtml" value="Confirmar Pagamento/Finalizar Venda" title="Confirmar Recebimento de Pagamento da Venda/Finalizar Venda" action="#{conversation.killAllOthers()}"
+						id="finalizarId" includePageParams="false" propagation="none">
+							<f:param name="statusVendaDefault" value="#{constantes.confirmadaEstoque}"/>
+			</s:link>
+		</rich:menuItem>
+						
+		<rich:menuItem rendered="#{identity.hasRole(transacoes.transacaoTipoPagamentoConsultar)}" icon="/img/creditCard.gif">
+			<s:link view="/TipoPagamentoList.xhtml" value="Adm. Tipos de Pagamento" title="Administrar tipos de pagamentos da Venda ou da Compra"
+				id="FormasPagamentoId" includePageParams="false" propagation="none" action="#{conversation.killAllOthers()}"/>
+		</rich:menuItem>
+		
+		<rich:menuItem rendered="#{identity.hasRole(transacoes.transacaoAdminTipoDebito)}" icon="/img/creditCard.gif">
+			<s:link view="/TipoDebitoList.xhtml" value="Adm. Tipos de Débitos" title="Administrar Tipos de Débitos dos Pagamentos"
+				id="FormasDebitoId" includePageParams="false" propagation="none" action="#{conversation.killAllOthers()}"/>
+		</rich:menuItem>
+		
+		<rich:menuItem rendered="#{identity.hasRole(transacoes.transacaoAdminFontePagadora)}" icon="/img/creditCard.gif">
+			<s:link view="/FontePagadoraList.xhtml" value="Adm. Fontes Pagadoras" title="Administrar Fontes Pagadoras"
+				id="FontePagadoraId" includePageParams="false" propagation="none" action="#{conversation.killAllOthers()}"/>
+		</rich:menuItem>
+          	
+	</rich:dropDownMenu>
+
+<!-- Menu Estoque -->			
+	<rich:dropDownMenu hideDelay="0" submitMode="none" rendered="#{identity.hasRole(transacoes.transacaoEstoqueConsultar) 
+			or identity.hasRole(transacoes.transacaoEstoqueVencimento) or identity.hasRole(transacoes.transacaoEstoqueBalancete) or identity.hasRole(transacoes.transacaoEstoqueValores)}">
+		<f:facet name="label">Estoque..</f:facet>
+
+		<rich:menuItem rendered="#{identity.hasRole(transacoes.transacaoEstoqueConsultar)}">
+			<s:link view="/LoteProdutoList.xhtml" value="Consultar Estoque" action="#{conversation.killAllOthers()}"
+				id="ConsultarEstoque" includePageParams="false" propagation="none" />
+		</rich:menuItem>
+
+		<rich:menuItem rendered="#{identity.hasRole(transacoes.transacaoEstoqueVencimento)}">
+			<s:link view="/LoteProdutoVencimentoList.xhtml" value="Estoque em Vencimento" action="#{conversation.killAllOthers()}"
+				id="EstoqueVencimento" includePageParams="false" propagation="none" />
+		</rich:menuItem>
+		
+		<rich:menuItem rendered="#{identity.hasRole(transacoes.transacaoEstoqueBalancete)}">
+			<s:link view="/LoteProdutoListBalancete.xhtml" value="Estoque Balancete" action="#{conversation.killAllOthers()}"
+				includePageParams="false" propagation="none" />
+		</rich:menuItem>
+		
+		<rich:menuItem rendered="#{identity.hasRole(transacoes.transacaoEstoqueValores)}">
+			<s:link view="/LoteProdutoTotaisList.xhtml" value="Valores do Estoque" action="#{conversation.killAllOthers()}"
+				id="ValoresVencimento" includePageParams="false" propagation="none" />
+		</rich:menuItem>
+
+	</rich:dropDownMenu>
+	
+<!-- Menu Clientes -->
+	<rich:dropDownMenu hideDelay="0" submitMode="none" 
+		rendered="#{identity.hasRole(transacoes.transacaoClienteConsultar) or identity.hasRole(transacoes.transacaoClienteGestao) or identity.hasRole(transacoes.transacaoAtendimentoConsultar) or identity.hasRole(transacoes.transacaoAtendimentoInserir)}">
+		<f:facet name="label">
+			<s:link id="ClienteId" view="/ClienteList.xhtml" value="Clientes.." includePageParams="false" propagation="none" action="#{conversation.killAllOthers()}"/>
+		</f:facet>		
+		
+		<rich:menuItem rendered="#{identity.hasRole(transacoes.transacaoClienteConsultar)}">
+			<s:link view="/ClienteList.xhtml" value="Pesquisar Clientes"  action="#{conversation.killAllOthers()}" includePageParams="false" propagation="none" />
+		</rich:menuItem>
+		<rich:menuItem rendered="#{identity.hasRole(transacoes.transacaoClienteInserir)}">
+			<s:link view="/ClienteEdit.xhtml" value="Novo Cliente"  action="#{conversation.killAllOthers()}" includePageParams="false" propagation="none" />
+		</rich:menuItem>
+		
+		<rich:menuItem  rendered="#{identity.hasRole(transacoes.transacaoClienteGestao)}">
+			<s:link view="/ClienteGestaoList.xhtml" value="Gestão de Clientes"  action="#{conversation.killAllOthers()}" includePageParams="false" propagation="none" />
+		</rich:menuItem>
+		
+		<!-- Menu Atendimentos -->
+		<rich:menuItem rendered="#{identity.hasRole(transacoes.transacaoAtendimentoConsultar)}">
+			<s:link view="/AtendimentoList.xhtml" value="Pesquisar Atendimentos"  action="#{conversation.killAllOthers()}" includePageParams="false" propagation="none" />
+		</rich:menuItem>
+		<rich:menuItem rendered="#{identity.hasRole(transacoes.transacaoAtendimentoInserir)}">
+			<s:link view="/AtendimentoEdit.xhtml" value="Novo Atendimento"  action="#{conversation.killAllOthers()}" includePageParams="false" propagation="none" />
+		</rich:menuItem>
+		
+	</rich:dropDownMenu> 
+
+<!-- Menu Compras -->
+	<rich:dropDownMenu hideDelay="0" submitMode="none" 
+	rendered="#{identity.hasRole(transacoes.transacaoCompraConsultar) or identity.hasRole(transacoes.transacaoCompraInserir) or identity.hasRole(transacoes.transacaoFornecedorConsultar) or identity.hasRole(transacoes.transacaoVendedorConsultar)}">
+	
+		<f:facet name="label">Compras..</f:facet>
+		
+		<rich:menuItem rendered="#{identity.hasRole(transacoes.transacaoCompraInserir)}" icon="/img/bot_carrinho.gif" >
+			<s:link view="/CompraEdit.xhtml" value="Nova Compra"  action="#{conversation.killAllOthers()}"
+				id="AdicionarCompraId" includePageParams="false" propagation="none" />
+		</rich:menuItem>
+		
+		<rich:menuItem rendered="#{identity.hasRole(transacoes.transacaoCompraConsultar)}" icon="/img/pesquisa_compra.gif">
+			<s:link view="/CompraList.xhtml" value="Consultar Compras" action="#{conversation.killAllOthers()}"
+				id="consultarComprasId" includePageParams="false" propagation="none" />
+		</rich:menuItem>		
+		
+		<rich:menuItem rendered="#{identity.hasRole(transacoes.transacaoFornecedorConsultar)}" icon="/img/industria.gif" >
+			<s:link view="/FornecedorList.xhtml" value="Administrar Fornecedores" action="#{conversation.killAllOthers()}"
+				id="FornecedorId" includePageParams="false" propagation="none" />
+		</rich:menuItem>
+		
+		<rich:menuItem rendered="#{identity.hasRole(transacoes.transacaoVendedorConsultar)}" icon="/img/vendedor.png">
+			<s:link view="/VendedorList.xhtml" value="Administrar Vendedores" id="VendedorId" action="#{conversation.killAllOthers()}"
+				includePageParams="false" propagation="none" />
+		</rich:menuItem>
+				
+	</rich:dropDownMenu>
+
+<!-- Menu Produtos -->
+	<rich:dropDownMenu hideDelay="0" submitMode="none" 
+		rendered="#{identity.hasRole(transacoes.transacaoProdutoConsultar) or identity.hasRole(transacoes.transacaoCategoriaConsultar) or identity.hasRole(transacoes.transacaoMarcaConsultar)}">
+		<f:facet name="label">Produtos..</f:facet>
+	  
+	  	<rich:menuItem rendered="#{identity.hasRole(transacoes.transacaoProdutoConsultar)}">
+			<s:link view="/ProdutoList.xhtml" value="Administrar Produtos" id="ProdutoId" action="#{conversation.killAllOthers()}"
+				includePageParams="false" propagation="none" />
+		</rich:menuItem>
+	  
+	  	<rich:menuItem rendered="#{identity.hasRole(transacoes.transacaoCategoriaConsultar)}">
+			<s:link view="/CategoriaList.xhtml" value="Administrar Categorias" action="#{conversation.killAllOthers()}"
+				id="CategoriaId" includePageParams="false" propagation="none" />
+		</rich:menuItem>
+		
+		<rich:menuItem rendered="#{identity.hasRole(transacoes.transacaoMarcaConsultar)}">
+	    	<s:link view="/MarcaList.xhtml"	value="Administrar Marcas" action="#{conversation.killAllOthers()}"
+	    	 	id="MarcaId" includePageParams="false"
+	     		propagation="none"/>
+	    </rich:menuItem>
+	</rich:dropDownMenu>
+
+<!-- Menu Relatórios -->
+	<rich:dropDownMenu hideDelay="0" submitMode="none" rendered="#{identity.hasRole(transacoes.transacaoRelatorios)}">
+		<f:facet name="label">Relatórios..</f:facet>	
+		<rich:menuItem  icon="/img/relatorio.jpg" rendered="#{identity.hasRole(transacoes.transacaoRelatorioVendas)}" >
+			<s:link id="relatorios" view="/RelatorioList.xhtml" includePageParams="false" value="Relatório Vendas" propagation="none" action="#{conversation.killAllOthers()}"/>			
+		</rich:menuItem>
+		
+		<rich:menuItem  icon="/img/relatorio-cliente.jpg"  rendered="#{identity.hasRole(transacoes.transacaoRelatorioParaOCliente)}">
+			<s:link id="relatorioCliente" view="/RelatorioClienteList.xhtml" includePageParams="false" value="Relatório para o Cliente" propagation="none" action="#{conversation.killAllOthers()}"/>			
+		</rich:menuItem>
+		
+		<rich:menuItem icon="/img/relPeriodo.png" rendered="#{identity.hasRole(transacoes.transacaoRelatorioPeriodicidadeCliente)}">
+			<s:link id="relatorioClienteVendas" view="/RelatorioClienteVendasList.xhtml" includePageParams="false" value="Relatório Periodicidade do Cliente" propagation="none" action="#{conversation.killAllOthers()}"/>			
+		</rich:menuItem>
+		
+		<rich:menuItem icon="/img/chart.gif" rendered="#{identity.hasRole(transacoes.transacaoRelatorioVendasXAno)}">
+			<s:link id="relatorioGraficos" view="/RelatorioGraficoVendas.xhtml" includePageParams="false" value="Relatório Gráfico Vendas x Ano" propagation="none"  action="#{conversation.killAllOthers()}"/>			
+		</rich:menuItem>
+		
+		<rich:menuItem icon="/img/pie_chart.png" rendered="#{identity.hasRole(transacoes.transacaoRelatorioVendasXGrupo)}">
+			<s:link view="/RelatorioGraficoGrupoVendas.xhtml" includePageParams="false" value="Relatório Gráfico Vendas x Grupo(Carteira)" propagation="none"  action="#{conversation.killAllOthers()}">			
+			</s:link>
+		</rich:menuItem>
+		
+		<rich:menuItem icon="/img/grafico_linhas.jpg" rendered="#{identity.hasRole(transacoes.transacaoRelatorioContasXRecebimento)}" >
+			<s:link id="relatorioGraficoContas" view="/RelatorioGraficoRecebXPaga.xhtml" includePageParams="false" value="Relatório Gráfico Contas x Recebimentos" propagation="none" action="#{conversation.killAllOthers()}"/>			
+		</rich:menuItem>
+		
+		<rich:menuItem icon="/img/lupa.gif" rendered="#{identity.hasRole(transacoes.transacaoRelatorioVendasXProduto)}" > 
+			<s:link id="relatorioProdutoList" view="/RelatorioProdutoList.xhtml" includePageParams="false" value="Relatório Vendas x Produtos" propagation="none" action="#{conversation.killAllOthers()}"/>			
+		</rich:menuItem>
+		
+		<rich:menuItem icon="/img/disp_chart.png" rendered="#{identity.hasRole(transacoes.transacaoRelatorioVendasXInstituicao)}">
+			<s:link id="relatorioIntituicaoList" view="/RelatorioInstituicaoList.xhtml" includePageParams="false" value="Relatório Vendas x Instituição" propagation="none" action="#{conversation.killAllOthers()}"/>			
+		</rich:menuItem>
+		
+		<rich:menuItem icon="/img/relatorio_funci.gif" rendered="#{identity.hasRole(transacoes.transacaoRelatorioRealizacoesFuncionario)}">
+			<s:link id="relatorioDetalhadoFuncionario" view="/RelatorioDetalhadoFuncionarioList.xhtml" includePageParams="false" value="Relatório Realizações X Funcionário" propagation="none" action="#{conversation.killAllOthers()}"/>			
+		</rich:menuItem>
+		
+		<rich:menuItem icon="/img/relatorio.jpg" rendered="#{identity.hasRole(transacoes.transacaoRelatorioFechamentoMensal)}">
+			<s:link id="relatorioFechamentoMensal" view="/RelatorioFechamentoMensalList.xhtml" includePageParams="false" value="Relatório Fechamento Mensal" propagation="none" action="#{conversation.killAllOthers()}"/>			
+		</rich:menuItem>
+			
+	</rich:dropDownMenu>
+
+<!-- Menu Usuários -->
+	<rich:dropDownMenu hideDelay="0" submitMode="none">
+	
+		<f:facet name="label">Usuários..</f:facet>
+	  
+	  	<rich:menuItem rendered="#{identity.hasRole(transacoes.transacaoUsuarioConsultar)}" icon="/img/user.png">
+			<s:link view="/UsuarioList.xhtml" value="Administrar Usuarios" id="UsuarioId" action="#{conversation.killAllOthers()}"
+				includePageParams="false" propagation="none" />
+		</rich:menuItem>
+		
+		<rich:menuItem rendered="#{identity.hasRole(transacoes.transacaoAcessoConsultar)}">
+			<s:link view="/AcessoList.xhtml" value="Adm. Acessos por Usuário" id="AcessoId" action="#{conversation.killAllOthers()}"
+				includePageParams="false" propagation="none" />
+		</rich:menuItem>	
+				
+	  	<rich:menuItem rendered="#{identity.hasRole(transacoes.transacaoAcessoPerfil)}">
+			<s:link view="/AcessoDefaultList.xhtml" value="Adm. Acessos por Perfil" id="AcessoDefaultId" action="#{conversation.killAllOthers()}"
+				includePageParams="false" propagation="none" />
+		</rich:menuItem>
+		
+	  	<rich:menuItem>				
+			<s:link view="/UsuarioEdit.xhtml" value="Atualizar Meus Dados" propagation="none"  action="#{conversation.killAllOthers()}"
+                     id="usuarioEdit">
+                     <f:param name="usuarioCodUsuario" value="#{user.codUsuario}"/>
+           	</s:link>				
+		</rich:menuItem>
+		
+		<rich:menuItem rendered="#{identity.hasRole(transacoes.transacaoHistoricoUsuarioConsultar)}">
+			<s:link view="/HistoricoList.xhtml" value="Históricos de Usuários" id="HistoricoId" action="#{conversation.killAllOthers()}"
+				includePageParams="false" propagation="none" />
+		</rich:menuItem>			
+	</rich:dropDownMenu>
+	
+<!-- Menu Administrador Sistema -->	
+	<rich:dropDownMenu hideDelay="0" submitMode="none"  rendered="#{identity.hasRole(transacoes.transacaoAcessoPerfil) and user.codUsuario == '1'}">
+		
+		<f:facet name="label">Administrador Sistema..</f:facet>
+		
+		<rich:menuItem rendered="#{identity.hasRole(transacoes.transacaoAcessoPerfil) and user.codUsuario == '1'}">
+			<s:link id="EmpresaId" view="/EmpresaList.xhtml" value="Cadastro Empresa" action="#{conversation.killAllOthers()}"
+				propagation="none" />
+		</rich:menuItem>
+		
+		<rich:menuItem rendered="#{identity.hasRole(transacoes.transacaoAcessoPerfil) and user.codUsuario == '1'}">
+			<s:link view="/TransacaoList.xhtml" value="Administrar Transacoes" id="TransacaoId" action="#{conversation.killAllOthers()}"
+				includePageParams="false" propagation="none" />
+		</rich:menuItem>
+		
+	</rich:dropDownMenu>		
+    
+</rich:toolBar>

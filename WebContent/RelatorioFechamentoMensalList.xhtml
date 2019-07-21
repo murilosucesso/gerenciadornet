@@ -1,0 +1,535 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:s="http://jboss.com/products/seam/taglib"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:rich="http://richfaces.org/rich"
+    xmlns:a="http://richfaces.org/a4j"
+    template="layout/template.xhtml">
+    
+<ui:define name="head">
+
+		<a:loadScript src="https://www.gstatic.com/charts/loader.js"/>  
+		
+		<script type="text/javascript">
+		
+			Array.prototype.reduce = undefined;
+			google.charts.load('current', {'packages':['corechart']});
+			
+			// ----------------------------------------- Gráfico 1 - Pizza - --------------------------------------	  
+			google.charts.setOnLoadCallback(drawChart2);
+			
+			function drawChart2() {
+				
+			   // Create and populate the data table.
+			   var data = google.visualization.arrayToDataTable([
+		          	['Tipo Debito', 'Total']
+		          	#{relatorioFechamentoMensalList.respTipoDebitoPagPie} 		 
+		       ]);
+	
+			   var options = {
+				          title: 'Pagamentos Realizados X Tipo Dédito',
+				          chartArea:{left:50,top:50,width:"70%",height:"70%"},
+				          titleTextStyle: {color: '#333344'},
+				          legend: {position: 'top', textStyle: {color: '#333344'}},
+				          is3D: true				          
+				        };
+		        
+			    // Create and draw the visualization.
+			    var chart = new google.visualization.PieChart(document.getElementById('chart_div2'));
+        		chart.draw(data, options);
+			  }
+	
+			// ----------------------------------------- Gráfico 2 - Barras - --------------------------------------
+			
+			//google.setOnLoadCallback(drawVisualization);
+			google.charts.setOnLoadCallback(drawVisualization);
+			
+			function drawVisualization() {
+				
+			   // Create and populate the data table.
+			  
+		       var data = google.visualization.arrayToDataTable(
+		          [ ['Mes', 'Total Faturado', 'Lucro Bruto', 'Total Recebimentos Efetivados','Total Pagamentos Realizados','Lucro Líquido'],
+		          	[#{relatorioFechamentoMensalList.mesPesquisado} + '/' + #{relatorioFechamentoMensalList.anoPesquisado},
+		          	 	#{relatorioFechamentoMensalList.relatorioFechamentoMensalDTO.valorTotalRealizado}, 
+		          	 	#{relatorioFechamentoMensalList.relatorioFechamentoMensalDTO.lucroTotalRealizado},
+		          	 	#{relatorioFechamentoMensalList.relatorioFechamentoMensalDTORecebimento.totalRecebido},
+		          	 	#{relatorioFechamentoMensalList.relatorioFechamentoMensalDTOPagamento.totalPago}, 
+		          	 	#{relatorioFechamentoMensalList.relatorioFechamentoMensalDTO.valorTotalRealizado - relatorioFechamentoMensalList.relatorioFechamentoMensalDTOPagamento.totalPago}]		          			          	
+		          ]);
+		       		
+		       
+			   var options = {
+				          title: 'Faturamento Empresa',
+				          subtitle: 'Vendas, Gastos e Lucros.',
+				          titleTextStyle: {color: '#333344'},
+			              hAxis: {title: 'Data'},
+			              chartArea:{left:70,top:50,width:"90%",height:"75%"},
+			              legend: {position: 'top'},
+			              colors:['#3366cc','#ff9900','#109618','#dc3912','#990099']		              
+				        };
+		        
+			    // Create and draw the visualization.			    
+			    var chart = new google.visualization.ColumnChart(document.getElementById("chart_div1"));	
+        		chart.draw(data, options);
+			  }
+			  
+			  // ----------------------------------------- Gráfico 3 - Barras - --------------------------------------
+			
+			// relatório de vendas por categoria
+			google.charts.setOnLoadCallback(drawVisualization3);
+			
+			function drawVisualization3() {
+				
+			   // Create and populate the data table.
+			  
+		       var data = google.visualization.arrayToDataTable(
+		          [ #{relatorioFechamentoMensalList.respVendaProdCategoriaGraf} 		     	
+		          ]);
+		       		
+		       
+			   var options = {
+				          title: 'Vendas de Produtos X Categoria',
+				          subtitle: 'Vendas e lucros por categoria no mês',
+				          titleTextStyle: {color: '#333344'},			             
+			              legend: {position: 'top', alignment: 'end'},
+			              colors:['#3366cc','#990099']          		              
+				        };
+		        
+			    // Create and draw the visualization.			    
+			    var chart = new google.visualization.ColumnChart(document.getElementById("chart_div3"));	
+        		chart.draw(data, options);
+			  }
+		</script>
+	
+		<style>
+		
+			#fechamento {
+			    font-family: Verdana, Arial, Helvetica, sans-serif;
+			    border-collapse: collapse;
+			    width: 100%;
+			}
+			#fechamento th {
+				color: #404040;
+			    border: 1px solid #a9a9a9;
+			    padding: 6px;
+			    font-weight: bold;
+			    float: center;
+			    font-size: 14px;
+			    background-color: #ddd;
+			}
+			
+			#fechamento td {
+			    border: 1px solid #C0C0C0;
+			    padding: 6px;
+			    font-size: 12px;
+			}
+			
+			#fechamento tr:nth-child(even){
+				background-color: #ecf4fe;
+				font-weight: bold;
+			}
+			
+			#financeiro {
+			    font-family: Verdana, Arial, Helvetica, sans-serif;
+			    border-collapse: collapse;
+			    width: 100%;
+			}
+			#financeiro th {
+				color: #404040;
+			    border: 1px solid #a9a9a9;
+			    padding: 6px;
+			    font-weight: bold;
+			    float: center;
+			    font-size: 14px;
+			    background-color: #ddd;
+			}
+			
+			#financeiro td {
+			    border: 1px solid #C0C0C0;
+			    padding: 6px;
+			    font-size: 12px;
+			    text-align: center;
+			}
+			#financeiro tr:nth-child(2)
+			{ 
+				background-color: #ecf4fe;
+				font-size: 14px;
+			}
+			.valorNegrito{
+			 	font-size: 14px;
+				font-weight: bold;
+			}
+			.valorNegrito2{
+			 	font-size: 12px;
+				font-weight: bold;
+			}
+			
+		</style>
+</ui:define>    
+
+<ui:define name="body">
+		
+    <a:form id="vendaSearch" styleClass="edit">
+		
+        <rich:simpleTogglePanel label="Relatório Consolidado de Fechamento Mensal" switchType="client">
+			
+			<div style="clear:both">
+	            <h:selectOneMenu id="mesPesquisado" value="#{relatorioFechamentoMensalList.mesPesquisado}" styleClass="defaultInput2 textoNegrito">						
+					<f:selectItems value="#{relatorioFechamentoMensalList.listaMeses}"/>
+				</h:selectOneMenu>
+	            #{" "}
+	            <h:selectOneMenu id="anoPesquisado" value="#{relatorioFechamentoMensalList.anoPesquisado}" styleClass="defaultInput2 textoNegrito">						
+					<f:selectItems value="#{relatorioFechamentoMensalList.listaAnos}"/>
+				</h:selectOneMenu>
+            </div>
+                       
+        </rich:simpleTogglePanel>
+
+         <div class="actionButtons">
+         
+	          <h:commandButton id="search" type="submit" value="Pesquisar" 		          	
+		          	action="#{relatorioFechamentoMensalList.setMostrarResultados(true)}" 
+		          	actionListener="#{relatorioFechamentoMensalList.executarConsultas()}"
+		          	/>
+	          	
+	   		  	<rich:hotKey key="return" handler="#{rich:element('search')}.click()"/>
+	   	</div>
+
+     </a:form>
+    
+	 <h:form>
+    
+	
+	 <a:outputPanel id="msnListaVazia" ajaxRendered="true">		
+	    <rich:panel  rendered="#{relatorioFechamentoMensalList.mostrarResultados}">
+	    
+	    <f:facet name="header">   
+		    <a:outputPanel  id="panelDiv" ajaxRendered="true">
+		    	Relatório de Fechamento Mensal
+		    </a:outputPanel> 
+	    </f:facet> 
+	    
+	    	<rich:panel>
+	        	<table width="100%">
+	        		<tr>
+	        			<td width="60%"><div id="chart_div1" style="width: 100%; height: 250px;"/></td>
+        				<td width="40%"><div id='chart_div2' style="width: 100%; height: 250px;"/></td>
+	        		</tr>	        		
+	        	</table>
+			</rich:panel>
+	    
+	    
+      		<table id="fechamento">
+      			<tr>
+	       			<th class="tittle" colspan="5">
+        				<h:outputText value="Faturamento Mensal - #{relatorioFechamentoMensalList.relatorioFechamentoMensalDTO.mes}/#{relatorioFechamentoMensalList.relatorioFechamentoMensalDTO.ano}" />
+	       			</th>
+      			</tr>
+       		<tr>       			
+       			<td width="20%">
+	       			<h:outputText value="Total Faturado(Vendido)" title="Valor Total Vendido No Período Informado"/>
+       			</td>
+       			<td width="20%">
+		       		<h:outputText value="Lucro Bruto" title="Lucro Obtido Sem Descontar Comissões Sobre Serviços e Produtos"/>
+       			</td>
+       			<td width="20%">
+	       			<h:outputText value="Total Recebimentos Efetivados"  title="Valor Total Recebido No Período Informado"/>
+       			</td>
+       			<td width="20%">
+		       		<h:outputText value="Total Pagamentos Efetivados" title="Valor Total Referente aos Pagamentos Efetivados"/>
+       			</td>
+				<td width="20%">
+		       		<h:outputText value="Lucro Líquido" title="Valor Faturado menos todas as contas pagas(Contas + Funcionários + Comissões)."/>
+       			</td>			       			
+			</tr>
+			<tr>				
+       			<td>
+	                <h:outputText value="#{relatorioFechamentoMensalList.relatorioFechamentoMensalDTO.valorTotalRealizado}">
+	               		<f:convertNumber currencySymbol="R$"  type="currency"  locale="pt_BR"/>
+	                </h:outputText>
+       			</td>
+       			<td>
+	                <h:outputText value="#{relatorioFechamentoMensalList.relatorioFechamentoMensalDTO.lucroTotalRealizado}">
+	               		<f:convertNumber currencySymbol="R$"  type="currency"  locale="pt_BR"/>
+	                </h:outputText>
+       			</td>
+       			<td>
+	                <h:outputText value="#{relatorioFechamentoMensalList.relatorioFechamentoMensalDTORecebimento.totalRecebido}">
+	               		<f:convertNumber currencySymbol="R$"  type="currency"  locale="pt_BR"/>
+	                </h:outputText>
+       			</td>
+       			<td>
+	                <h:outputText value="#{relatorioFechamentoMensalList.relatorioFechamentoMensalDTOPagamento.totalPago}">
+	               		<f:convertNumber currencySymbol="R$"  type="currency"  locale="pt_BR"/>
+	                </h:outputText>
+       			</td>
+       			<td>
+	                <h:outputText 
+                		value="#{relatorioFechamentoMensalList.relatorioFechamentoMensalDTO.valorTotalRealizado - relatorioFechamentoMensalList.relatorioFechamentoMensalDTOPagamento.totalPago}">
+               				<f:convertNumber currencySymbol="R$"  type="currency"  locale="pt_BR"/>
+                	</h:outputText>
+       			</td>
+               </tr>
+      		</table>
+   		<br/>
+   		   				
+		<table id="financeiro">
+      		<tr>
+	       		<th colspan="3">
+        			<h:outputText value="Pagamentos" />
+	       		</th>
+      		</tr>
+      		<tr>
+	       		<td colspan="3">
+        			
+        			<h:outputText value="#{relatorioFechamentoMensalList.relatorioFechamentoMensalDTOPagamento.totalPagamentosAgendados}" styleClass="valorNegrito">
+	               		<f:convertNumber currencySymbol="R$"  type="currency"  locale="pt_BR"/>
+	                </h:outputText><br/>
+	                <h:outputText value="Total Pagamentos Agendados" title="Valor Total de Pagamentos Agendados no Período Informado(Efetivados e Pendentes)"/>
+	       		</td>	       		
+      		</tr>
+      		<tr>
+	       		<td width="50%" colspan="2" bgcolor="#aaff99">
+        			 <h:outputText value="#{relatorioFechamentoMensalList.relatorioFechamentoMensalDTOPagamento.totalPago}"  styleClass="valorNegrito2">
+	               		<f:convertNumber currencySymbol="R$"  type="currency"  locale="pt_BR"/>
+	                </h:outputText><br/>
+	                <h:outputText value="Total Pagamentos Realizados"  title="Valor Total de Pagamentos Realizados no Período. Data de Balancete dentro do período informado independente da Data de Vencimento."/>                
+	       		</td>
+	       		<td rowspan="2" colspan="2" bgcolor="#f97072">
+        			<h:outputText value="#{relatorioFechamentoMensalList.relatorioFechamentoMensalDTOPagamento.totalPagamentosPendentes}"  styleClass="valorNegrito2">
+	               		<f:convertNumber currencySymbol="R$"  type="currency"  locale="pt_BR"/>
+	                </h:outputText><br/>
+	       			<h:outputText value="Total A Pagar (Pendente ou Pago nos próximos meses)" title="Valor Total Agendado No Período Informado - NÂO PAGO. Data de Vencimento dentro do período informado, sem data de balancete preenchida ou data superior ao mês selecionado."/>
+	       		</td>
+      		</tr>
+       		<tr>
+       			<!-- DICRIMINAÇÃO DOS PAGOS   -->
+       			
+       			<td bgcolor="#aaff99">
+       				<h:outputText value="#{relatorioFechamentoMensalList.relatorioFechamentoMensalDTOPagamento.totalPagoAgendado}"  styleClass="valorNegrito2">
+	               		<f:convertNumber currencySymbol="R$"  type="currency"  locale="pt_BR"/>
+	                </h:outputText>
+	                <br/>
+	       			<h:outputText value="Pagamentos Agendados Efetivados" title="Valor Total Agendado No Período Informado - PAGO. Data de Vencimento e Data de Balancete dentro do período informado."/>
+       			</td>	
+       			
+       			<td bgcolor="#aaff99">
+       				<h:outputText value="#{relatorioFechamentoMensalList.relatorioFechamentoMensalDTOPagamento.totalPagoNaoAgendado}"  styleClass="valorNegrito2">
+	               		<f:convertNumber currencySymbol="R$"  type="currency"  locale="pt_BR"/>
+	                </h:outputText>
+	                <br/>
+	       			<h:outputText value="Total Pago Não Agendado" title="Valor Total PAGO que NÃO estava agendado no Período Informado"/>
+       			</td>	      			       		
+       		</tr>
+       		
+		</table>
+		
+		<br/>
+   		
+   		<table id="financeiro">
+      		<tr>
+	       		<th colspan="3">
+        			<h:outputText value="Recebimentos" />
+	       		</th>
+      		</tr>
+      		<tr>
+	       		<td colspan="3">
+        			
+        			<h:outputText value="#{relatorioFechamentoMensalList.relatorioFechamentoMensalDTORecebimento.totalAgendadoAReceber}" styleClass="valorNegrito">
+	               		<f:convertNumber currencySymbol="R$"  type="currency"  locale="pt_BR"/>
+	                </h:outputText><br/>
+	                <h:outputText value="Total de recebimentos agendados para o período" />
+	       		</td>	       		
+      		</tr>
+      		<tr>
+	       		<td width="50%" colspan="2" bgcolor="#aaff99">
+        			 <h:outputText value="#{relatorioFechamentoMensalList.relatorioFechamentoMensalDTORecebimento.totalRecebido}"  styleClass="valorNegrito2">
+	               		<f:convertNumber currencySymbol="R$"  type="currency"  locale="pt_BR"/>
+	                </h:outputText><br/>
+	                <h:outputText value="Total Recebido" title="Valor Total de Recebimentos Efetivados no Período. Data de Balancete dentro do período informado independente da Data do Agendamento do Recebimento."/>	                
+	       		</td>
+	       		<td rowspan="2" bgcolor="#f97072">
+        			<h:outputText value="#{relatorioFechamentoMensalList.relatorioFechamentoMensalDTORecebimento.totalPendenteRecebimento}"  styleClass="valorNegrito2">
+	               		<f:convertNumber currencySymbol="R$"  type="currency"  locale="pt_BR"/>
+	                </h:outputText><br/>
+	       			<h:outputText value="Total A Receber (Pendente ou Recebido nos próximos meses)" title="Valor Total Agendado A RECEBER  No Período Informado - NÂO RECEBIDOS. Data do Agendamento do Recebimento dentro do período informado, sem data de balancete preenchida."/>
+	       		</td>
+      		</tr>
+       		<tr>
+       			<!-- DICRIMINAÇÃO DOS RECEBIDOS   -->
+       			
+       			<td bgcolor="#aaff99">
+       				<h:outputText value="#{relatorioFechamentoMensalList.relatorioFechamentoMensalDTORecebimento.totalRecebidoAgendado}"  styleClass="valorNegrito2">
+	               		<f:convertNumber currencySymbol="R$"  type="currency"  locale="pt_BR"/>
+	                </h:outputText>
+	                <br/>
+	       			<h:outputText value="Total Recebido Agendado" title="Valor Total RECEBIDO que estava agendado o recebimento no Período Informado"/>
+       			</td>	
+       			
+       			<td bgcolor="#aaff99">
+       				<h:outputText value="#{relatorioFechamentoMensalList.relatorioFechamentoMensalDTORecebimento.totalRecebidoNaoAgendado}"  styleClass="valorNegrito2">
+	               		<f:convertNumber currencySymbol="R$"  type="currency"  locale="pt_BR"/>
+	                </h:outputText>
+	                <br/>
+	       			<h:outputText value="Total Recebido Não Agendado" title="Valor Total RECEBIDO que NÃO estava agendado o recebimento no Período Informado"/>
+       			</td>	      			       		
+       		</tr>
+       		
+		</table>
+		
+		<br/>
+		
+		<table id="fechamento">
+  			<tr>
+    			<th colspan="5">
+    				<h:outputText value="Serviços" />
+    			</th>
+  			</tr>
+   			<tr>
+    			<td width="20%">
+     				<h:outputText value="Valor Total" title="Valor total do serviços sem descontos."/>
+    			</td>
+    			<td width="20%">
+     				<h:outputText value="Valor Total Efetivo Cobrado" title="Valor total efetivo cobrado pelos os serviços."/>
+    			</td>
+    			<td width="20%">
+     				<h:outputText value="Valor Custo/Comissões Pagas" 	title="Valor total dos custos, incluindo comissões pagas pelos serviços realizados."/>
+    			</td>
+    			<td width="20%">
+     				<h:outputText value="Total Descontos" 	title="Valor total de descontos dados nos serviços realizados."/>
+    			</td>
+    			<td width="20%">
+     				<h:outputText value="Lucro Líquido" title="Valor total do lucro obtido menos os custos/comissões e descontos"/>
+    			</td>
+   			</tr>
+   			<tr>
+    			<td>
+	     			<h:outputText value="#{relatorioFechamentoMensalList.relatorioFechamentoMensalDTOSevico.totalPrecoServicos + 0}">
+	             		<f:convertNumber currencySymbol="R$"  type="currency"  locale="pt_BR"/>
+	              	</h:outputText>
+    			</td>
+    			<td>
+     				<h:outputText value="#{relatorioFechamentoMensalList.relatorioFechamentoMensalDTOSevico.totalPrecoRealizadoServicos + 0}">
+           				<f:convertNumber currencySymbol="R$"  type="currency"  locale="pt_BR"/>
+           			</h:outputText>
+    			</td>
+    			<td>
+	     			<h:outputText value="#{relatorioFechamentoMensalList.relatorioFechamentoMensalDTOSevico.totalComissaoServicosRealizados + 0}">
+	             		<f:convertNumber currencySymbol="R$"  type="currency"  locale="pt_BR"/>
+	             	</h:outputText>
+    			</td>
+    			<td>
+	     			<h:outputText value="#{relatorioFechamentoMensalList.relatorioFechamentoMensalDTOSevico.totalPrecoServicos - relatorioFechamentoMensalList.relatorioFechamentoMensalDTOSevico.totalPrecoRealizadoServicos}">
+	             		<f:convertNumber currencySymbol="R$"  type="currency"  locale="pt_BR"/>
+	             	</h:outputText>
+    			</td>
+    			<td>
+	     			<h:outputText value="#{relatorioFechamentoMensalList.relatorioFechamentoMensalDTOSevico.totalLucroServicosRealizados + 0}">
+	             		<f:convertNumber currencySymbol="R$"  type="currency"  locale="pt_BR"/>
+	             	</h:outputText>
+    			</td>
+   			</tr>
+		</table>      	
+
+		<br/>
+		
+		<table id="fechamento">
+			<tr>
+	 			<th colspan="4">
+	 				<h:outputText value="Produtos" />
+	 			</th>
+			</tr>
+				<tr>
+	 			<td width="20%">
+	  			<h:outputText value="Valor Venda" title="Valor dos produtos que era pra ser vendido, sem desconto."/>
+	 			</td>
+	 			<td width="20%">
+	  			<h:outputText value="Valor Venda Realizado" title="Valor de venda realizado, Valor de Venda Menos Descontos"/>
+	 			</td>
+	 			<td width="40%">
+	  			<h:outputText value="Lucro Bruto" title="Lucro obtido sem descontar comissões"/>
+	 			</td>
+	 			<td width="20%">
+	  			<h:outputText value="Lucro Líquido" title="Valor total do lucro obtido menos os custos/comissões e descontos"/>
+	 			</td>
+				</tr>
+				<tr>
+	 			<td>
+	 				<h:outputText value="#{relatorioFechamentoMensalList.relatorioFechamentoMensalDTOProd.precoVendaSemDesconto + 0}">
+			        	<f:convertNumber currencySymbol="R$"  type="currency"  locale="pt_BR"/>
+			        </h:outputText>
+	 			</td>
+	 			<td>
+	 				<h:outputText value="#{relatorioFechamentoMensalList.relatorioFechamentoMensalDTOProd.precoVendaComDesconto + 0}">
+			        	<f:convertNumber currencySymbol="R$"  type="currency"  locale="pt_BR"/>
+			        </h:outputText>
+	 			</td>
+	 			<td>
+	 				<h:outputText value="#{relatorioFechamentoMensalList.relatorioFechamentoMensalDTOProd.valorTotalLucroBruto + 0}">
+		          		<f:convertNumber currencySymbol="R$"  type="currency"  locale="pt_BR"/>
+		          	</h:outputText>
+	 			</td>
+	 			<td>
+	 				<h:outputText value="#{relatorioFechamentoMensalList.relatorioFechamentoMensalDTOProd.valorTotalLucroBruto - relatorioFechamentoMensalList.relatorioFechamentoMensalDTOProd.valorTotalComissoesComDesconto}">
+		          		<f:convertNumber currencySymbol="R$"  type="currency"  locale="pt_BR"/>
+		          	</h:outputText>
+	 			</td>
+	 			
+				</tr>
+       			<tr>
+	       			<td>
+	       				<h:outputText value="Valor Comissões Bruto" title="Valor que deveria ser pago em comissões pelos produtos vendidos"/>
+	       			</td>
+	       			<td>
+	       				<h:outputText value="Valor Comissões Pagas" title="Valor pago em comissões pelos produtos vendidos"/>
+	       			</td>
+	       			<td>
+	       				<h:outputText value="Total de Descontos Realizados" title="Valor total de descontos dados nos produtos vendidos"/>
+	       			</td>
+	       			<td>
+	       				<h:outputText value="Valor Investido" title="Valor pago na compra dos produtos vendidos"/>
+	       			</td>
+       			</tr>
+       			<tr>
+	       			<td>
+	       				<h:outputText value="#{relatorioFechamentoMensalList.relatorioFechamentoMensalDTOProd.valorTotalComissoesSemDesconto + 0}">
+		               		<f:convertNumber currencySymbol="R$"  type="currency"  locale="pt_BR"/>
+		               	</h:outputText>
+	       			</td>
+	       			<td>
+	       				<h:outputText value="#{relatorioFechamentoMensalList.relatorioFechamentoMensalDTOProd.valorTotalComissoesComDesconto + 0}">
+		               		<f:convertNumber currencySymbol="R$"  type="currency"  locale="pt_BR"/>
+		               	</h:outputText>
+	       			</td>
+	       			<td>
+	       				<h:outputText value="#{relatorioFechamentoMensalList.relatorioFechamentoMensalDTOProd.precoVendaSemDesconto - relatorioFechamentoMensalList.relatorioFechamentoMensalDTOProd.precoVendaComDesconto}">
+		               		<f:convertNumber currencySymbol="R$"  type="currency"  locale="pt_BR"/>
+		               </h:outputText>
+	       			</td>
+	       			<td>
+	       				<h:outputText value="#{relatorioFechamentoMensalList.relatorioFechamentoMensalDTOProd.valorTotalPrecoCompra + 0}">
+		               		<f:convertNumber currencySymbol="R$"  type="currency"  locale="pt_BR"/>
+		               </h:outputText>
+	       			</td>
+       			</tr>
+			</table>		       		
+		 
+		 
+		 <table id="fechamento">
+       		<tr>
+       			<th width="100%"><div id="chart_div3" style="width: 100%; height: 250px;"/></th>
+       		</tr>	        		
+       	</table>
+		 					
+	    </rich:panel>
+    </a:outputPanel>    
+	
+	 </h:form>
+</ui:define>
+
+</ui:composition>
+

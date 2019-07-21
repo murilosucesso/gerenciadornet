@@ -1,0 +1,195 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:s="http://jboss.com/products/seam/taglib"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:rich="http://richfaces.org/rich"
+    template="layout/template.xhtml">
+
+<ui:define name="body">
+
+    <rich:panel>
+        <f:facet name="header">Detalhes do Fornecedor</f:facet>
+
+        <s:decorate id="nomeFantasia" template="layout/display.xhtml">
+            <ui:define name="label">Nome Fantasia</ui:define>
+            <h:outputText value="#{fornecedorHome.instance.nomeFantasia}"/>
+        </s:decorate>
+
+        <s:decorate id="razaoSocial" template="layout/display.xhtml">
+            <ui:define name="label">Razão Social</ui:define>
+            <h:outputText value="#{fornecedorHome.instance.razaoSocial}"/>
+        </s:decorate>
+
+        <s:decorate id="descFornecedor" template="layout/display.xhtml">
+            <ui:define name="label">Descrição</ui:define>
+            <h:outputText value="#{fornecedorHome.instance.descFornecedor}"/>
+        </s:decorate>
+
+        <s:decorate id="cpjCnpj" template="layout/display.xhtml">
+            <ui:define name="label">CPF/CNPJ</ui:define>
+            <h:outputText value="#{fornecedorHome.instance.cpjCnpj}"/>
+        </s:decorate>
+
+        <s:decorate id="inscricaoEstadual" template="layout/display.xhtml">
+            <ui:define name="label">Inscrição Estadual</ui:define>
+            <h:outputText value="#{fornecedorHome.instance.inscricaoEstadual}"/>
+        </s:decorate>
+
+        <s:decorate id="fax" template="layout/display.xhtml">
+            <ui:define name="label">Telefone/Fax</ui:define>
+            <h:outputText value="#{fornecedorHome.instance.fax}"/>
+        </s:decorate>
+        
+        <s:decorate id="afeFuncionamento" template="layout/display.xhtml">
+            <ui:define name="label">AFE-Funcionamento</ui:define>
+            <h:outputText value="ATIVO"  rendered="#{fornecedorHome.instance.inAfeFuncionamento}"/>
+			<h:outputText value="INATIVO"  rendered="#{!fornecedorHome.instance.inAfeFuncionamento}"/>
+        </s:decorate>
+        
+        <s:decorate id="contaFixa" template="layout/display.xhtml">
+            <ui:define name="label">Conta Fixa</ui:define>
+            <h:outputText value="SIM"  rendered="#{fornecedorHome.instance.inContaFixa}"/>
+			<h:outputText value="NAO"  rendered="#{!fornecedorHome.instance.inContaFixa}"/>
+        </s:decorate>
+        
+         <s:decorate id="inExclusao" template="layout/display.xhtml">
+            <ui:define name="label">Status</ui:define>
+            <h:outputText value="INATIVO"  rendered="#{fornecedorHome.instance.inExclusao}"/>
+			<h:outputText value="ATIVO"  rendered="#{!fornecedorHome.instance.inExclusao}"/>
+        </s:decorate>
+
+        <s:decorate id="observacao" template="layout/display.xhtml">
+            <ui:define name="label">Observação</ui:define>
+            <h:outputText value="#{fornecedorHome.instance.observacao}"/>
+        </s:decorate>
+
+        <!--<s:decorate id="inExclusao" template="layout/display.xhtml">
+            <ui:define name="label">In exclusao</ui:define>
+            <h:outputText value="#{fornecedorHome.instance.inExclusao}"/>
+        </s:decorate>
+
+        --><div style="clear:both"/>
+
+    </rich:panel>
+
+    <div class="actionButtons">
+
+        <s:button view="/FornecedorEdit.xhtml"
+                    id="edit"
+                 value="Editar"/>
+
+        <s:button view="/#{empty fornecedorFrom ? 'FornecedorList' : fornecedorFrom}.xhtml"
+                    id="done"
+                 value="Voltar"/>
+
+    </div>
+
+    <rich:tabPanel switchType="ajax">
+
+    <rich:tab>
+        <f:facet name="label">
+            <h:panelGroup><h:graphicImage value="/img/onetomany.gif" style="vertical-align: middle; padding-right: 4px;"/>Vendedores</h:panelGroup>
+        </f:facet>
+    <h:form styleClass="association" id="vendedorsChildren">
+
+        <h:outputText value="Nao existem vendedores associados com este fornecedor."
+                   rendered="#{empty fornecedorHome.vendedors}"/>
+
+        <rich:dataTable  id="vendedorsTable"
+        		   value="#{fornecedorHome.vendedors}"
+                       var="_vendedor"
+                  rendered="#{not empty fornecedorHome.vendedors}"      
+           	onRowMouseOver="this.style.backgroundColor='#F0F0F0'"
+             onRowMouseOut="this.style.backgroundColor='#{a4jSkin.rowBackgroundColor}'"
+           	 columnClasses="center"             
+           		rowClasses="tableRowOne,tableRowTwo">
+           
+           
+            <rich:column sortBy="#{_vendedor.nomeVendedor}">
+                <f:facet name="header">Nome vendedor</f:facet>
+                <h:outputText value="#{_vendedor.nomeVendedor}"/>
+            </rich:column>
+            <rich:column sortBy="#{_vendedor.emailVendedor}">
+                <f:facet name="header">Email vendedor</f:facet>
+                <h:outputText value="#{_vendedor.emailVendedor}"/>
+            </rich:column>
+            <rich:column sortBy="#{_vendedor.telefoneVendedor}">
+                <f:facet name="header">Telefone vendedor</f:facet>
+                <h:outputText value="#{_vendedor.telefoneVendedor}"/>
+            </rich:column><!--
+         
+            <h:column>
+                <f:facet name="header">Action</f:facet>
+                <s:link id="selectvendedor"
+                     value="Select"
+                      view="/Vendedor.xhtml">
+                    <f:param name="vendedorCodVendedor" value="#{_vendedor.id.codVendedor}"/>
+                    <f:param name="vendedorCodFornecedor" value="#{_vendedor.id.codFornecedor}"/>
+                    <f:param name="vendedorFrom" value="Fornecedor"/>
+                </s:link>
+            </h:column>
+        --></rich:dataTable>
+
+    </h:form>
+
+    <div class="actionButtons">
+        <s:button
+               value="Novo vendedor"
+                view="/VendedorEdit.xhtml">
+            <f:param name="fornecedorCodFornecedor"
+                    value="#{fornecedorHome.instance.codFornecedor}"/>
+            <f:param name="vendedorFrom" value="Fornecedor"/>
+        </s:button>
+    </div>
+    </rich:tab>
+
+    <rich:tab>
+        <f:facet name="label">
+            <h:panelGroup><h:graphicImage value="/img/onetomany.gif" style="vertical-align: middle; padding-right: 4px;"/>Endereços</h:panelGroup>
+        </f:facet>
+    <h:form styleClass="association" id="enderecosChildren">
+
+        <h:outputText value="Nao existe enderecos associados com este fornecedor."
+                   rendered="#{empty fornecedorHome.enderecos}"/>
+
+        <rich:dataTable value="#{fornecedorHome.enderecos}"
+                       var="_endereco"
+                  rendered="#{not empty fornecedorHome.enderecos}"                
+                        id="enderecosTable"
+			onRowMouseOver="this.style.backgroundColor='#F1F1F1'"
+           	 onRowMouseOut="this.style.backgroundColor='#{a4jSkin.rowBackgroundColor}'"
+           	 columnClasses="center"  
+           		rowClasses="tableRowOne,tableRowTwo">
+
+            <ui:include src="/includes/includeListarEnderecos.xhtml"/>
+            
+            <h:column>
+                <f:facet name="header">Visualizar</f:facet>
+                <s:link id="selectendereco" view="/Endereco.xhtml">
+               		<h:graphicImage url="/img/binoculo.jpg"/>
+                    <f:param name="enderecoCodEndereco" value="#{_endereco.codEndereco}"/>
+                    <f:param name="enderecoFrom" value="Fornecedor"/>
+               	</s:link>	  
+               	<rich:toolTip for="selectendereco" value="Visualizar Endereço" direction="top-left"/>
+            </h:column>
+        </rich:dataTable>
+
+    </h:form>
+
+    <div class="actionButtons">
+        <s:button
+               value="Novo endereço"
+                view="/EnderecoEdit.xhtml">
+            <f:param name="fornecedorCodFornecedor"
+                    value="#{fornecedorHome.instance.codFornecedor}"/>
+            <f:param name="enderecoFrom" value="Fornecedor"/>
+        </s:button>
+    </div>
+    </rich:tab>
+</rich:tabPanel>
+</ui:define>
+
+</ui:composition>

@@ -1,0 +1,50 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition id="panelPopUp" width="700" height="470" 
+	xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:s="http://jboss.com/products/seam/taglib"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:a="http://richfaces.org/a4j"
+    xmlns:rich="http://richfaces.org/rich">
+
+	<div>
+		<a:commandLink> 
+			<h:graphicImage value="/img/help.png" styleClass="help" id="helplink"/>
+			<rich:toolTip direction="bottom-left" attachTo="helplink" followMouse="true">
+	            <s:span style="white-space:nowrap">
+	                --------------------- Ajuda, Dicas e Procedimentos para realização da Venda/Orçamento -------------------<br/>
+					Usuário: Pessoa (Funcionário) responsável pela realização da venda / orçamento.<br/>
+					Cliente: Selecione o nome do cliente proprietário da venda / orçamento.<br/>
+					Nota fical: Informe o numero da nota fiscal emitada para a venda.<br/>
+					Para carregar a lista de clientes, clique na imagem ao lado da comboBox clientes.<br/>
+					Tipo Pagamento: Forma como a venda sera paga.<br/><br/>
+					
+					Serviço: Lista de serviços que poderão ser contratados pelo cliente.<br/>
+					Para adicionar um serviço à sua venda:<br/>
+					1 - Selecione o serviço na comboBox, atualize o Valor Cobrado(R$)caso necessário e clique no botão Add+<br/>					
+					repita este processo enquanto necessário.<br/><br/>
+					
+					Produto: Produtos comprados pelo pelo cliente. <br/> 
+					Para adicionar um produto a sua venda:<br/>
+					1 - Clique no botão Buscar<br/> 
+					2 - selecione o lote de produto desejado<br/>
+					3 - atualize o preço caso necessário<br/>
+					4 - informe a quantidade de produtos vendidos<br/>
+					5 - informe o desconto, caso houver<br/> 
+					6 - clique no botão Add+<br/>
+					repita este processo enquanto necessário.<br/>
+					Desconto total: Corresponde ao valor do desc. em porcentagem a ser aplicado na venda.<br/>
+					Observação: Preencha este campo caso haja alguma informação extra sobre a venda.<br/>
+					Venda/Orçamento: Informe se é uma venda(debita do estoque) ou um orçamento(Não debita do estoque).<br/>
+					Finalizar Venda: Informe se a venda foi ou nao finalizada. As nao finalizadas sao vendas pendentes.<br/>
+					Valor Pago: Campo não obrigatório, informe caso haja necessidade de se realizar o cálculo do troco.<br/>
+					Clique no botão Salvar pra finalizar ou no botao voltar para cancelar a venda / orçamento<br/>
+					Não poderá ser criada uma venda / orçamento sem serviço(s) ou produto(s) adicionado(s).<br/> 		               
+	            </s:span>
+	       	</rich:toolTip>
+      	</a:commandLink>
+   	</div>
+     		
+</ui:composition> 

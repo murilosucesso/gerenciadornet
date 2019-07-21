@@ -1,0 +1,162 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:s="http://jboss.com/products/seam/taglib"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:rich="http://richfaces.org/rich"
+    template="layout/template.xhtml">
+
+<ui:define name="body">
+
+    <rich:panel>
+        <f:facet name="header">Servico realizado Details</f:facet>
+
+
+        <s:decorate id="preco" template="layout/display.xhtml">
+            <ui:define name="label">Preco</ui:define>
+            <h:outputText value="#{servicoRealizadoHome.instance.preco}"/>
+        </s:decorate>
+
+        <div style="clear:both"/>
+
+    </rich:panel>
+
+    <div class="actionButtons">
+
+        <s:button view="/ServicoRealizadoEdit.xhtml"
+                    id="edit"
+                 value="Edit"/>
+
+        <s:button view="/#{empty servicoRealizadoFrom ? 'ServicoRealizadoList' : servicoRealizadoFrom}.xhtml"
+                    id="done"
+                 value="Done"/>
+
+    </div>
+
+    <rich:tabPanel switchType="ajax">
+
+    <rich:tab>
+        <f:facet name="label">
+            <h:panelGroup><h:graphicImage value="/img/manytoone.gif" style="vertical-align: middle; padding-right: 4px;"/>Venda</h:panelGroup>
+        </f:facet>
+    <div class="association" id="vendaParent">
+
+        <h:outputText value="There is no venda associated with this servicoRealizado."
+                   rendered="#{servicoRealizadoHome.instance.venda == null}"/>
+
+        <rich:dataTable var="_venda"
+                   value="#{servicoRealizadoHome.instance.venda}"
+                rendered="#{servicoRealizadoHome.instance.venda != null}"
+              rowClasses="rvgRowOne,rvgRowTwo"
+                      id="vendaTable">
+            <h:column>
+                <f:facet name="header">Cod venda</f:facet>
+                <h:outputText value="#{_venda.codVenda}"/>
+            </h:column>
+            <h:column>
+                <f:facet name="header">Tipo pagamento cod tipo pagamento</f:facet>
+                <h:outputText value="#{_venda.tipoPagamento.codTipoPagamento}"/>
+            </h:column>
+            <h:column>
+                <f:facet name="header">Cliente cod cliente</f:facet>
+                <h:outputText value="#{_venda.cliente.codCliente}"/>
+            </h:column>
+            <h:column>
+                <f:facet name="header">Usuario cod usuario</f:facet>
+                <h:outputText value="#{_venda.usuario.codUsuario}"/>
+            </h:column>
+            <h:column>
+                <f:facet name="header">Data inicio venda</f:facet>
+                <h:outputText value="#{_venda.dataInicioVenda}">
+                    <s:convertDateTime type="both" dateStyle="short"/>
+                </h:outputText>
+            </h:column>
+            <h:column>
+                <f:facet name="header">Data fim venda</f:facet>
+                <h:outputText value="#{_venda.dataFimVenda}">
+                    <s:convertDateTime type="both" dateStyle="short"/>
+                </h:outputText>
+            </h:column>
+            <h:column>
+                <f:facet name="header">Num nota fiscal</f:facet>
+                <h:outputText value="#{_venda.numNotaFiscal}"/>
+            </h:column>
+            <h:column>
+                <f:facet name="header">Desconto total</f:facet>
+                <h:outputText value="#{_venda.descontoTotal}"/>
+            </h:column>
+            <h:column>
+                <f:facet name="header">Obs venda</f:facet>
+                <h:outputText value="#{_venda.obsVenda}"/>
+            </h:column>
+            <h:column>
+                <f:facet name="header">In orcamento</f:facet>
+                <h:outputText value="#{_venda.inOrcamento}"/>
+            </h:column>
+            <h:column styleClass="action">
+                <f:facet name="header">Action</f:facet>
+                <s:link id="viewvenda"
+                     value="View"
+                      view="/Venda.xhtml">
+                    <f:param name="vendaCodVenda"
+                           value="#{_venda.codVenda}"/>
+                </s:link>
+            </h:column>
+        </rich:dataTable>
+
+    </div>
+    </rich:tab>
+
+    <rich:tab>
+        <f:facet name="label">
+            <h:panelGroup><h:graphicImage value="/img/manytoone.gif" style="vertical-align: middle; padding-right: 4px;"/>Servico</h:panelGroup>
+        </f:facet>
+    <div class="association" id="servicoParent">
+
+        <h:outputText value="There is no servico associated with this servicoRealizado."
+                   rendered="#{servicoRealizadoHome.instance.servico == null}"/>
+
+        <rich:dataTable var="_servico"
+                   value="#{servicoRealizadoHome.instance.servico}"
+                rendered="#{servicoRealizadoHome.instance.servico != null}"
+              rowClasses="rvgRowOne,rvgRowTwo"
+                      id="servicoTable">
+            <h:column>
+                <f:facet name="header">Cod servico</f:facet>
+                <h:outputText value="#{_servico.codServico}"/>
+            </h:column>
+            <h:column>
+                <f:facet name="header">Desc servico</f:facet>
+                <h:outputText value="#{_servico.descServico}"/>
+            </h:column>
+            <h:column>
+                <f:facet name="header">Preco servico</f:facet>
+                <h:outputText value="#{_servico.precoServico}"/>
+            </h:column>
+            <h:column>
+                <f:facet name="header">In exclusao</f:facet>
+                <h:outputText value="#{_servico.inExclusao}"/>
+            </h:column>
+            <h:column>
+                <f:facet name="header">Servico realizado cod servico</f:facet>
+                <h:outputText value="#{_servico.servicoRealizado.codServico}"/>
+            </h:column>
+            <h:column styleClass="action">
+                <f:facet name="header">Action</f:facet>
+                <s:link id="viewservico"
+                     value="View"
+                      view="/Servico.xhtml">
+                    <f:param name="servicoCodServico"
+                           value="#{_servico.codServico}"/>
+                </s:link>
+            </h:column>
+        </rich:dataTable>
+
+    </div>
+    </rich:tab>
+</rich:tabPanel>
+</ui:define>
+
+</ui:composition>

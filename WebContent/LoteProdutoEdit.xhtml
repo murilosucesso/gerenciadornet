@@ -1,0 +1,121 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:s="http://jboss.com/products/seam/taglib"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:a="http://richfaces.org/a4j"
+    xmlns:rich="http://richfaces.org/rich"
+    xmlns:easy="http://easyfaces.com.br/easyfaces"
+    template="layout/template.xhtml">
+
+<ui:define name="body">
+
+    <h:form id="loteProduto" styleClass="edit">
+
+        <rich:panel>
+            <f:facet name="header">#{loteProdutoHome.managed ? 'Editar' : 'Adicionar'} Lote Produto</f:facet>
+			
+			<s:decorate template="layout/display.xhtml">
+	            <ui:define name="label">Código Produto</ui:define>
+	            <h:outputText value="#{loteProdutoHome.instance.produto.codProdutoExterno}" />
+	        </s:decorate>
+	        
+			<s:decorate template="layout/display.xhtml">
+	            <ui:define name="label">Produto</ui:define>
+	            <h:outputText value="#{loteProdutoHome.instance.produto.nomeProduto}" />
+	        </s:decorate>
+        
+			<s:decorate template="layout/display.xhtml">
+                <ui:define name="label">Compra</ui:define>
+                <h:outputText value="#{loteProdutoHome.instance.compra.codCompra}" />
+            </s:decorate>
+			
+            <s:decorate id="qtdCompraField" template="layout/display.xhtml">
+                <ui:define name="label">Qtd compra</ui:define>
+                <h:outputText value="#{loteProdutoHome.instance.qtdCompra}" />
+            </s:decorate>
+
+            <s:decorate id="identificacaoLoteField" template="layout/display.xhtml">
+                <ui:define name="label">Identificação lote</ui:define>
+                <h:inputText id="identificacaoLote"
+                           size="45"
+                      maxlength="45"
+                          value="#{loteProdutoHome.instance.identificacaoLote}">
+                </h:inputText>
+            </s:decorate>
+
+            <s:decorate id="dataValidadeField" template="layout/edit.xhtml">
+                <ui:define name="label">Data Validade</ui:define>
+                <rich:calendar id="dataValidade"
+                          value="#{loteProdutoHome.instance.dataValidade}" datePattern="dd/MM/yyyy" />
+            </s:decorate>
+			
+            <s:decorate id="precoCompraUnidadeField" template="layout/display.xhtml">
+                <ui:define name="label">Preço Compra </ui:define>              
+                <h:outputText value="#{loteProdutoHome.instance.precoCompraUnidade}">
+                	<f:convertNumber currencySymbol="R$"  type="currency"  locale="pt_BR"/>
+                </h:outputText>
+            </s:decorate>
+			
+            <s:decorate id="precoVendaUnidadeField" template="layout/edit.xhtml">
+                <ui:define name="label">Preço Venda</ui:define>
+                <easy:inputCurrency id="precoVendaUnidade" 
+									value="#{loteProdutoHome.instance.precoVendaUnidade}" 
+									required="true"
+									decimalSeparator="," 
+									groupSeparator="." 
+									useValidate="true"
+									returnDecimal="true" 
+									size="10">
+				</easy:inputCurrency>		
+            </s:decorate>
+
+
+            <s:decorate id="qtdEstoqueField" template="layout/edit.xhtml">
+                <ui:define name="label">Qtd Estoque</ui:define>
+                <h:inputText id="qtdEstoque" size="10"
+                       required="true"
+                          value="#{loteProdutoHome.instance.qtdEstoque}">
+                </h:inputText>
+            </s:decorate>
+
+
+            <s:decorate id="prcDescontoMaximoField" template="layout/edit.xhtml">
+                <ui:define name="label">% desconto máximo</ui:define>
+                 <rich:inputNumberSpinner id="prcDescontoMaximo"  
+								 value="#{loteProdutoHome.instance.prcDescontoMaximo}"
+								 minValue="0"							  
+								 step="1" 
+								 inputSize="4"
+								 maxValue="100">														 
+						</rich:inputNumberSpinner>
+            </s:decorate>
+
+
+            <div style="clear:both">
+                <span class="required">*</span>
+                Campos obrigatórios
+            </div>
+
+        </rich:panel>
+
+        <div class="actionButtons">
+
+       
+            <h:commandButton id="update"
+                          value="Salvar"
+                         action="#{loteProdutoHome.balancete}"
+                       rendered="#{loteProdutoHome.managed}"/>
+
+            <s:button id="cancelEdit"
+                   value="Voltar"
+             propagation="end"
+                    view="/LoteProdutoListBalancete.xhtml"/>
+
+        </div>
+    </h:form>
+</ui:define>
+
+</ui:composition>

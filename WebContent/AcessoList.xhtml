@@ -1,0 +1,135 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:s="http://jboss.com/products/seam/taglib"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:rich="http://richfaces.org/rich"
+    xmlns:a="http://richfaces.org/a4j"
+    template="layout/template.xhtml">
+
+<ui:define name="body">
+
+    <h:form id="acessoSearch" styleClass="edit">
+
+		<ui:include src="/paginas/help/GenericListHelp.xhtml"/>
+    	
+        <rich:simpleTogglePanel label="Pesquisar Acesso" switchType="client">
+
+			<s:decorate id="usuarioField"	template="layout/edit.xhtml">
+				<ui:define name="label">Usuário</ui:define>
+			  	
+				<h:selectOneMenu value="#{acessoList.acesso.usuario}" styleClass="defaultInput">		
+				   <s:selectItems value="#{usuarioList.resultList}" 
+				   				  var="usuario" 		
+				   				  noSelectionLabel="Selecione.."				   				  		
+				                  label="#{usuario.nomeUsuario}  (#{usuario.perfil.nomePerfil})"/>				   							   							       
+				   <s:convertEntity />			
+				</h:selectOneMenu>										
+			</s:decorate>
+			
+			<s:decorate id="transacaoField"	template="layout/edit.xhtml">
+				<ui:define name="label">Transação</ui:define>
+			  	
+				<h:selectOneMenu value="#{acessoList.acesso.transacao}" styleClass="defaultInput">		
+				   <s:selectItems value="#{transacaoList.resultList}" 
+				   				  var="transacao" 		
+				   				  noSelectionLabel="Selecione.."				   				  		
+				                  label="#{transacao.siglaTransacao} - #{transacao.nome}"/>				   							   							       
+				   <s:convertEntity />			
+				</h:selectOneMenu>										
+			</s:decorate>
+			
+
+        </rich:simpleTogglePanel>
+
+        <table border="0" width="10%">
+			<tr>
+				<td nowrap="nowrap">
+		        	<div class="actionButtons">
+												
+						<a:commandButton id="search" type="submit" value="Pesquisar"
+							action="#{acessoList.setMostrarResultados(true)}" 
+							actionListener="#{acessoList.buscarTransacaoes()}"
+							reRender="panelResultado, resultadoList" />
+							
+						<s:button id="reset" value="Limpar" includePageParams="false"/>
+						
+						<rich:hotKey key="return" handler="#{rich:element('search')}.click()" />
+					</div>
+				</td>				
+	    	</tr>
+		</table>
+
+    </h:form>
+    
+    <h:form>
+    	<a:outputPanel id="panelResultado" ajaxRendered="true">
+		    <rich:panel rendered="#{acessoList.mostrarResultados}">
+		        
+			    <f:facet name="header">
+				    	Resultado da Consulta de Acessos(#{empty acessoList.resultList ? 0 : (acessoList.paginated ? acessoList.resultCount : acessoList.resultList.size)})
+			    </f:facet>
+				
+				<h:outputText value="#{messages['mensagem.pesquisa.vazia']}" rendered="#{empty acessoList.usuarioAcessoDTOList}"/>
+		
+			    <rich:dataTable id="resultadoList"
+			                var="usuarioAcessoDTO"
+			              value="#{acessoList.usuarioAcessoDTOList}"
+			           onRowMouseOver="this.style.backgroundColor='#F0F0F0'"
+			           onRowMouseOut="this.style.backgroundColor='#{a4jSkin.rowBackgroundColor}'"
+			           columnClasses="center"  
+			           			rows="15"
+			            columnsWidth="*, *, *, *, *"            
+			              rowClasses="tableRowOne,tableRowTwo">
+			        
+			        <rich:column sortBy="#{usuarioAcessoDTO.usuario.nomeUsuario}" styleClass="#{usuarioAcessoDTO.possuiAcesso ? 'tableRowSelecionada center': 'center'}"> 
+			           <f:facet name="header">
+			               <h:outputText value="Usuário"/>
+			           </f:facet> 
+			           <h:outputText value="#{usuarioAcessoDTO.usuario.nomeUsuario}"/>
+			        </rich:column> 
+			               
+			        <rich:column sortBy="#{usuarioAcessoDTO.transacao.siglaTransacao}"  styleClass="#{usuarioAcessoDTO.possuiAcesso ? 'tableRowSelecionada center': 'center'}"> 
+			           <f:facet name="header">
+			               <h:outputText value="Sigla Transação"/>
+			           </f:facet> 
+			           <h:outputText value="#{usuarioAcessoDTO.transacao.siglaTransacao}"/>
+			        </rich:column> 
+			        
+			        <rich:column sortBy="#{usuarioAcessoDTO.transacao.nome}" styleClass="#{usuarioAcessoDTO.possuiAcesso ? 'tableRowSelecionada left': 'left'}"> 
+			           <f:facet name="header">
+			               <h:outputText value="Nome Transação"/>
+			           </f:facet> 
+			           <h:outputText value="#{usuarioAcessoDTO.transacao.nome}"/>
+			        </rich:column> 
+			        
+			        <rich:column sortBy="#{usuarioAcessoDTO.transacao.descTransacao}" styleClass="#{usuarioAcessoDTO.possuiAcesso ? 'tableRowSelecionada left': 'left'}"> 
+			           <f:facet name="header">
+			               <h:outputText value="Descricao Transação"/>
+			           </f:facet> 
+			           <h:outputText value="#{usuarioAcessoDTO.transacao.descTransacao}"/>
+			        </rich:column> 
+			        
+			         <rich:column styleClass="#{usuarioAcessoDTO.possuiAcesso ? 'tableRowSelecionada center': 'center'}" rendered="#{identity.hasRole(transacoes.transacaoAcessoEditar) or identity.hasRole('ADMINISTRADOR')}" > 
+			           	<f:facet name="header">
+			               <h:outputText value="Acesso" title="Selecione para conceder o acesso."/>
+			           	</f:facet> 
+			            <h:selectBooleanCheckbox id="op" value="#{usuarioAcessoDTO.possuiAcesso}">
+								<a:support ajaxSingle="true" event="onclick" 
+							action="#{acessoHome.concederAcesso(usuarioAcessoDTO.usuario, usuarioAcessoDTO.transacao, usuarioAcessoDTO.possuiAcesso)}"
+								reRender="resultadoList"
+							/>
+						</h:selectBooleanCheckbox>
+			        </rich:column> 
+			    </rich:dataTable>
+			    
+				<ui:include src="/includes/includeDataScroller.xhtml"/>
+	    
+	    	</rich:panel>
+    	</a:outputPanel>
+	</h:form>
+</ui:define>
+
+</ui:composition>

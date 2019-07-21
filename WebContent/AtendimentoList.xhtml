@@ -1,0 +1,278 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:s="http://jboss.com/products/seam/taglib"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:a="http://richfaces.org/a4j"
+    xmlns:rich="http://richfaces.org/rich"
+    xmlns:easy="http://easyfaces.com.br/easyfaces"
+    template="layout/template.xhtml">
+
+<ui:define name="head">
+	<a:loadScript src="/javascript/maskCpfCnpj.js"/>	
+	
+	<style>
+        .tooltip {
+            background-color:#FFFFEE;
+            border-width:2px;
+            padding:10px;
+        }
+        .tooltip-text {
+            width:250px;
+            height:80px;
+            cursor:arrow;
+            border-width:2px;
+            text-align:center;
+            display: table-cell;
+            vertical-align: middle; 
+        }
+        .tooltipData {
+            font-weight: bold;
+        }
+    </style>
+</ui:define>
+
+<ui:define name="body">
+
+    <h:form id="atendimentoSearch" styleClass="edit">
+		
+		<ui:include src="/paginas/help/GenericListHelp.xhtml"/>	
+		
+        <rich:simpleTogglePanel label="Filtro de pesquisa de Atendimento" switchType="client">
+
+			<s:decorate template="layout/display.xhtml">
+                <ui:define name="label">Código Atendimento</ui:define>
+                <h:inputText id="codAtendimento" value="#{atendimentoList.atendimento.codAtendimento}" maxlength="10" />
+            </s:decorate>
+            
+            <s:decorate template="layout/display.xhtml">
+                <ui:define name="label">Código Cliente</ui:define>
+                <h:inputText id="codCliente" value="#{atendimentoList.atendimento.cliente.codCliente}" maxlength="10" />
+            </s:decorate>
+            
+              
+            <s:decorate template="layout/display.xhtml">
+                <ui:define name="label">CPF/CNPJ</ui:define>
+                <h:inputText id="cpfCnpj" value="#{atendimentoList.atendimento.cliente.cpfCnpj}" maxlength="18" onkeyup="mascaraTexto(event)"/>
+            </s:decorate>  
+            
+            <s:decorate template="layout/display.xhtml">
+                <ui:define name="label">Nome Cliente</ui:define>
+                <h:inputText id="nome" value="#{atendimentoList.atendimento.cliente.nome}" size="40" maxlength="50"/>
+            </s:decorate>
+                                    
+			 <s:decorate id="telefoneField" template="layout/display.xhtml">
+                <ui:define name="label">Telefone</ui:define>
+ 				
+ 				<easy:inputPhone id="telefone"
+	                value="#{atendimentoList.atendimento.cliente.telefone}"
+	                required="false"
+	                submitWithMask="true"
+	                useMask="true"
+	                useValidate="false"
+	                useMaskSize="false"
+	                placeHolder=" ">
+                </easy:inputPhone>
+            </s:decorate> 
+                    			
+			<s:decorate template="layout/display.xhtml">
+                <ui:define name="label">Funcionário</ui:define>                
+                <h:selectOneMenu id="usuario" value="#{atendimentoList.atendimento.usuario}" styleClass="defaultInput">		
+				   <s:selectItems value="#{usuarioList.resultList}" 
+				   				  var="usuario" 			
+				                  label="#{usuario.nomeUsuario}"
+				                  required="false"
+				                  noSelectionLabel="Selecione.." />							       		
+				   <s:convertEntity />			
+				</h:selectOneMenu>		
+            </s:decorate>
+            
+            <s:decorate template="layout/display.xhtml">
+                <ui:define name="label">Tipo Atendimento</ui:define>                
+                 <h:selectOneMenu id="codTipoAtendimento" value="#{atendimentoList.atendimento.codTipoAtendimento}" styleClass="defaultInput">		
+					<f:selectItem itemLabel="Selecione.."/>
+					<f:selectItem itemLabel="Ativo" itemValue="1" />
+				  	<f:selectItem itemLabel="Receptivo" itemValue="2"/>
+				  	<f:selectItem itemLabel="Revenda" itemValue="3" />
+				  	<f:selectItem itemLabel="Cotação" itemValue="4" />
+				</h:selectOneMenu>		
+            </s:decorate>
+            
+            <s:decorate template="layout/display.xhtml">
+                <ui:define name="label">Situação Atendimento</ui:define>                
+                <h:selectOneMenu id="statusAtendimento" value="#{atendimentoList.atendimento.statusAtendimento}" styleClass="defaultInput">		
+				  	<f:selectItem itemLabel="Selecione.."/>
+				  	<f:selectItem itemLabel="Concluídos" itemValue="1" />
+					<f:selectItem itemLabel="Pendentes" itemValue="0" />
+				</h:selectOneMenu>		
+            </s:decorate>
+            
+            <s:decorate template="layout/edit.xhtml">
+                <ui:define name="label">Data Início</ui:define>
+                <rich:calendar id="dataInicio" required="true" value="#{atendimentoList.dataInicio}" defaultTime="00:00" resetTimeOnDateSelect="true" datePattern="dd/MM/yyyy">
+                	<f:convertDateTime pattern="yyyy-MM-dd HH:mm"/>
+                </rich:calendar>
+            </s:decorate>
+             
+            <s:decorate template="layout/edit.xhtml"> 
+                <ui:define name="label">Data Fim</ui:define> 
+                <rich:calendar id="dataFim" required="true" value="#{atendimentoList.dataFim}" defaultTime="23:59" resetTimeOnDateSelect="false" datePattern="dd/MM/yyyy">
+                	<f:convertDateTime pattern="yyyy-MM-dd HH:mm"/>
+                </rich:calendar>
+            </s:decorate>
+            
+            <s:decorate template="layout/display.xhtml">
+                <ui:define name="label">Obtenção de Êxito</ui:define>                
+                				
+				<h:selectOneRadio id="inObtencaoExito" value="#{atendimentoList.obtencaoExito}" styleClass="textoNegrito">	
+					<f:selectItem itemLabel="Todos"/>				
+					<f:selectItem itemLabel="Sim" itemValue="true" />		
+					<f:selectItem itemLabel="Não" itemValue="false"/>
+				</h:selectOneRadio>	
+            </s:decorate>
+             
+            <s:decorate template="layout/display.xhtml"> 
+                <ui:define name="label"><h:outputText value="Qtd. Linhas" title="Quantidade de linhas que serão exibidas na consulta" /></ui:define>                                
+				<rich:inputNumberSpinner id="numeroLinhasDT" value="#{atendimentoList.numeroLinhasDT}" step="10" inputSize="8" maxValue="1000" styleClass="inputDefault"/>				
+            </s:decorate> 
+            
+		</rich:simpleTogglePanel>
+		
+		<table border="0" width="10%">
+			<tr>
+				<td nowrap="nowrap">
+		        	<div class="actionButtons">
+						<a:commandButton id="search" type="submit" value="Pesquisar"
+							action="#{atendimentoList.setMostrarResultados(true)}" actionListener="#{atendimentoList.setRestriction()}"
+							reRender="panelResultado, resultadoList, sc"/>
+						<s:button id="reset" value="Limpar" includePageParams="true" action="#{atendimentoList.limpar()}"/>
+						<rich:hotKey key="return"
+							handler="#{rich:element('search')}.click()" />
+					</div>
+				</td>
+				<td nowrap="nowrap">    
+				    <s:div styleClass="actionButtons" rendered="#{identity.hasRole(transacoes.transacaoAtendimentoInserir)}">
+				        <s:button view="/AtendimentoEdit.xhtml"
+				                    id="create"
+				           propagation="none"
+				                 value="Novo Atendimento">
+				           
+				        </s:button>
+				    </s:div>
+			   	</td>
+	    	</tr>
+		</table>
+    </h:form>
+    
+	<h:form>
+		<a:outputPanel id="panelResultado" ajaxRendered="true">
+		    <rich:panel rendered="#{atendimentoList.mostrarResultados}">
+		        
+		    <f:facet name="header">
+			    	Resultado da Consulta de Atendimentos(#{empty atendimentoList.resultList ? 0 : (atendimentoList.paginated ? atendimentoList.resultCount : atendimentoList.resultList.size)})
+		    </f:facet>
+			
+			<h:outputText value="#{messages['mensagem.pesquisa.vazia']}" rendered="#{empty atendimentoList.resultList}"/>
+			
+		    <rich:dataTable  id="resultadoList"
+		                	var="_atendimento"
+		               	  value="#{atendimentoList.resultList}"
+		         onRowMouseOver="this.style.backgroundColor='#F0F0F0'"
+		          onRowMouseOut="this.style.backgroundColor='#{a4jSkin.rowBackgroundColor}'"
+		          columnClasses="center"  
+		           		   rows="#{atendimentoList.numeroLinhasDT }"
+		           columnsWidth="5%, *, *, *, *, 5%, 5%"
+		               rendered="#{not empty atendimentoList.resultList}"
+		             rowClasses="tableRowOne,tableRowTwo">
+		             
+		        <rich:column styleClass="center"> 
+		           <f:facet name="header">
+		               <h:outputText value="Atendimento"/>
+		           </f:facet> 
+		           <h:outputText value="#{_atendimento.codAtendimento}"/>
+		         </rich:column> 
+		         
+		         <rich:column styleClass="left"   > 
+		           <f:facet name="header">
+		               <h:outputText value="Cliente"/>
+		           </f:facet> 
+		           <h:outputText value="#{_atendimento.nomeCliente} - #{_atendimento.telefoneCliente}"/>
+		         </rich:column> 
+		         
+		         <rich:column styleClass="center"   > 
+		           <f:facet name="header">
+		               <h:outputText value="Funcionário"/>
+		           </f:facet> 
+		           <h:outputText value="#{_atendimento.nomeFuncionario}"/>
+		         </rich:column> 
+		         
+		          <rich:column styleClass="center"   > 
+		           <f:facet name="header">
+		               <h:outputText value="Tipo Atendimento"/>
+		           </f:facet> 
+		           	<h:outputText value="Ativo" rendered="#{_atendimento.codTipoAtendimento == 1}"/>
+                	<h:outputText value="Receptivo" rendered="#{_atendimento.codTipoAtendimento == 2}"/>
+                	<h:outputText value="Revenda" rendered="#{_atendimento.codTipoAtendimento == 3}"/>
+                	<h:outputText value="Cotação" rendered="#{_atendimento.codTipoAtendimento == 4}"/>
+		         </rich:column> 
+		         
+		         <rich:column  styleClass="center"> 
+		           <f:facet name="header">
+		               <h:outputText value="Data"/>
+		           </f:facet> 
+		           <h:outputText value="#{_atendimento.dataAtendimento}">
+		                <s:convertDateTime type="both" dateStyle="short" pattern="dd/MM/yyyy hh:mm"/>
+		           </h:outputText>
+		         </rich:column>     
+		         
+		         <rich:column styleClass="center"> 
+		           <f:facet name="header">
+		               <h:outputText value="Situação"/>
+		           </f:facet> 
+		           <h:outputText value="Concluído" rendered="#{_atendimento.statusAtendimento == 1}"/>
+		           <h:outputText value="Pendente" rendered="#{_atendimento.statusAtendimento == 0}"/>
+		         </rich:column>  
+		         
+		      	 <rich:column styleClass="center"> 
+		           <f:facet name="header">
+		               <h:outputText value="Êxito" title="Obtenção de Êxito"/>
+		           </f:facet> 
+		           <h:outputText value="Sim" rendered="#{_atendimento.inObtencaoExito}"/>
+		           <h:outputText value="Não" rendered="#{!_atendimento.inObtencaoExito}"/>
+		         </rich:column> 
+		         
+		         <rich:column styleClass="action" > 
+		            <f:facet name="header">Ver/Editar</f:facet>
+		            <s:link view="/Atendimento.xhtml" id="atendimentoViewId"  propagation="default">
+		                <h:graphicImage url="/img/binoculo.jpg"/>
+		                <f:param name="atendimentoCodAtendimento" value="#{_atendimento.codAtendimento}"/>
+		                <f:param name="atendimentoFrom" value="AtendimentoList"/>
+		            </s:link>
+		            <rich:toolTip for="atendimentoViewId" followMouse="true"  direction="top-left" showDelay="200" styleClass="tooltip">
+			            	 <h:outputText escape="false" value="#{_atendimento.descAtendimento}" />
+			        </rich:toolTip>
+		            
+		            #{' '}
+		            
+		            <s:link view="/AtendimentoEdit.xhtml" propagation="default" id="atendimentoEdit" rendered="#{identity.hasRole(transacoes.transacaoAtendimentoEditar)}" >
+		                <h:graphicImage url="/img/editar.jpg"/> 
+		                <f:param name="atendimentoCodAtendimento" value="#{_atendimento.codAtendimento}"/>
+		                <f:param name="atendimentoFrom" value="AtendimentoList"/>
+		            </s:link>
+		            <rich:toolTip for="atendimentoEdit" value="Editar Atendimento" direction="top-left"/>
+		        </rich:column>
+		         		         
+		    </rich:dataTable>
+		
+			<ui:include src="/includes/includeDataScroller.xhtml"/>
+		    
+		    </rich:panel>
+		</a:outputPanel>
+	</h:form> 	
+	    
+<rich:jQuery selector="#codAtendimento" timing="onload" query="focus()" />
+</ui:define>
+
+</ui:composition>

@@ -1,0 +1,70 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:s="http://jboss.com/products/seam/taglib"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:a="http://richfaces.org/a4j"
+	xmlns:rich="http://richfaces.org/rich">
+
+	<a:outputPanel ajaxRendered="false">
+	<h:form id="clientesInadimplentesForm">
+
+		<rich:panel header="Seus Clientes INADIMPLENTES" styleClass="panelHeightHome">
+
+			<rich:dataTable id="clientesInadimplentesList" 
+				var="_cliente" 
+				rows="8"
+				value="#{clienteList.listarClientesInadiplentes()}"
+				onRowMouseOver="this.style.backgroundColor='#F0F0F0'"
+				onRowMouseOut="this.style.backgroundColor='#{a4jSkin.rowBackgroundColor}'"
+				columnClasses="center" 
+				footerClass="center"
+				rendered="#{not vendaList.pesquisaVazia}"
+				headerClass="tableHeaderHome"
+				styleClass="tableHeightHome"
+				columnsWidth="*,*,0*,0*"
+				rowClasses="tableRowOne,tableRowTwo">
+
+				 <rich:column styleClass="center"> 
+		           <f:facet name="header">
+		               <h:outputText value="Código"/>
+		           </f:facet> 
+		           <h:outputText value="#{_cliente.codCliente}" styleClass="textoMedioVermelho"/>
+		         </rich:column> 
+		
+		        <rich:column styleClass="left"> 
+		           <f:facet name="header">
+		               <h:outputText value="Nome / Razão Social"/>
+		           </f:facet> 
+		           <h:outputText value="#{_cliente.nome}" styleClass="textoMedioVermelho"/>
+		         </rich:column> 
+		         
+		         <rich:column> 
+		           <f:facet name="header">
+		               <h:outputText value="Telefone"/>
+		           </f:facet> 
+		           <h:outputText value="#{_cliente.telefone}" styleClass="textoMedioVermelho"/>
+		         </rich:column>  
+		         
+		         
+		         <rich:column> 
+		            <f:facet name="header">Ver</f:facet>
+		            <s:link view="/Cliente.xhtml" id="clienteViewId"  propagation="default">
+		                <h:graphicImage url="/img/binoculo.jpg"/>
+		                <f:param name="clienteCodCliente" value="#{_cliente.codCliente}"/>
+		                <f:param name="clienteFrom" value="home"/>
+		            </s:link>
+		            <rich:toolTip for="clienteViewId" value="Visualizar Cliente" direction="top-left"/>
+		        </rich:column>
+		         
+		         
+			</rich:dataTable>
+			<rich:datascroller align="center" ajaxSingle="true" limitToList="true" renderIfSinglePage="false" for="clientesInadimplentesList" maxPages="5" id="sc"/>
+				
+		</rich:panel> 
+	</h:form>
+	</a:outputPanel>
+</ui:composition>

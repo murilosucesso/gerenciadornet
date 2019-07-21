@@ -1,0 +1,34 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition id="panelPopUp" width="700" height="470" 
+	xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:s="http://jboss.com/products/seam/taglib"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:a="http://richfaces.org/a4j"
+    xmlns:rich="http://richfaces.org/rich">
+	
+	<div>
+		<a:commandLink>
+			<h:graphicImage value="/img/help.png" styleClass="help" id="helplink"/>
+			<rich:toolTip direction="bottom-left" attachTo="helplink" followMouse="true">
+	            <s:span styleClass="helpFont">
+	                 --------------------------------------- Ajuda, Dicas e Procedimentos para Pesquisa  ------------------------------------<br/><br/>
+	                 - Preencha os campos do Filtro de Pesquisa conforme desejar<br/>
+	                 - Os campos marcados com * são de preenchimento obrigatório<br/>
+	                 - Clique no botão Pesquisar para que a pesquisa seja executada<br/>
+	                 - Serão listados 15 registros como resultado por página<br/>
+	                 - Clique no botão >> para avançar um página ou no botão >> >> para ir para última página<br/>
+	                 - Clique no botão &#60;&#60; para voltar uma página ou no botão &#60;&#60; &#60;&#60; para ir para primeira página<br/>
+	                 - Caso queira ir para uma página específica, clique no número da página<br/>
+	                 - Caso queira ordernar sua pesquisa, basta clicar no cabeçalho da coluna pela qual deseja ordenar,<br/>
+	                   um clique na coluna ordena de forma crescente e um outro clique ordena decrescente <br/><br/>
+				     - Para visualizar os detalhes de um registro listado, clique na imagem Visualizar na coluna Visualizar/Editar/Excluir<br/>
+				     - Caso queira realizar uma nova pesquisa, clique no botão limpar e reinicie o processo<br/>
+	            </s:span>
+	       	</rich:toolTip>
+      	</a:commandLink>
+   	</div>
+     		
+</ui:composition> 

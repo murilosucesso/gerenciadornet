@@ -1,0 +1,97 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:s="http://jboss.com/products/seam/taglib"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:a="http://richfaces.org/a4j"
+    xmlns:rich="http://richfaces.org/rich"
+    template="layout/template.xhtml">
+
+<ui:define name="body">
+
+    <h:form id="transacao" styleClass="edit">
+    
+		<ui:include src="/paginas/help/GenericEditHelp.xhtml"/>
+        <rich:panel>
+            <f:facet name="header">#{transacaoHome.managed ? 'Editar' : 'Adicionar'} Transação</f:facet>
+
+
+
+            <s:decorate id="siglaTransacaoField" template="layout/edit.xhtml">
+                <ui:define name="label">Sigla Transação</ui:define>
+                <h:inputText id="siglaTransacao"
+                       required="true"
+                           size="6"
+                      maxlength="5"
+                          value="#{transacaoHome.instance.siglaTransacao}">
+                </h:inputText>                
+            </s:decorate>
+            
+             <s:decorate id="nomeTransacaoField" template="layout/edit.xhtml">
+                <ui:define name="label">Nome Transação</ui:define>
+                <h:inputText id="nomeTransacao"
+                       required="true"
+                      		size="80"
+                      maxlength="50"
+                          value="#{transacaoHome.instance.nome}">
+                </h:inputText>                
+            </s:decorate>
+            
+
+
+            <s:decorate id="descTransacaoField" template="layout/edit.xhtml">
+                <ui:define name="label">Desc Transação</ui:define>
+                <h:inputText id="descTransacao"
+                       required="true"
+                    	   size="80"
+                      maxlength="100"
+                          value="#{transacaoHome.instance.descTransacao}">
+                </h:inputText>
+            </s:decorate>
+
+            <div style="clear:both">
+                <span class="required">*</span>
+                Campos obrigatórios
+            </div>
+
+        </rich:panel>
+
+        <div class="actionButtons">
+
+            <h:commandButton id="save"
+                          value="Salvar"
+                         action="#{transacaoHome.persist}"
+                       disabled="#{!transacaoHome.wired}"
+                       rendered="#{!transacaoHome.managed}"/>
+
+            <h:commandButton id="update"
+                          value="Salvar"
+                         action="#{transacaoHome.update}"
+                       rendered="#{transacaoHome.managed}"/>
+
+            <h:commandButton id="delete"
+                          value="Excluir"
+                         action="#{transacaoHome.remove}"
+                      immediate="true"
+                       rendered="#{transacaoHome.managed}"/>
+
+            <s:button id="cancelEdit"
+                   value="Voltar"
+             propagation="end"
+                    view="/Transacao.xhtml"
+                rendered="#{transacaoHome.managed}"/>
+
+            <s:button id="cancelAdd"
+                   value="Voltar"
+             propagation="end"
+                    view="/#{empty transacaoFrom ? 'TransacaoList' : transacaoFrom}.xhtml"
+                rendered="#{!transacaoHome.managed}"/>
+
+        </div>
+    </h:form>
+
+</ui:define>
+
+</ui:composition>

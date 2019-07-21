@@ -1,0 +1,35 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition id="panelPopUp" width="700" height="470" 
+	xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:s="http://jboss.com/products/seam/taglib"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:a="http://richfaces.org/a4j"
+    xmlns:rich="http://richfaces.org/rich">
+
+	<div>
+		<a:commandLink>
+			<h:graphicImage value="/img/help.png" styleClass="help" id="helplink"/>
+			<rich:toolTip direction="bottom-left" attachTo="helplink" followMouse="true">
+	            <s:span styleClass="helpFont">
+	                 ---------------------- Ajuda, Dicas e Procedimentos para Editar/Alterar/Excluir  -------------------------<br/><br/>
+	                 - Preencha os campos que serão alterados<br/>
+	                 - Alguns campos não são passíveis de edição
+	                 - Os campos marcados com asterisco(*) são de preenchimento obrigatório<br/> 
+	                 - Clique no botão Salvar para que as alterações sejam confirmadas<br/><br/>
+	                 
+	                 - Caso queira Excluir(Desabilitar) a entidade selecionada, clique no botão Excluir<br/>
+	                 - Obs: A ação de Excluir(Desabilitar) uma entidade, não significa que esta será<br/>
+	                   excluída fisicamente do banco de dados. Podendo ser recuperada posteriormente.<br/>
+	                   Sempre que uma entidade for excluída/alterada, será gravado um histórico com os dados <br/>
+	                   do responsável pela exclusão/alteração.  
+	                   
+	                 - Caso queira cancelar a alteração, clique no botão Voltar<br/>	                         
+	            </s:span>
+	       	</rich:toolTip>
+      	</a:commandLink>
+   	</div>
+     		
+</ui:composition> 

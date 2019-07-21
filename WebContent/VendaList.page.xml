@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<page xmlns="http://jboss.com/products/seam/pages"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://jboss.com/products/seam/pages http://jboss.com/products/seam/pages-2.2.xsd"
+      login-required="true">
+   
+   <restrict>#{identity.hasRole(transacoes.transacaoVendaConsultar)}</restrict>
+   
+   <begin-conversation join="true" flush-mode="MANUAL"/>
+   
+   <param name="firstResult" value="#{vendaList.firstResult}"/>
+   <param name="sort" value="#{vendaList.orderColumn}"/>
+   <param name="dir" value="#{vendaList.orderDirection}"/>
+   <param name="logic" value="#{vendaList.restrictionLogicOperator}"/>
+   <param name="vendaFrom"/>
+   
+   <param name="numNotaFiscal" value="#{vendaList.venda.numNotaFiscal}"/>
+   <param name="codVenda" value="#{vendaList.venda.codVenda}"/>
+   <param name="nomeCliente" value="#{vendaList.venda.cliente.nome}"/>
+   <param name="dataInicioVenda" value="#{vendaList.venda.dataInicioVenda}"/>
+   <param name="dataFimVenda" value="#{vendaList.venda.dataFimVenda}"/>
+   <param name="usuario" value="#{vendaList.venda.usuario.codUsuario}"/>   
+   <param name="inOrcamento" value="#{vendaList.inOrcamento}"/>
+   <param name="canal" value="#{vendaList.venda.canal}"/>
+   <param name="statusVenda" value="#{vendaList.statusVenda}"/>
+   <param name="statusVendaDefault" value="#{vendaList.statusVendaDefault}"/>
+   <param name="mostrarResultados" value="#{vendaList.mostrarResultados}"/>
+   <param name="tipoPagamento" value="#{vendaList.codTipoPagamento}"/>
+   <param name="usuarioCadastro" value="#{vendaList.usuarioCadastro.codUsuario}"/>
+   <param name="vendedorResponsavel" value="#{vendaList.vendedorResponsavel.codUsuario}"/>
+    
+</page>
+

@@ -1,0 +1,115 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:s="http://jboss.com/products/seam/taglib"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:a="http://richfaces.org/a4j"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:easy="http://easyfaces.com.br/easyfaces"
+	template="layout/template.xhtml">
+
+	<ui:define name="body">
+
+		<h:form id="produto" styleClass="edit" enctype="multipart/form-data">
+
+			<ui:include src="/paginas/help/GenericEditHelp.xhtml" />
+
+			<ui:include src="/paginas/help/GenericListHelp.xhtml" />
+
+			<rich:simpleTogglePanel label="Alterar Localizador de Produto"
+				switchType="client">
+
+				<s:decorate template="layout/display.xhtml">
+					<ui:define name="label">Código Produto</ui:define>
+					<h:inputText id="codProdutoExterno" styleClass="defaultInput"
+						value="#{produtoList.produto.codProdutoExterno}" maxlength="20" />
+				</s:decorate>
+
+				<s:decorate template="layout/display.xhtml">
+					<ui:define name="label">Nome Produto</ui:define>
+					<h:inputText id="nomeProduto"
+						value="#{produtoList.produto.nomeProduto}"
+						styleClass="defaultInput" maxlength="60" />
+				</s:decorate>
+
+			</rich:simpleTogglePanel>
+
+			<div class="actionButtons">
+				<a:commandButton id="search" type="submit" value="Pesquisar"
+					action="#{produtoList.setMostrarResultados(true)}"
+					reRender="resultadoList, panelDiv, msnListaVazia, sc" />
+
+				<s:button id="reset" value="Limpar" includePageParams="false" />
+				<rich:hotKey key="return"
+					handler="#{rich:element('search')}.click()" />
+			</div>
+		</h:form>
+
+		<h:form styleClass="edit" enctype="multipart/form-data">
+
+			<a:outputPanel id="msnListaVazia" ajaxRendered="true">
+
+				<rich:dataTable id="resultadoList" var="_produto"
+					value="#{produtoList.resultList}"
+					rendered="#{not empty produtoList.resultList}"
+					onRowMouseOver="this.style.backgroundColor='#F0F0F0'"
+					onRowMouseOut="this.style.backgroundColor='#{a4jSkin.rowBackgroundColor}'"
+					columnClasses="center" rows="20"
+					rowClasses="tableRowOne,tableRowTwo">
+
+					<rich:column sortBy="#{_produto.codProdutoExterno}">
+						<f:facet name="header">
+							<h:outputText value="Código Produto" />
+						</f:facet>
+						<h:outputText value="#{_produto.codProdutoExterno}" />
+					</rich:column>
+
+					<rich:column sortBy="#{_produto.nomeProduto}" styleClass="left">
+						<f:facet name="header">
+							<h:outputText value="Nome Produto" />
+						</f:facet>
+						<h:outputText value="#{_produto.nomeProduto}" />
+					</rich:column>
+
+					<rich:column sortBy="#{_produto.marca.nomeMarca}">
+						<f:facet name="header">
+							<h:outputText value="Marca" />
+						</f:facet>
+						<h:outputText value="#{_produto.marca.nomeMarca}" />
+					</rich:column>
+
+					<rich:column sortBy="#{_produto.marca.fornecedor.nomeFantasia}">
+						<f:facet name="header">
+							<h:outputText value="Fornecedor" />
+						</f:facet>
+						<h:outputText value="#{_produto.marca.fornecedor.nomeFantasia}" />
+					</rich:column>
+
+					<rich:column sortBy="#{_produto.categoria.nomeCategoria}">
+						<f:facet name="header">
+							<h:outputText value="Categoria" />
+						</f:facet>
+						<h:outputText value="#{_produto.categoria.nomeCategoria}" />
+					</rich:column>
+
+					<rich:column>
+						<f:facet name="header">
+							<h:outputText value="Localizador" />
+						</f:facet>
+						<h:inputText id="localizador" size="10" maxlength="20"
+							value="#{_produto.localizadorDefault}" />
+					</rich:column>
+
+					<rich:column>
+						<h:commandButton id="update" value="Salvar"
+							action="#{produtoHome.update}" rendered="#{produtoHome.managed}" />
+					</rich:column>
+				</rich:dataTable>
+
+				<ui:include src="/includes/includeDataScroller.xhtml" />
+			</a:outputPanel>
+		</h:form>
+	</ui:define>
+</ui:composition>

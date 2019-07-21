@@ -1,0 +1,79 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:s="http://jboss.com/products/seam/taglib"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:rich="http://richfaces.org/rich"
+    template="layout/template.xhtml">
+
+<ui:define name="body">
+
+    <rich:panel>
+        <f:facet name="header">Detalhes do Endereço</f:facet>
+
+        <s:decorate id="endereco" template="layout/display.xhtml">
+            <ui:define name="label">Endereço</ui:define>
+            <h:outputText value="#{enderecoHome.instance.endereco}"/>
+        </s:decorate>
+
+        <s:decorate id="numero" template="layout/display.xhtml">
+            <ui:define name="label">Número</ui:define>
+            <h:outputText value="#{enderecoHome.instance.numero}"/>
+        </s:decorate>
+
+        <s:decorate id="complemento" template="layout/display.xhtml">
+            <ui:define name="label">Complemento</ui:define>
+            <h:outputText value="#{enderecoHome.instance.complemento}"/>
+        </s:decorate>
+
+        <s:decorate id="bairro" template="layout/display.xhtml">
+            <ui:define name="label">Bairro</ui:define>
+            <h:outputText value="#{enderecoHome.instance.bairro}"/>
+        </s:decorate>
+
+        <s:decorate id="cidade" template="layout/display.xhtml">
+            <ui:define name="label">Cidade</ui:define>
+            <h:outputText value="#{enderecoHome.instance.cidade}"/>
+        </s:decorate>
+
+        <s:decorate id="uf" template="layout/display.xhtml">
+            <ui:define name="label">UF</ui:define>
+            <h:outputText value="#{enderecoHome.instance.uf}"/>
+        </s:decorate>
+        
+         <s:decorate id="cep" template="layout/display.xhtml">
+            <ui:define name="label">CEP</ui:define>
+            <h:outputText value="#{enderecoHome.instance.cep}"/>
+        </s:decorate>
+
+        <s:decorate id="telefone1" template="layout/display.xhtml">
+            <ui:define name="label">Telefone</ui:define>
+            <h:outputText value="#{enderecoHome.instance.telefone1}"/>
+        </s:decorate>
+
+        <s:decorate id="tefefone2" template="layout/display.xhtml">
+            <ui:define name="label">Tefefone</ui:define>
+            <h:outputText value="#{enderecoHome.instance.tefefone2}"/>
+        </s:decorate>
+
+        <div style="clear:both"/>
+
+    </rich:panel>
+
+    <div class="actionButtons">
+
+        <s:button view="/EnderecoEdit.xhtml"
+                    id="edit"
+                 value="Editar"/>
+
+        <s:button view="/#{empty enderecoFrom ? 'EnderecoList' : enderecoFrom}.xhtml"
+                    id="done"
+                 value="Voltar"/>
+
+    </div>
+ 
+</ui:define>
+
+</ui:composition>

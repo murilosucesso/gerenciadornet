@@ -1,0 +1,153 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:s="http://jboss.com/products/seam/taglib"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:a="http://richfaces.org/a4j"
+    xmlns:rich="http://richfaces.org/rich"
+    xmlns:easy="http://easyfaces.com.br/easyfaces"
+    template="layout/template.xhtml">
+    
+<ui:define name="head">
+	<a:loadScript src="javascript/util.js"/>
+</ui:define>
+
+<ui:define name="body">
+
+    <h:form id="endereco" styleClass="edit">
+
+        <rich:panel>
+            <f:facet name="header">#{enderecoHome.managed ? 'Editar' : 'Adicionar'} Endereço</f:facet>
+
+            <s:decorate id="enderecoField" template="layout/edit.xhtml">
+                <ui:define name="label">Endereço</ui:define>
+                <h:inputText id="endereco"
+                       required="true"
+                           size="60"
+                      maxlength="60"
+                          value="#{enderecoHome.instance.endereco}">
+                </h:inputText>
+            </s:decorate>
+
+
+            <s:decorate id="numeroField" template="layout/edit.xhtml">
+                <ui:define name="label">Número</ui:define>
+                <h:inputText id="numero"
+                		required="true"
+                           size="15"
+                      maxlength="15"
+                          value="#{enderecoHome.instance.numero}">
+                </h:inputText>
+            </s:decorate>
+
+
+            <s:decorate id="complementoField" template="layout/edit.xhtml">
+                <ui:define name="label">Complemento</ui:define>
+                <h:inputText id="complemento"
+                           size="60"
+                      maxlength="60"
+                          value="#{enderecoHome.instance.complemento}">
+                </h:inputText>
+            </s:decorate>
+
+
+            <s:decorate id="bairroField" template="layout/edit.xhtml">
+                <ui:define name="label">Bairro</ui:define>
+                <h:inputText id="bairro"
+                           size="60"
+                      maxlength="60"
+                          value="#{enderecoHome.instance.bairro}">
+                </h:inputText>
+            </s:decorate>
+
+
+            <s:decorate id="cidadeField" template="layout/edit.xhtml">
+                <ui:define name="label">Cidade</ui:define>
+                <h:inputText id="cidade"
+                		required="true"
+                           size="60"
+                      maxlength="60"
+                          value="#{enderecoHome.instance.cidade}">
+                </h:inputText>
+            </s:decorate>
+
+
+            <s:decorate id="ufField" template="layout/edit.xhtml">
+                <ui:define name="label">UF</ui:define>
+                <h:inputText id="uf"
+                		required="true"
+                           size="2"
+                      maxlength="2"
+                          value="#{enderecoHome.instance.uf}">
+                </h:inputText>
+            </s:decorate>
+            
+             <s:decorate template="layout/edit.xhtml">
+                <ui:define name="label">CEP</ui:define>
+               <easy:inputCep value="#{enderecoHome.instance.cep}" 
+               required="true" 
+               submitWithMask="true" 
+               useValidate="true" 
+               validatorMessage="CEP inválido"
+               useMask="true"/>
+            </s:decorate>
+
+
+            <s:decorate id="telefone1Field" template="layout/edit.xhtml">
+                <ui:define name="label">Telefone</ui:define>
+				<h:inputText id="telefone" required="false" maxlength="15" onkeypress="mascara( this, mtel )" value="#{enderecoHome.instance.telefone1}"/>				               
+            </s:decorate>
+
+
+            <s:decorate id="tefefone2Field" template="layout/edit.xhtml">
+                <ui:define name="label">Telefone</ui:define>
+				<h:inputText id="telefone2" required="false" maxlength="15" onkeypress="mascara( this, mtel )" value="#{enderecoHome.instance.tefefone2}"/>				
+            </s:decorate>
+
+            <div style="clear:both">
+                <span class="required">*</span>
+                Campos obrigatórios
+            </div>
+
+        </rich:panel>
+
+        <div class="actionButtons">
+
+            <h:commandButton id="save"
+                          value="Salvar"
+                         action="#{enderecoHome.persist}"
+                       disabled="#{!enderecoHome.wired}"
+                       rendered="#{!enderecoHome.managed}"/>
+
+            <h:commandButton id="update"
+                          value="Salvar"
+                         action="#{enderecoHome.update}"
+                       rendered="#{enderecoHome.managed}"/>
+
+            <h:commandButton id="delete"
+                          value="Excluir"
+                         action="#{enderecoHome.remove}"
+                      immediate="true"
+                       rendered="#{enderecoHome.managed}"/>
+
+            <s:button id="cancelEdit"
+                   value="Voltar"
+             propagation="end"
+                    view="/Endereco.xhtml"
+                rendered="#{enderecoHome.managed}"/>
+
+            <s:button id="cancelAdd"
+                   value="Voltar"
+             propagation="end"
+                    view="/#{empty enderecoFrom ? 'EnderecoList' : enderecoFrom}.xhtml"
+                rendered="#{!enderecoHome.managed}"/>
+
+        </div>
+    </h:form>
+
+ 
+</ui:define>
+
+</ui:composition>

@@ -1,0 +1,130 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:s="http://jboss.com/products/seam/taglib"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:rich="http://richfaces.org/rich"
+    template="layout/template.xhtml">
+
+<ui:define name="body">
+
+    <rich:panel>
+        <f:facet name="header">Detalhes da Categoria</f:facet>
+
+
+        <s:decorate id="nomeCategoria" template="layout/display.xhtml">
+            <ui:define name="label">Nome categoria</ui:define>
+            <h:outputText value="#{categoriaHome.instance.nomeCategoria}"/>
+        </s:decorate>
+
+        <div style="clear:both"/>
+
+    </rich:panel>
+
+    <div class="actionButtons">
+
+        <s:button view="/CategoriaEdit.xhtml" rendered="#{identity.hasRole(transacoes.transacaoCategoriaEditar)}"
+                    id="edit"
+                 value="Editar"/>
+
+        <s:button view="/#{empty categoriaFrom ? 'CategoriaList' : categoriaFrom}.xhtml"
+                    id="done"
+                 value="Voltar"/>
+
+    </div>
+
+    <rich:tabPanel switchType="ajax">
+
+    <rich:tab>
+        <f:facet name="label">
+            <h:panelGroup><h:graphicImage value="/img/onetomany.gif" style="vertical-align: middle; padding-right: 4px;"/>Produtos</h:panelGroup>
+        </f:facet>
+    <h:form styleClass="association" id="produtosChildren">
+
+        <h:outputText value="Nao existe produtos associados com esta categoria."
+                   rendered="#{empty categoriaHome.produtos}"/>
+
+        <rich:dataTable value="#{categoriaHome.produtos}"
+                       var="_produto"
+                  rendered="#{not empty categoriaHome.produtos}"                
+                        id="resultadoList"
+                      rows="10"
+			onRowMouseOver="this.style.backgroundColor='#F0F0F0'"
+           	 onRowMouseOut="this.style.backgroundColor='#{a4jSkin.rowBackgroundColor}'"
+           	 columnClasses="center"  
+           	 	rowClasses="tableRowOne,tableRowTwo">
+           
+             <rich:column sortBy="#{_produto.codProdutoExterno}"> 
+	           <f:facet name="header">
+	               <h:outputText value="Codigo produto"/>
+	           </f:facet> 
+	           <h:outputText value="#{_produto.codProdutoExterno}"/>
+	         </rich:column>  
+	               
+	         <rich:column sortBy="#{_produto.nomeProduto}"> 
+	           <f:facet name="header">
+	               <h:outputText value="Nome produto"/>
+	           </f:facet> 
+	           <h:outputText value="#{_produto.nomeProduto}"/>
+	         </rich:column>
+	   
+	         <rich:column sortBy="#{_produto.categoria.nomeCategoria}"> 
+	           <f:facet name="header">
+	               <h:outputText value="Categoria"/>
+	           </f:facet> 
+	           <h:outputText value="#{_produto.categoria.nomeCategoria}"/>
+	         </rich:column>
+	        
+	         <rich:column sortBy="#{_produto.marca.nomeMarca}"> 
+	           <f:facet name="header">
+	               <h:outputText value="Marca"/>
+	           </f:facet> 
+	           <h:outputText value="#{_produto.marca.nomeMarca}"/>
+	         </rich:column>
+	    
+	        <rich:column sortBy="#{_produto.descProduto}"> 
+	           <f:facet name="header">
+	               <h:outputText value="Descricao produto"/>
+	           </f:facet> 
+	           <h:outputText value="#{_produto.descProduto}"/>
+	         </rich:column>             
+	       
+	         <rich:column sortBy="#{_produto.inExclusao}"> 
+	           <f:facet name="header">
+	               <h:outputText value="#{messages['link.excluir']}"/> 
+	           </f:facet> 
+	           <h:outputText value="#{_produto.inExclusao}"/>
+	         </rich:column>
+	            
+            <h:column>
+                <f:facet name="header">Visualizar</f:facet>
+                           
+	             <s:link id="selectproduto" view="/Produto.xhtml">
+	                
+	                <h:graphicImage url="/img/binoculo.jpg"/>
+	                <f:param name="produtoCodProduto" value="#{_produto.codProduto}"/>
+	                    <f:param name="produtoFrom" value="Categoria"/>
+	             </s:link>
+	             <rich:toolTip for="selectproduto" value="Visualizar Produto" direction="top-left"/>
+	             
+            </h:column>
+        </rich:dataTable>
+		<ui:include src="/includes/includeDataScroller.xhtml"/>
+    </h:form>
+
+    <div class="actionButtons">
+        <s:button  rendered="#{identity.hasRole(transacoes.transacaoProdutoInserir)}"
+               value="Adicionar produto"
+                view="/ProdutoEdit.xhtml">
+            <f:param name="categoriaCodCategoria"
+                    value="#{categoriaHome.instance.codCategoria}"/>
+            <f:param name="produtoFrom" value="Categoria"/>
+        </s:button>
+    </div>
+    </rich:tab>
+</rich:tabPanel>
+</ui:define>
+
+</ui:composition>

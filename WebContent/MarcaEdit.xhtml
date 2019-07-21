@@ -1,0 +1,168 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:s="http://jboss.com/products/seam/taglib"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:a="http://richfaces.org/a4j"
+    xmlns:rich="http://richfaces.org/rich"
+    template="layout/template.xhtml">
+
+<ui:define name="body">
+
+    <h:form id="marca" styleClass="edit"> 
+		<ui:include src="/paginas/help/GenericEditHelp.xhtml"/>		
+        <rich:panel>
+            <f:facet name="header">#{marcaHome.managed ? 'Editar' : 'Adicionar'} Marca}</f:facet>
+
+			<s:decorate template="layout/display.xhtml">
+                <ui:define name="label">Fornecedor</ui:define> 
+                 <h:selectOneMenu id="fornecedor" value="#{marcaHome.instance.fornecedor}"  required="false" styleClass="defaultInput">		
+				   <s:selectItems  value="#{fornecedorList.resultList}" 
+				   				  var="fornecedor" 			
+				                  label="#{fornecedor.nomeFantasia}"
+				                  noSelectionLabel="Selecione.." 
+				                  />			
+				   <s:convertEntity />	
+				  </h:selectOneMenu>
+            </s:decorate> 
+
+            <s:decorate id="nomeMarcaField" template="layout/edit.xhtml">
+                <ui:define name="label">Marca</ui:define>
+                <h:inputText id="nomeMarca"
+                       required="true"
+                     styleClass="defaultInput"
+                      maxlength="60"
+                          value="#{marcaHome.instance.nomeMarca}">
+                </h:inputText>
+            </s:decorate>
+
+            <div style="clear:both">
+                <span class="required">*</span>
+               #{messages['label.campos.obrigatorios']} 
+            </div>
+
+        </rich:panel>
+
+        <div class="actionButtons">
+
+            <h:commandButton id="save"
+                          value="Salvar"
+                         action="#{marcaHome.persist}"
+                       disabled="#{!marcaHome.wired}"
+                       rendered="#{!marcaHome.managed and identity.hasRole(transacoes.transacaoMarcaInserir)}"/>
+
+            <h:commandButton id="update"
+                          value="Salvar"
+                         action="#{marcaHome.update}"
+                       rendered="#{marcaHome.managed and identity.hasRole(transacoes.transacaoMarcaEditar)}"/>
+
+            <h:commandButton id="delete"
+                          value="Excluir"
+                         action="#{marcaHome.remove}"
+                        onclick="if (!confirm('Tem certeza que deseja excluir este registro? Todos os produtos desta Marca serão desabilitados.')) return false"
+                      immediate="true"
+                       rendered="#{marcaHome.managed and identity.hasRole(transacoes.transacaoMarcaExcluir)}"/>
+
+            <s:button id="cancelEdit"
+                   value="Voltar"
+             propagation="end"
+                    view="/Marca.xhtml"
+                rendered="#{marcaHome.managed}"/>
+
+            <s:button id="cancelAdd"
+                   value="Voltar"
+             propagation="end"
+                    view="/#{empty marcaFrom ? 'MarcaList' : marcaFrom}.xhtml"
+                rendered="#{!marcaHome.managed}"/>
+
+        </div>
+    </h:form>
+
+<rich:tabPanel switchType="ajax">
+ 
+    <rich:tab label="Produtos">
+        <h:form styleClass="association" id="produtosChildren">
+
+            <h:outputText value="Nao existe produtos associados com este Marca."
+                       rendered="#{empty marcaHome.produtos}"/>
+
+					<rich:dataTable value="#{marcaHome.produtos}" var="_produto"
+						rendered="#{not empty marcaHome.produtos}" id="resultadoList"
+						onRowMouseOver="this.style.backgroundColor='#F0F0F0'"
+						onRowMouseOut="this.style.backgroundColor='#{a4jSkin.rowBackgroundColor}'"
+						columnClasses="center" rows="15"
+						rowClasses="tableRowOne,tableRowTwo">
+
+						<rich:column sortBy="#{_produto.codProdutoExterno}">
+							<f:facet name="header">
+								<h:outputText value="Codigo produto" />
+							</f:facet>
+							<h:outputText value="#{_produto.codProdutoExterno}" />
+						</rich:column>
+
+						<rich:column sortBy="#{_produto.nomeProduto}">
+							<f:facet name="header">
+								<h:outputText value="Nome produto" />
+							</f:facet>
+							<h:outputText value="#{_produto.nomeProduto}" />
+						</rich:column>
+
+						<rich:column sortBy="#{_produto.categoria.nomeCategoria}">
+							<f:facet name="header">
+								<h:outputText value="Categoria" />
+							</f:facet>
+							<h:outputText value="#{_produto.categoria.nomeCategoria}" />
+						</rich:column>
+
+						<rich:column sortBy="#{_produto.marca.nomeMarca}">
+							<f:facet name="header">
+								<h:outputText value="Marca" />
+							</f:facet>
+							<h:outputText value="#{_produto.marca.nomeMarca}" />
+						</rich:column>
+
+						<rich:column sortBy="#{_produto.descProduto}">
+							<f:facet name="header">
+								<h:outputText value="Descricao produto" />
+							</f:facet>
+							<h:outputText value="#{_produto.descProduto}" />
+						</rich:column>
+
+						<rich:column styleClass="action">
+							<f:facet name="header">Visualizar/Editar</f:facet>
+							<s:link view="/#{empty from ? 'Produto' : from}.xhtml"
+								value="#{empty from ? 'View' : 'Select'}"
+								propagation="#{empty from ? 'none' : 'default'}"
+								id="produtoViewId">
+								<f:param name="produtoCodProduto" value="#{_produto.codProduto}" />
+							</s:link>
+            				#{' '}
+           					 <s:link view="/ProdutoEdit.xhtml" value="Edit"
+								propagation="none" id="produtoEdit" rendered="#{empty from}">
+								<f:param name="produtoCodProduto" value="#{_produto.codProduto}" />
+							</s:link>
+						</rich:column>
+
+					</rich:dataTable>
+					<ui:include src="/includes/includeDataScroller.xhtml"/>
+        </h:form>
+
+        <f:subview rendered="#{marcaHome.managed}" id="produtos">
+        <div class="actionButtons">
+            <s:button id="addproduto"
+                   value="Novo produto"
+                    view="/ProdutoEdit.xhtml"
+             propagation="none">
+                 <f:param name="marcaCodMarca"
+                         value="#{marcaHome.instance.codMarca}"/>
+                 <f:param name="produtoFrom" value="Marca"/>
+            </s:button>
+        </div>
+        </f:subview>
+    </rich:tab>
+</rich:tabPanel>
+</ui:define>
+
+</ui:composition>

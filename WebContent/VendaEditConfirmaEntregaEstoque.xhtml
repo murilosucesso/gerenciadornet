@@ -1,0 +1,310 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:s="http://jboss.com/products/seam/taglib"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:rich="http://richfaces.org/rich"
+    xmlns:easy="http://easyfaces.com.br/easyfaces"
+    xmlns:a="http://richfaces.org/a4j"
+    template="layout/template.xhtml">
+
+<ui:define name="head">
+	<script type="text/javascript">
+		
+		function focarCodigoBarras(){
+			document.getElementById('venda:codBarras:codigoBarrasValidacao').value = "";
+			document.getElementById('venda:codBarras:codigoBarrasValidacao').focus();
+		}
+	
+	</script>
+</ui:define>
+	
+<ui:define name="body">
+			
+	<a:form id="venda">
+	
+    <rich:panel>
+    	
+        <f:facet name="header">Detalhes da Venda</f:facet>
+		
+		<ui:include src="/VendaImprimirEstoque.xhtml" />
+		<ui:include src="/VendaImprimirFinanceiro.xhtml" />
+		<ui:include src="/includes/includeCabecalhoDental.xhtml" />
+				
+		<h:panelGrid border="0" styleClass="painelGridCinza" columns="3" width="100%" cellpadding="0" columnClasses="left">
+		
+			 <h:outputLabel>					
+				<s:decorate id="nomeUsuarioField" template="layout/display.xhtml">
+					<ui:define name="label">Vendedor</ui:define>	
+					<h:outputText value="#{vendaHome.instance.usuario.nomeUsuario}" />							
+				</s:decorate>					 
+			 </h:outputLabel>
+			 
+			 <h:outputLabel>					 	
+	 		 	<s:decorate  id="clienteField"  template="layout/display.xhtml">
+					<ui:define name="label">Cliente</ui:define>	
+					<h:outputText value="#{vendaHome.instance.cliente.nome}" />												
+				</s:decorate>				
+			 </h:outputLabel>		
+			 
+			 <h:outputLabel>							
+					<s:decorate id="numNotaFiscalField" template="layout/display.xhtml">
+					<ui:define name="label">Número nota fiscal</ui:define>	
+					<h:outputText value="#{vendaHome.instance.numNotaFiscal}" />					
+					</s:decorate>			
+			 </h:outputLabel>					 
+			 
+			 <h:outputLabel>
+				<s:decorate id="tipoPagamentoField"	template="layout/display.xhtml">
+					<ui:define name="label">Tipo pagamento</ui:define>
+				   <h:outputText value="#{vendaHome.instance.tipoPagamento.descTipoPagamento}" />												
+				</s:decorate>
+			 </h:outputLabel>
+			 		 
+	         <s:decorate id="dataInicioVenda" template="layout/display.xhtml">
+	            <ui:define name="label">Data início</ui:define>	            
+	             <h:outputText value="#{vendaHome.instance.dataInicioVenda}" >
+	                <s:convertDateTime type="date" pattern="dd/MM/yyyy"/>
+	             </h:outputText>
+	         </s:decorate>
+	
+	         <s:decorate id="dataFimVenda" template="layout/display.xhtml">
+	            <ui:define name="label">Data fim</ui:define>	            
+	            <h:outputText value="#{vendaHome.instance.dataFimVenda}" >
+	                <s:convertDateTime type="date" pattern="dd/MM/yyyy"/>
+	            </h:outputText>
+	         </s:decorate>			
+			 	
+		</h:panelGrid>
+		
+		<rich:spacer height="7"/>	
+		
+		<rich:dataTable id="servicoList"
+                var="_servicoRealizado"
+              	value="#{vendaHome.servicoRealizados}"			           	
+	           	onRowMouseOver="this.style.backgroundColor='#F0F0F0'"
+	           	onRowMouseOut="this.style.backgroundColor='#{a4jSkin.rowBackgroundColor}'"
+	           	columnClasses="center" 
+	           	rowClasses="tableRowOne,tableRowTwo">	
+
+	         <f:facet name="header">
+                      <rich:columnGroup>                                                       
+                          <rich:column rendered="#{not empty vendaHome.servicoRealizados}">
+                              <h:outputText value="Serviço" />
+                          </rich:column >                                                        
+                      </rich:columnGroup>
+                  </f:facet>		         
+                 
+                   <rich:column rendered="#{not empty vendaHome.servicoRealizados}">
+                       <h:outputText value="#{_servicoRealizado.servico.descServico}"></h:outputText>
+                   </rich:column>
+                                         
+	    </rich:dataTable>			
+	    
+	   	<rich:spacer height="7"/>		
+	   	 
+		<h:panelGrid columns="2" border="0" width="100%" cellpadding="0" columnClasses="left">
+			<s:decorate id="codBarras" template="layout/display.xhtml">
+				<ui:define name="label">Código de Barras</ui:define>
+				<h:inputText id="codigoBarrasValidacao" maxlength="100" size="120" value="#{vendaHome.codBarrasValidacao}"/>
+			</s:decorate> 
+			
+			<a:commandButton id="botaoValidar" value=" Validar " ajaxSingle="true" process="codigoBarrasValidacao" 
+				action="#{vendaHome.validarProdutos()}" reRender="pvConfirmacaoPanel, btnConfirmarEntrega" oncomplete="focarCodigoBarras()"/>
+				
+			<rich:hotKey key="return" selector="#codigoBarrasValidacao" handler="#{rich:element('botaoValidar')}.click()"/> 
+		</h:panelGrid>
+		
+		<rich:spacer height="10"/>	    
+	    
+	    <a:outputPanel id="pvConfirmacaoPanel" ajaxRendered="true" >
+	    
+	    <rich:dataTable id="produtoList"
+                var="_produtoVendido"
+              	value="#{vendaHome.produtoVendidos}"			           	
+	           	onRowMouseOver="this.style.backgroundColor='#F0F0F0'"
+	           	onRowMouseOut="this.style.backgroundColor='#{a4jSkin.rowBackgroundColor}'"
+	           	columnClasses="center" 
+	           	columnsWidth="40%,10%,10%,10%,10%,10%,10%"
+	           	headerClass="#{vendaHome.cssFooterConfProduto}"
+	           	footerClass="#{vendaHome.cssFooterConfProduto}"
+	           	rowClasses="tableRowOne,tableRowTwo">	
+				
+                   <rich:column sortBy="#{_produtoVendido.loteProduto.produto.nomeProduto}" rendered="#{not empty vendaHome.produtoVendidos}" styleClass="#{_produtoVendido.qtdTotalSeparada? 'tableRowSelecionada left': 'left'}">
+                   	 	<f:facet name="header">
+                   	 		 <h:outputText value="Produto" />
+                   	 	</f:facet>
+                   	 	
+                       <h:outputText value="#{_produtoVendido.loteProduto.produto.nomeProduto}"/>
+                       <f:facet name="footer">
+                         <h:outputText value="Total" styleClass="textoNegrito6"/>
+                       </f:facet>
+                   </rich:column>
+                   
+                   <rich:column rendered="#{not empty vendaHome.produtoVendidos}" styleClass="#{_produtoVendido.qtdTotalSeparada? 'tableRowSelecionada center': 'center'}">
+                   	 	<f:facet name="header">
+                   	 		 <h:outputText value="Código Produto" />
+                   	 	</f:facet>
+                   	 	
+                       <h:outputText value="#{_produtoVendido.loteProduto.produto.codProdutoExterno}"/>
+                       <f:facet name="footer">
+                         <rich:spacer />
+                       </f:facet>
+                   </rich:column>
+                     
+                   <rich:column  rendered="#{not empty vendaHome.produtoVendidos}" styleClass="#{_produtoVendido.qtdTotalSeparada? 'tableRowSelecionada center': 'center'}">
+                   	 	<f:facet name="header">
+                   	 		 <h:outputText value="Código Barras" />
+                   	 	</f:facet>
+                   	 	
+                       <h:outputText value="#{_produtoVendido.loteProduto.produto.codigoBarrasProduto}"/>
+                       
+                   </rich:column>
+                      
+                   <rich:column  rendered="#{not empty vendaHome.produtoVendidos}" styleClass="#{_produtoVendido.qtdTotalSeparada? 'tableRowSelecionada center': 'center'}">
+                   		<f:facet name="header">
+                   	 		<h:outputText value="Marca" />
+                   	 	</f:facet>
+                       <h:outputText value="#{_produtoVendido.loteProduto.produto.marca.nomeMarca}"/>
+                       <f:facet name="footer">
+                           <rich:spacer />
+                       </f:facet>
+                   </rich:column>
+                   
+                   <rich:column  rendered="#{not empty vendaHome.produtoVendidos}" styleClass="#{_produtoVendido.qtdTotalSeparada? 'tableRowSelecionada center': 'center'}">
+                   	   <f:facet name="header">
+                   	 		 <h:outputText value="Lote" />
+                   	 	</f:facet>
+                       <h:outputText value="#{_produtoVendido.loteProduto.identificacaoLote}"/>
+                       <f:facet name="footer">
+                           <rich:spacer />
+                       </f:facet>
+                   </rich:column>
+                   
+                   <rich:column  rendered="#{not empty vendaHome.produtoVendidos}" styleClass="#{_produtoVendido.qtdTotalSeparada? 'tableRowSelecionada center': 'center'}">
+                   		<f:facet name="header">
+                   	 		 <h:outputText value="localizador" />
+                   	   	</f:facet>       
+                       <h:outputText value="#{_produtoVendido.loteProduto.produto.localizadorDefault}"/>
+                       <f:facet name="footer">
+                           <rich:spacer />
+                       </f:facet>
+                   </rich:column>
+                   
+                   <rich:column  rendered="#{not empty vendaHome.produtoVendidos}" styleClass="#{_produtoVendido.qtdTotalSeparada? 'tableRowSelecionada center': 'center'}">      
+                   		<f:facet name="header">
+                   	 		 <h:outputText value="Qtd Vendida" title="Quantidade de produtos vendidos"/>
+                   	   	</f:facet>                   
+                       	<h:outputText value="#{_produtoVendido.qtd}" styleClass="textoMedio2"/>
+                       	<f:facet name="footer" >                             
+                           <h:outputText value="#{vendaHome.subTotalProdutoQtd}" styleClass="textoNegrito7"/>
+                       	</f:facet>
+                   </rich:column>
+                   
+                    <rich:column rendered="#{not empty vendaHome.produtoVendidos}" styleClass="#{_produtoVendido.qtdTotalSeparada? 'tableRowSelecionada center': 'center'}">      
+                   		<f:facet name="header">
+                   	 		 <h:outputText value="Qtd Confirmados" title="Quantidade de Produtos Confirmados" />
+                   	   	</f:facet>                   
+                       	<h:outputText value="#{_produtoVendido.qtdConfirmada}" styleClass="textoMedio2"/>
+                       	<f:facet name="footer" >                             
+                           <h:outputText value="#{vendaHome.subTotalProdutosConfirmadosQtd}" styleClass="textoNegrito7"/>
+                       	</f:facet>
+                   </rich:column>
+                   
+                   <rich:column rendered="#{not empty vendaHome.produtoVendidos}" styleClass="#{_produtoVendido.qtdTotalSeparada? 'tableRowSelecionada center': 'center'}"> 
+                   
+						<a:commandLink ajaxSingle="true"
+							process="descontoTotalField, valorPago"
+							reRender="pvConfirmacaoPanel, btnConfirmarEntrega"
+							onclick="if (!confirm('Excluir o(s) produto(s)  #{_produtoVendido.loteProduto.produto.nomeProduto} ?')) return false" 
+							action="#{vendaHome.removeProduto()}">
+							<h:graphicImage url="/img/lixeira.gif" alt="Excluir" />
+							
+							<a:actionparam name="codProdutoSelecionado"
+								value="#{_produtoVendido.loteProduto.codLoteProduto}"
+								assignTo="#{vendaHome.codProdutoSelecionado}" />
+								
+						</a:commandLink>
+
+						<rich:toolTip direction="top-right" followMouse="true"
+							showDelay="800">
+							<span style="white-space: nowrap"> <strong>Excluir produto</strong> </span>
+						</rich:toolTip>
+
+						<f:facet name="footer">
+							<rich:spacer />
+						</f:facet>
+
+					</rich:column>
+                                                      
+	    </rich:dataTable>
+	    
+	    <table width="100%" border="0">
+			<tr>
+				<td align="center"><h:outputText value="Separação concluída!" rendered="#{vendaHome.confirmarAndamentoVenda(vendaHome.instance.statusVenda) }" styleClass="textoVerde" /></td>
+			</tr>
+		</table>
+		
+		</a:outputPanel>
+	    
+	    <rich:spacer height="7"/>
+	    	
+	    <h:panelGrid border="0" width="100%" cellpadding="0" columnClasses="left">
+				<s:decorate id="obsVendaField" template="layout/display.xhtml">
+					<ui:define name="label">Observação</ui:define>
+					<h:inputText id="obsVenda" maxlength="100" size="120" value="#{vendaHome.instance.obsVenda}"/>
+				</s:decorate> 
+		</h:panelGrid>
+		
+		<rich:separator height="1"/>
+		<rich:spacer height="10"/>
+		<table width="100%" border="0">
+			<tr>
+				<td align="center"><h:outputText value="Separação de Produtos" styleClass="textoMedio2"/></td>
+			</tr>
+		</table>
+		<rich:spacer height="10"/>
+		
+	</rich:panel>
+	
+    <table width="100%" cellspacing="3" border="0">
+	<tr>
+	    <td width="5%" >
+        <a:commandButton id="btnConfirmarEntrega" value=" Validar Separação "
+        	action="#{vendaHome.andamentoValidarSeparacao()}" onclick="if (!confirm('Separação de material concluída?')) return false" 
+        	disabled="#{!vendaHome.confirmarAndamentoVendaEstoque(vendaHome.instance.statusVenda) }"/>
+        </td>
+        
+         <td width="20%">
+        	<a:commandButton id="btnConfirmarEntrega2" value=" Validar Separação Sem Verificação " 
+        	title="Permite ao usuário liberar a separação de mercadoria sem verificar o código de barras. Transação GN066."
+        	action="#{vendaHome.andamentoValidarSeparacaoSemVerificacao()}" onclick="if (!confirm('Separação de material concluída?')) return false" 
+        	rendered="#{identity.hasRole(transacoes.transacaoLiberarSeparacaoMercadoria)}"/>
+        
+        </td>	
+        
+         <td align="center">
+	        <a:region>
+		        <a:commandButton id="btnImprimir" ajaxSingle="true" value=" Imprimir Financeiro " title="Imprimi a venda no formato esperado pelo financeiro" >
+					<rich:componentControl for="imprimirFinanceiroPopUp" attachTo="btnImprimir"  operation="show" event="onclick"/>								
+				</a:commandButton>
+				
+				<a:commandButton id="btnImprimirEstoque" ajaxSingle="true" value=" Imprimir Para Estoque " title="Imprimi a venda no formato esperado pelo estoque">
+					<rich:componentControl for="imprimirEstoquePopUp" attachTo="btnImprimirEstoque"  operation="show" event="onclick"/>								
+				</a:commandButton>
+	        </a:region>
+        </td>
+        <td width="25%" align="right">
+	        <s:button view="/#{empty vendaFrom ? 'VendaList' : vendaFrom}.xhtml" id="done" value=" Voltar ">
+	        	<f:param name="statusVendaDefault" value="#{constantes.confirmadaFinanceiro}"/>
+	        </s:button>
+        </td>
+    </tr>
+    </table>
+    <rich:jQuery selector="#codigoBarrasValidacao" timing="onload" query="focus()" /> 
+	</a:form>
+</ui:define>
+
+</ui:composition>

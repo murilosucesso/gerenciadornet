@@ -1,0 +1,56 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:component xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:s="http://jboss.com/products/seam/taglib"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:a="http://richfaces.org/a4j">
+
+	<h:panelGrid border="0" columns="3" width="100%" cellpadding="0"
+		columnClasses="left">
+
+		<h:column headerClass="col1">
+			<h:graphicImage url="img#{facesContext.externalContext.requestContextPath}/logo.jpg"/>
+		</h:column>
+		
+		 <h:column headerClass="col2">
+			<h:outputLabel value="#{empresa.nomeFantasia}" styleClass="textoNegrito7" />
+			<br />
+			<h:outputLabel value="#{empresa.endereco}"	styleClass="textoMedioCinza4" />
+			<br />
+			<h:outputLabel value="CNPJ: #{empresa.cnpj}"	styleClass="textoMedioCinza4" />
+			<br />
+			<h:outputLabel value="INSC.: #{empresa.inscricaoEstadual}"	styleClass="textoMedioCinza4" />
+			<br />
+			<h:outputLabel value="#{empresa.cidade} - #{empresa.estado}"	styleClass="textoMedioCinza4" />
+			<br />
+			<h:outputLabel value="CEP: #{empresa.cep}"	styleClass="textoMedioCinza4" />
+			<br />
+			<h:outputLabel value="Fone: #{empresa.telefone}" styleClass="textoMedioCinza4" />
+			<br />
+			<h:outputLabel value="" styleClass="textoNegrito" />
+			<br />
+		</h:column>
+
+		<h:column headerClass="col3">
+			<h:outputLabel value="Orçamento" styleClass="textoMedio" rendered="#{vendaHome.instance.inOrcamento}" />
+			
+			<h:outputLabel value="Venda" styleClass="textoMedio" 
+				rendered="#{!vendaHome.instance.inOrcamento and vendaHome.instance.statusVenda.codStatusVenda != constantes.pedido and vendaHome.instance.statusVenda.codStatusVenda != constantes.pedidoAutorizado and vendaHome.instance.codVenda != null}" />
+			
+			<h:outputLabel value="Pedido" styleClass="textoMedio" 
+				rendered="#{!vendaHome.instance.inOrcamento and (vendaHome.instance.statusVenda.codStatusVenda == constantes.pedido or vendaHome.instance.statusVenda.codStatusVenda == constantes.pedidoAutorizado)}" />
+			<br />
+			<br />
+			<h:outputText value="#{vendaHome.instance.codVenda}"
+				styleClass="textoGrande" />			
+		</h:column>
+
+	</h:panelGrid>
+
+	<rich:spacer height="7" />
+
+</ui:component>

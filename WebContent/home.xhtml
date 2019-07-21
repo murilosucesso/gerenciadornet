@@ -1,0 +1,213 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:s="http://jboss.com/products/seam/taglib"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:rich="http://richfaces.org/rich"
+    xmlns:a="http://richfaces.org/a4j"
+    template="layout/template.xhtml">
+
+	
+	<ui:define name="head">
+		
+		
+		 <!-- PERFIL ADMINISTRADOR OU FINANCEIRO  -->
+		<a:loadScript src="https://www.google.com/jsapi"/>
+
+		<a:outputPanel ajaxRendered="false" rendered="#{user.perfil.codPerfil == constantes.administrador or user.perfil.codPerfil == constantes.financeiro}" >
+		  
+		<script type="text/javascript">
+		
+			Array.prototype.reduce = undefined;
+			google.load('visualization', '1', {packages: ['corechart', 'table']});
+					
+			// ----------------------------------------- Gráfico Contas a Pagar x Contas a Receber - Linhas - --------------------------------------	    
+			google.setOnLoadCallback(drawChart);
+			function drawChart() {
+				var data = google.visualization.arrayToDataTable(
+		          [ #{relatorioGraficoRecebXPagaList.respContasRecPag} 		 
+		          ]);
+		
+		        var options = {
+		          animation:{duration:1000,easing:'out'},
+		          
+		          legend: {position: 'bottom', alignment: 'end', textStyle: {color: '#333344'}},
+		          titleTextStyle: {color: '#333344'},
+	              hAxis: {title: 'Próximos 7 dias',  titleTextStyle: {color: 'black'}},
+	              chartArea:{left:50,top:10,width:"90%",height:"75%"},
+	              colors:['#dc3912','#3377dd']
+		        };
+	
+		        var chart = new google.visualization.LineChart(document.getElementById('chart_div'));
+		        chart.draw(data, options);
+			}
+		</script>
+		</a:outputPanel>
+		
+		 <!-- PERFIL ADMINITRADOR -->
+		
+		<a:outputPanel ajaxRendered="false" rendered="#{user.perfil.codPerfil == constantes.administrador}" >
+		<script type="text/javascript">
+			// ----------------------------------------- Gráfico 1 - Barras - Total Vendas Lucro  --------------------------------------	  
+			google.setOnLoadCallback(drawVisualization);
+			function drawVisualization() {
+				
+			    // Create and populate the data table.
+			   var data = google.visualization.arrayToDataTable(
+		          [ #{relatorioGraficoVendasList.respostaColumnChart} 		 
+		          ]);
+
+			   var options = {
+				          animation:{duration:1000,easing:'out'},
+			              hAxis: {title: 'Meses'},
+			              legend: {position: 'bottom', alignment: 'end', textStyle: {color: '#333344'}},
+			              chartArea:{left:60,top:30,width:"90%",height:"70%"},
+			              colors:['#3366cc','#990099']
+				        }; 
+		        
+			    // Create and draw the visualization.
+			    new google.visualization.ColumnChart(document.getElementById('graphTotalVendasDiv')).
+			        draw(data,options);
+			  }
+		</script>
+		</a:outputPanel>
+		
+		 <!-- PERFIL GERENTE OU SUPERVISOR -->
+		 
+		<a:outputPanel ajaxRendered="false" rendered="#{user.perfil.codPerfil == constantes.gerente or user.perfil.codPerfil == constantes.supervisor}" >
+		
+		<!-- <a:loadScript src="https://www.google.com/jsapi"/> -->
+		
+	   	<script type="text/javascript">
+
+	   		Array.prototype.reduce = undefined;
+			google.load('visualization', '1', {packages: ['corechart']});
+			 // ----------------------------------------- Gráfico Grupos/Vendas - Combo Chart - --------------------------------------	  
+				google.setOnLoadCallback(drawVisualizationGrupo);
+				
+				function drawVisualizationGrupo() {
+					
+				    // Create and populate the data table.
+				   var data = google.visualization.arrayToDataTable(
+			          [ #{relatorioGraficoGrupoVendasList.respostaColumnChart} 		 
+			          ]);
+		
+				   var options = {
+					          seriesType: "bars",
+					          chartArea:{left:60,top:30,width:"90%",height:"75%"},
+					          legend: {position: 'top', textStyle: {color: '#333344'}},
+					          series: {#{relatorioGraficoGrupoVendasList.numeroGrupos}: {type: "line"}}
+					        };
+			        
+				    // Create and draw the visualization.
+				    new google.visualization.ComboChart(document.getElementById('graphGrupo')).draw(data,options);
+				  }
+	   	</script>
+	    </a:outputPanel>
+	    
+	    
+	    <!-- 
+	    //PERFIL ESTOQUE 
+	    <a:outputPanel ajaxRendered="false" rendered="#{user.perfil.codPerfil == constantes.estoque}" >
+		
+		<a:loadScript src="https://www.google.com/jsapi"/>
+		
+	   	<script type="text/javascript">
+
+	   		Array.prototype.reduce = undefined;
+			google.load('visualization', '1', {packages: ['gauge']});
+			 //  Gráfico Grupos/Vendas - Combo Chart - 	  
+			google.setOnLoadCallback(drawVisualizationEstoque);
+				
+			function drawVisualizationEstoque() {
+					
+				    // Create and populate the data table.
+					var data = google.visualization.arrayToDataTable(
+							[ #{vendaList.respostaGraficoEstoqueHome} 
+							]);
+		
+		                        var options = {
+		                          width: "90%", height: "100%",
+		                          redFrom: 60, redTo: 100,
+		                          yellowFrom:20, yellowTo: 60,
+		                          minorTicks: 5
+		                        };
+		
+		                        var chart = new google.visualization.Gauge(document.getElementById('chart_div'));
+		
+		                        chart.draw(data, options);
+		
+		                        
+			}
+	   	</script> 
+	    </a:outputPanel>
+
+	   	-->
+	   	
+	</ui:define>
+	
+
+    <ui:define name="body">
+	
+        <rich:panel rendered="#{!identity.loggedIn}" >
+            <h:panelGrid columns="2" style=" width : 543px;">
+                <h:graphicImage value="/img/logo-home.jpg" alt="Seam logo"/>
+                <s:div styleClass="info">
+                	<h1>Bem vindo ao Gerencidor Net!</h1>
+                    <p><strong>O sistema de gerenciamento da Dental DF!</strong> </p>
+                </s:div>
+            </h:panelGrid>
+        </rich:panel>
+            
+        <table border="0" width="100%" bgcolor="#FFFFFF">
+        	<tr> 
+        		<td valign="top" width="50%">
+        		
+        			<ui:include src="/includes/includeListarMensagens.xhtml"/>
+        			
+        		</td>
+        		<td valign="top"> 
+        			
+        			<a:outputPanel rendered="#{user.perfil.codPerfil != constantes.administrador}">
+        		    	<ui:include src="/includes/includeListarLoteProdutoVencimento.xhtml"/>       
+        		    </a:outputPanel> 
+        		    
+        		    <a:outputPanel rendered="#{user.perfil.codPerfil == constantes.administrador}">
+        		    	<ui:include src="/includes/includeGraficoTotalVendasLucro.xhtml"/>       
+        		    </a:outputPanel>  			             			
+        		</td>
+        	</tr>
+        	<tr> 
+        		<td>
+        			<a:outputPanel ajaxRendered="false" rendered="#{user.perfil.codPerfil == constantes.administrador or user.perfil.codPerfil == constantes.financeiro}">
+        			 	<ui:include src="/includes/includeGraficoContasPagarReceber.xhtml"/>     
+        			</a:outputPanel>
+        			
+        			<a:outputPanel  ajaxRendered="false" rendered="#{user.perfil.codPerfil == constantes.vendedor}">
+        			 	<ui:include src="/includes/includeClientesInadimplenteList.xhtml"/>     
+        			</a:outputPanel>
+        			
+					<a:outputPanel ajaxRendered="false" rendered="#{user.perfil.codPerfil == constantes.supervisor or user.perfil.codPerfil == constantes.gerente}">
+        			 	<ui:include src="/includes/includeGraficoGruposVendas.xhtml"/>     
+        			</a:outputPanel>
+        			
+        			<!-- <a:outputPanel ajaxRendered="false" rendered="#{user.perfil.codPerfil == constantes.estoque}">
+        			 	<ui:include src="/includes/includeGraficoSituacaoEstoque.xhtml"/>     
+        			</a:outputPanel> -->
+        			
+        			<a:outputPanel ajaxRendered="false" rendered="#{user.perfil.codPerfil == constantes.estoque}">
+        			 	<ui:include src="/includes/includeVendasEmAndamento.xhtml"/>     
+        			</a:outputPanel>
+        			
+        		</td>
+        		<td>
+        			<a:outputPanel ajaxRendered="false">
+        			 	<ui:include src="/includes/includeUltimasVendaList.xhtml"/>
+        			</a:outputPanel>     
+        		</td>
+        	</tr>
+        </table>
+    </ui:define>
+</ui:composition>

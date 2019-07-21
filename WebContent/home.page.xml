@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<page xmlns="http://jboss.com/products/seam/pages" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://jboss.com/products/seam/pages http://jboss.com/products/seam/pages-2.2.xsd"
+	login-required="true" no-conversation-view-id="/home.xhtml">
+	
+	<action execute="#{relatorioGraficoRecebXPagaList.executarHome()}" if="#{user.perfil.codPerfil == constantes.administrador or user.perfil.codPerfil == constantes.financeiro}" on-postback="false"/>
+	<action execute="#{relatorioGraficoVendasList.executar()}" if="#{user.perfil.codPerfil == constantes.administrador}" on-postback="false"/>
+	<action execute="#{relatorioGraficoGrupoVendasList.executar()}" if="#{user.perfil.codPerfil == constantes.gerente or user.perfil.codPerfil == constantes.supervisor}" on-postback="false"/>
+	<action execute="#{vendaList.listarUltimasVendas()}" if="#{user.perfil.codPerfil == constantes.estoque}" on-postback="false"/>
+</page>

@@ -1,0 +1,141 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:s="http://jboss.com/products/seam/taglib"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:rich="http://richfaces.org/rich"
+    xmlns:a="http://richfaces.org/a4j"
+    template="layout/template.xhtml">
+
+<ui:define name="body">
+
+    <h:form id="vendedorSearch" styleClass="edit">
+
+		<ui:include src="/paginas/help/GenericListHelp.xhtml"/>	
+
+        <rich:simpleTogglePanel label="Pesquisa de Vendedores" switchType="client">
+
+            <s:decorate template="layout/display.xhtml">
+                <ui:define name="label">Nome</ui:define>
+                <h:inputText id="nomeVendedor" value="#{vendedorList.vendedor.nomeVendedor}" styleClass="defaultInput" maxlength="100"/>
+            </s:decorate>
+
+            <s:decorate template="layout/display.xhtml">
+                <ui:define name="label">Email</ui:define>
+                <h:inputText id="emailVendedor" value="#{vendedorList.vendedor.emailVendedor}" styleClass="defaultInput" maxlength="100"/>
+            </s:decorate>
+            
+            <s:decorate template="layout/display.xhtml">
+                <ui:define name="label">Fornecedor</ui:define> 
+                 <h:selectOneMenu id="fornecedor" value="#{vendedorList.vendedor.fornecedor}"  required="false" styleClass="defaultInput">		
+				   <s:selectItems  value="#{fornecedorList.resultList}" 
+				   				  var="fornecedor" 			
+				                  label="#{fornecedor.nomeFantasia}"
+				                  noSelectionLabel="Selecione.." 
+				                  />			
+				   <s:convertEntity />	 
+				  </h:selectOneMenu>
+            </s:decorate> 
+
+        </rich:simpleTogglePanel>
+
+        <ui:include src="/includes/includeBotoesPesquisarLimpar.xhtml" />
+
+    </h:form>
+    
+	<h:form>
+    <rich:panel>
+    
+	<f:facet name="header">
+		<a:outputPanel  id="panelDiv" ajaxRendered="true">
+	    	Resultado da pesquisa de Vendedores (#{empty vendedorList.resultList ? 0 : (vendedorList.paginated ? vendedorList.resultCount : vendedorList.resultList.size)})
+	    </a:outputPanel>
+    </f:facet>   
+
+	<a:outputPanel id="msnListaVazia" ajaxRendered="true">
+   	
+   	<h:outputText value="#{messages['mensagem.pesquisa.vazia']}" rendered="#{empty vendedorList.resultList}"/>
+  
+    <rich:dataTable id="resultadoList"
+                var="_vendedor"
+              value="#{vendedorList.resultList}"
+           rendered="#{not empty vendedorList.resultList}"
+           onRowMouseOver="this.style.backgroundColor='#F0F0F0'"
+           onRowMouseOut="this.style.backgroundColor='#{a4jSkin.rowBackgroundColor}'"
+           columnClasses="center" 
+           rows="15"
+           rowClasses="tableRowOne,tableRowTwo">
+                  
+          <rich:column sortBy="#{_vendedor.nomeVendedor}"> 
+           <f:facet name="header">
+               <h:outputText value="Nome Vendedor"/>
+           </f:facet> 
+           <h:outputText value="#{_vendedor.nomeVendedor}"/>
+         </rich:column> 
+                         
+        <rich:column sortBy="#{_vendedor.fornecedor.nomeFantasia}"> 
+           <f:facet name="header">
+               <h:outputText value="Forncedor"/>
+           </f:facet> 
+           <h:outputText value="#{_vendedor.fornecedor.nomeFantasia}"/>
+         </rich:column>          
+        
+         <rich:column sortBy="#{_vendedor.emailVendedor}"> 
+           <f:facet name="header">
+               <h:outputText value="Email vendedor"/>
+           </f:facet> 
+           <h:outputText value="#{_vendedor.emailVendedor}"/>
+         </rich:column> 
+         
+         <rich:column sortBy="#{_vendedor.telefoneVendedor}"> 
+           <f:facet name="header">
+               <h:outputText value="Telefone vendedor"/>
+           </f:facet> 
+           <h:outputText value="#{_vendedor.telefoneVendedor}"/>
+         </rich:column> 
+                  
+        <rich:column styleClass="action">
+            <f:facet name="header">Visualizar/Editar</f:facet>
+            
+            <s:link view="/#{empty from ? 'Vendedor' : from}.xhtml"                   
+             propagation="#{empty from ? 'none' : 'default'}" id="vendedorViewId">
+             	<h:graphicImage url="/img/binoculo.jpg"/>
+                <f:param name="vendedorCodVendedor" value="#{_vendedor.id.codVendedor}"/>
+                <f:param name="vendedorCodFornecedor" value="#{_vendedor.id.codFornecedor}"/>
+            </s:link>
+            <rich:toolTip for="vendedorViewId" value="Visualizar Vendedor" direction="top-left"/>
+            
+            #{' '}
+            
+            <s:link view="/VendedorEdit.xhtml" propagation="none" id="vendedorEdit" rendered="#{empty from}">
+                <h:graphicImage url="/img/editar.jpg"/>
+                <f:param name="vendedorCodVendedor" value="#{_vendedor.id.codVendedor}"/>
+                <f:param name="vendedorCodFornecedor" value="#{_vendedor.id.codFornecedor}"/>
+            </s:link>
+            <rich:toolTip for="vendedorEdit" value="Editar Vendedor" direction="top-left"/>
+             
+        </rich:column>
+    </rich:dataTable>
+	
+	<ui:include src="/includes/includeDataScroller.xhtml"/>
+    
+    </a:outputPanel>
+    
+    </rich:panel>
+	</h:form> 
+   
+    <s:div styleClass="actionButtons" rendered="#{empty from}">
+        <s:button view="/VendedorEdit.xhtml"
+                    id="create"
+           propagation="none"
+                 value="Novo Vendedor">
+            <f:param name="vendedorCodVendedor"/>
+            <f:param name="vendedorCodFornecedor"/>
+        </s:button>
+    </s:div>
+
+</ui:define>
+
+</ui:composition>

@@ -1,0 +1,91 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:s="http://jboss.com/products/seam/taglib"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:rich="http://richfaces.org/rich"
+    xmlns:easy="http://easyfaces.com.br/easyfaces"
+    template="layout/template.xhtml">
+
+<ui:define name="body">
+
+    <rich:panel>
+        <f:facet name="header">Detalhes do Lote Produto</f:facet>
+
+		<s:decorate template="layout/display.xhtml">
+            <ui:define name="label">Código Produto</ui:define>
+            <h:outputText value="#{loteProdutoHome.instance.produto.codProdutoExterno}" />
+        </s:decorate>
+        
+		<s:decorate template="layout/display.xhtml">
+            <ui:define name="label">Produto</ui:define>
+            <h:outputText value="#{loteProdutoHome.instance.produto.nomeProduto}" />
+        </s:decorate>
+        
+		<s:decorate template="layout/display.xhtml">
+            <ui:define name="label">Compra</ui:define>
+            <h:outputText value="#{loteProdutoHome.instance.compra.codCompra}" />
+        </s:decorate>
+
+        <s:decorate id="qtdCompra" template="layout/display.xhtml">
+            <ui:define name="label">Qtd compra</ui:define>
+            <h:outputText value="#{loteProdutoHome.instance.qtdCompra}"/>
+        </s:decorate>
+       
+        <s:decorate id="identificacaoLote" template="layout/display.xhtml">
+            <ui:define name="label">Identificação lote</ui:define>
+            <h:outputText value="#{loteProdutoHome.instance.identificacaoLote}"/>
+        </s:decorate>
+
+        <s:decorate id="dataValidade" template="layout/display.xhtml">
+            <ui:define name="label">Data Validade</ui:define>
+            <h:outputText value="#{loteProdutoHome.instance.dataValidade}" rendered="#{not empty loteProdutoHome.instance.dataValidade}">
+                <s:convertDateTime type="date" dateStyle="short"/>
+            </h:outputText>
+            <h:outputText value="Indeterminada" rendered="#{empty loteProdutoHome.instance.dataValidade}"/>
+        </s:decorate>
+		
+		<s:decorate id="precoCompraUnidade" template="layout/display.xhtml">
+            <ui:define name="label">Preço Compra</ui:define>
+            <h:outputText value="#{loteProdutoHome.instance.precoCompraUnidade}">
+            	<f:convertNumber currencySymbol="R$"  type="currency"  locale="pt_BR"/>
+            </h:outputText>
+        </s:decorate>
+		
+        <s:decorate id="precoVendaUnidade" template="layout/display.xhtml">
+            <ui:define name="label">Preço Venda</ui:define>
+             <h:outputText value="#{loteProdutoHome.instance.precoVendaUnidade}">
+             	<f:convertNumber currencySymbol="R$"  type="currency"  locale="pt_BR"/>
+             </h:outputText>
+        </s:decorate>
+
+        <s:decorate id="qtdEstoque" template="layout/display.xhtml">
+            <ui:define name="label">Qtd Estoque</ui:define>
+            <h:outputText value="#{loteProdutoHome.instance.qtdEstoque}"/>
+        </s:decorate>
+
+        <s:decorate id="prcDescontoMaximo" template="layout/display.xhtml">
+            <ui:define name="label">% desconto máximo</ui:define>
+            <h:outputText value="#{loteProdutoHome.instance.prcDescontoMaximo}"/>
+        </s:decorate>
+
+        <div style="clear:both"/>
+
+    </rich:panel>
+
+    <div class="actionButtons">
+
+        <s:button view="/LoteProdutoListBalancete.xhtml"
+                    id="edit"
+                 value="Editar"/>
+
+        <s:button view="/#{empty loteProdutoFrom ? 'LoteProdutoListBalancete' : loteProdutoFrom}.xhtml"
+                    id="done"
+                 value="Voltar"/>
+
+    </div>
+</ui:define>
+
+</ui:composition>

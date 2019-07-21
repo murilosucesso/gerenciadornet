@@ -1,0 +1,55 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:s="http://jboss.com/products/seam/taglib"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:rich="http://richfaces.org/rich"
+    template="layout/template.xhtml">
+
+<ui:define name="body">
+
+    <rich:panel>
+        <f:facet name="header">Detalhes do Vendedor</f:facet>
+       
+		<s:decorate id="nomeVendedor" template="layout/display.xhtml">
+            <ui:define name="label">Fornecedor</ui:define>
+            <h:outputText value="#{vendedorHome.instance.fornecedor.nomeFantasia}"/>
+        </s:decorate>
+		
+        <s:decorate id="nomeVendedor" template="layout/display.xhtml">
+            <ui:define name="label">Nome</ui:define>
+            <h:outputText value="#{vendedorHome.instance.nomeVendedor}"/>
+        </s:decorate>
+
+        <s:decorate id="emailVendedor" template="layout/display.xhtml">
+            <ui:define name="label">Email </ui:define>
+            <h:outputText value="#{vendedorHome.instance.emailVendedor}"/>
+        </s:decorate>
+
+        <s:decorate id="telefoneVendedor" template="layout/display.xhtml">
+            <ui:define name="label">Telefone vendedor</ui:define>
+            <h:outputText value="#{vendedorHome.instance.telefoneVendedor}"/>
+        </s:decorate>
+      
+        <div style="clear:both"/>
+
+    </rich:panel>
+
+    <div class="actionButtons">
+
+        <s:button view="/VendedorEdit.xhtml"
+                    id="edit"
+                 value="Editar"/>
+
+        <s:button view="/#{empty vendedorFrom ? 'VendedorList' : vendedorFrom}.xhtml"
+                    id="Done"
+                 value="Voltar"/>
+
+    </div>
+
+   
+</ui:define>
+
+</ui:composition>

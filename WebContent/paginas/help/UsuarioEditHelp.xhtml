@@ -1,0 +1,49 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition id="panelPopUp" width="700" height="470" 
+	xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:s="http://jboss.com/products/seam/taglib"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:a="http://richfaces.org/a4j"
+    xmlns:rich="http://richfaces.org/rich">
+
+	<div>
+		<a:commandLink>
+			<h:graphicImage value="/img/help.png" styleClass="help" id="helplink"/>
+			<rich:toolTip direction="bottom-left" attachTo="helplink" followMouse="true">
+	            <s:span styleClass="helpFont">
+	                 ---------------- Ajuda, Dicas e Procedimentos para Editar/Alterar/Excluir um Usuário -----------------<br/><br/>
+	                 
+	                 - Preencha os campos que serão incluídos/alterados<br/>
+	                 
+	                   Nome: Nome completo do usuario<br/>
+		               Login: Nome simples sem espaco que será utilizado pelo usuario para efetuar login<br/>
+		               Perfil: Perfil do usuário. Define acessos ao usuário conforme o cadastro de acessos Default cadastrados<br/>		             
+		               Senha: Cadastre uma senha default(ex: 123456) pra o usuário e peça que ele altere<br/>
+		               Confirmacao de Senha: Preencha com o mesmo valor que a senha. (Evita erros de digitacao)<br/>
+		               CPF: Informe o CPF do usuário<br/>
+		               Numero RG: Numero de identidade do usuário<br/>
+		               Data Nascimento: Selecione a data de nascimento do usuário clicando sobre o calendário<br/><br/>
+		            
+		            Obs: Cadastre o usuário uma ÚNICA vez. Não poderá existir mais de um usuário com o mesmo login.<br/>
+		            Caso o usuário tenha esquecido a senha, o Administrador poderá efetuar a alteração<br/>	
+	                 
+	                 - Alguns campos não são passíveis de edição<br/>
+	                 - Os campos marcados com asterisco(*) são de preenchimento obrigatório<br/> 
+	                 - Clique no botão Salvar para que a(s) inclusão/alteração seja confirmada<br/><br/>
+	                 
+	                 - Caso queira Excluir(Desabilitar) um usuário, clique no botão Excluir<br/>
+	                 - Obs: A ação de Excluir(Desabilitar) um usuário, não significa que este será<br/>
+	                   excluído fisicamente do banco de dados. Podendo ser recuperado posteriormente.<br/>
+	                   Sempre que um usuário for excluído/alterado, será gravado um histórico com os dados <br/>
+	                   do responsável pela exclusão/alteração.  
+	                   
+	                 - Caso queira cancelar a alteração, clique no botão Voltar<br/>	 
+	                 
+	            </s:span>
+	       	</rich:toolTip>
+      	</a:commandLink>
+   	</div>   	
+</ui:composition> 

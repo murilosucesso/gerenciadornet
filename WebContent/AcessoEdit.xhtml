@@ -1,0 +1,110 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:s="http://jboss.com/products/seam/taglib"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:a="http://richfaces.org/a4j"
+    xmlns:rich="http://richfaces.org/rich"
+    template="layout/template.xhtml">
+
+<ui:define name="body">
+
+    <h:form id="acesso" styleClass="edit">
+
+        <rich:panel>
+            <f:facet name="header">#{acessoHome.managed ? 'Excluir' : 'Conceder'} Acesso</f:facet>
+			
+			<s:decorate id="usuario" template="layout/display.xhtml" rendered="#{acessoHome.managed}">
+		            <ui:define name="label">Usuario</ui:define>
+		            <h:outputText value="#{acessoHome.instance.usuario.nomeUsuario}"/>
+		    </s:decorate>
+		    
+		    <s:decorate id="usuarioField"	template="layout/edit.xhtml" rendered="#{!acessoHome.managed}">
+				<ui:define name="label">Usuario</ui:define>
+			  	
+				<h:selectOneMenu value="#{acessoHome.instance.usuario}" styleClass="defaultInput" required="true">		
+				   <s:selectItems value="#{usuarioList.resultList}" 
+				   				  var="usuario" 		
+				   				  noSelectionLabel="Selecione.."				   				  		
+				                  label="#{usuario.nomeUsuario}  (#{usuario.perfil.nomePerfil})"/>				   							   							       
+				   <s:convertEntity />			
+				</h:selectOneMenu>										
+			</s:decorate>
+			
+		    <s:decorate id="perfil" template="layout/display.xhtml" rendered="#{acessoHome.managed}">
+		            <ui:define name="label">Perfil</ui:define>
+		            <h:outputText value="#{acessoHome.instance.usuario.perfil.nomePerfil}"/>
+		    </s:decorate>
+		    
+		    
+			<s:decorate id="transacaoField"	template="layout/edit.xhtml" rendered="#{!acessoHome.managed}">
+				<ui:define name="label">Transacao</ui:define>
+			  	
+				<h:selectOneMenu value="#{acessoHome.instance.transacao}" styleClass="defaultInput" required="true">		
+				   <s:selectItems value="#{transacaoList.resultList}" 
+				   				  var="transacao" 						   				  
+				   				  noSelectionLabel="Selecione.."				   				  		
+				                  label="#{transacao.siglaTransacao} - #{transacao.nome}"/>		
+						<a:support event="onchange" reRender="transacaoField, descTransacaoField" ajaxSingle="true"/>		   							   							       
+				   <s:convertEntity />			
+				</h:selectOneMenu>										
+			</s:decorate>
+		   
+		     <s:decorate id="siglaTransacao" template="layout/display.xhtml" rendered="#{acessoHome.managed}">
+		            <ui:define name="label">Sigla Transacao</ui:define>
+		            <h:outputText value="#{acessoHome.instance.transacao.siglaTransacao}"/>
+		    </s:decorate>
+		       
+		    <s:decorate id="nomeTransacao" template="layout/display.xhtml" rendered="#{acessoHome.managed}">
+		            <ui:define name="label">Nome Transacao</ui:define>
+		            <h:outputText value="#{acessoHome.instance.transacao.nome}"/>
+		    </s:decorate>
+		    
+		    <s:decorate id="descTransacao" template="layout/display.xhtml" rendered="#{acessoHome.managed}">
+		            <ui:define name="label">Desc. Transacao</ui:define>
+		            <h:outputText value="#{acessoHome.instance.transacao.descTransacao}" title="Descricao da Transacao"/>
+		    </s:decorate>
+		    
+		    <s:decorate id="descTransacaoField" template="layout/display.xhtml" rendered="#{!acessoHome.managed}">
+		            <ui:define name="label">Desc. Transacao</ui:define>
+		            <h:outputText value="#{acessoHome.instance.transacao.descTransacao}" title="Descricao da Transacao"/>
+		    </s:decorate>			
+
+			 <div style="clear:both"/>
+        </rich:panel>
+
+        <div class="actionButtons">
+
+            <h:commandButton id="save"
+                          value="Salvar"
+                         action="#{acessoHome.persist}"
+                       disabled="#{!acessoHome.wired}"
+                       rendered="#{!acessoHome.managed}"/>
+
+            
+            <h:commandButton id="delete"
+                          value="Excluir"
+                         action="#{acessoHome.remove}"
+                      immediate="true"
+                       rendered="#{acessoHome.managed}"/>
+
+            <s:button id="cancelEdit"
+                   value="Voltar"
+             propagation="end"
+                    view="/Acesso.xhtml"
+                rendered="#{acessoHome.managed}"/>
+
+            <s:button id="cancelAdd"
+                   value="Voltar"
+             propagation="end"
+                    view="/#{empty acessoFrom ? 'AcessoList' : acessoFrom}.xhtml"
+                rendered="#{!acessoHome.managed}"/>
+
+        </div>
+    </h:form>
+
+</ui:define>
+
+</ui:composition>

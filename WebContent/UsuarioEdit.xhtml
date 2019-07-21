@@ -1,0 +1,235 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:s="http://jboss.com/products/seam/taglib"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:a="http://richfaces.org/a4j"
+    xmlns:rich="http://richfaces.org/rich"
+    xmlns:easy="http://easyfaces.com.br/easyfaces"  
+    template="layout/template.xhtml">
+
+<ui:define name="body">
+
+    <h:form id="usuario" styleClass="edit">
+		<ui:include src="/paginas/help/UsuarioEditHelp.xhtml"/>
+        <rich:panel>
+            <f:facet name="header">#{usuarioHome.managed ? 'Editar' : 'Adicionar'} Usuario</f:facet>
+
+			 <s:decorate id="nomeUsuarioField" template="layout/edit.xhtml" rendered="#{identity.hasRole(transacoes.transacaoUsuarioEditar) and (user.perfil.codPerfil == constantes.administrador)}">
+                <ui:define name="label">Nome</ui:define>
+                <h:inputText id="nomeUsuario"
+                       required="true"
+                requiredMessage="Campo Obrigatório"
+                     styleClass="defaultInput"
+                      maxlength="100"
+                          value="#{usuarioHome.instance.nomeUsuario}">
+                </h:inputText>
+            </s:decorate>
+             <s:decorate template="layout/edit.xhtml" rendered="#{!identity.hasRole(transacoes.transacaoUsuarioEditar) or !(user.perfil.codPerfil == constantes.administrador)}" >
+                <ui:define name="label">Nome</ui:define>
+                <h:outputText value="#{usuarioHome.instance.nomeUsuario}"/>
+            </s:decorate>
+
+            <s:decorate id="loginUsuarioField" template="layout/edit.xhtml">
+                <ui:define name="label">Login</ui:define>
+                <h:inputText id="loginUsuario"
+                       required="true"
+                requiredMessage="Campo Obrigatório"
+                     styleClass="defaultInput2"
+                      maxlength="30"
+                          value="#{usuarioHome.instance.loginUsuario}">
+                </h:inputText>
+            </s:decorate>
+            
+            <s:decorate id="perfilUsuarioField" template="layout/edit.xhtml" rendered="#{identity.hasRole(transacoes.transacaoUsuarioEditar) and (user.perfil.codPerfil == constantes.administrador)}" >
+                <ui:define name="label">Perfil</ui:define>
+                <h:selectOneMenu value="#{usuarioHome.instance.perfil}" required="true"  requiredMessage="Campo Obrigatório" styleClass="defaultInput2">		
+				   <s:selectItems value="#{perfilList.resultList}" 
+				   				  var="perfil" 			
+				                  label="#{perfil.nomePerfil}"
+				                  noSelectionLabel="Selecione.."
+				                  />			
+				   <s:convertEntity />			
+				</h:selectOneMenu>
+				<h:outputText value="#{usuarioHome.instance.perfil.nomePerfil}" rendered="#{!identity.hasRole(transacoes.transacaoUsuarioEditar) or !(user.perfil.codPerfil == constantes.administrador)}"/>
+            </s:decorate>
+
+            <s:decorate id="senhaField" template="layout/edit.xhtml">
+                <ui:define name="label">Senha</ui:define>
+                <h:inputSecret id="senha" redisplay="true"
+                       required="true"
+                requiredMessage="Campo Obrigatório" 
+                     styleClass="defaultInput2"
+                      maxlength="20"
+                          value="#{usuarioHome.instance.senha}">
+                </h:inputSecret>
+            </s:decorate>
+            
+             <s:decorate id="confirmacaoSenhaField" template="layout/edit.xhtml">
+                <ui:define name="label">Confirmação Senha</ui:define>
+                <h:inputSecret id="confirmacaoSenha" redisplay="true"
+                       required="true"
+                requiredMessage="Campo Obrigatório" 
+                     styleClass="defaultInput2"
+                      maxlength="20"
+                          value="#{usuarioHome.confirmacaoSenha}">
+                </h:inputSecret>
+            </s:decorate>
+          
+            <s:decorate id="cpfField" template="layout/edit.xhtml">
+                <ui:define name="label">CPF</ui:define>           
+                <easy:inputCpf id="cpf" styleClass="defaultInput2" useMask="true"   
+                	useValidate="true" submitWithMask="true" value="#{usuarioHome.instance.cpf}" useMaskSize="true" 
+                	rendered="#{identity.hasRole(transacoes.transacaoUsuarioEditar) and (user.perfil.codPerfil == constantes.administrador)}"/> 
+                	
+                <h:outputText value="#{usuarioHome.instance.cpf}" rendered="#{!identity.hasRole(transacoes.transacaoUsuarioEditar) or !(user.perfil.codPerfil == constantes.administrador)}"/>                         
+            </s:decorate>
+
+
+            <s:decorate id="numRgField" template="layout/edit.xhtml">
+                <ui:define name="label">Número RG</ui:define>
+                <h:inputText id="numRg"
+                     styleClass="defaultInput2"
+                      maxlength="20"
+                          value="#{usuarioHome.instance.numRg}"
+                       rendered="#{identity.hasRole(transacoes.transacaoUsuarioEditar) and (user.perfil.codPerfil == constantes.administrador)}">
+                </h:inputText>
+                
+                <h:outputText value="#{usuarioHome.instance.numRg}" rendered="#{!identity.hasRole(transacoes.transacaoUsuarioEditar) or !(user.perfil.codPerfil == constantes.administrador)}"/>          
+            </s:decorate>
+
+
+            <s:decorate id="dataNascField" template="layout/edit.xhtml">
+                <ui:define name="label">Data Nascimento</ui:define>
+                <rich:calendar id="dataNasc"
+                          value="#{usuarioHome.instance.dataNasc}" datePattern="dd/MM/yyyy" 
+                          rendered="#{identity.hasRole(transacoes.transacaoUsuarioEditar) and (user.perfil.codPerfil == constantes.administrador)}"/>
+                          
+                <h:outputText value="#{usuarioHome.instance.dataNasc}" rendered="#{!identity.hasRole(transacoes.transacaoUsuarioEditar) or !(user.perfil.codPerfil == constantes.administrador)}">
+                	<s:convertDateTime type="date" pattern="dd/MM/yyyy"/>
+                </h:outputText>
+            </s:decorate>
+            
+            <s:decorate id="emailField" template="layout/edit.xhtml">
+                <ui:define name="label">Email</ui:define>
+                <easy:inputEmail value="#{usuarioHome.instance.email}" required="false" useValidate="true" styleClass="defaultInput" />
+            </s:decorate>
+            
+             <s:decorate id="dadosField" template="layout/edit.xhtml">
+                <ui:define name="label">Dados Bancários</ui:define>
+                <h:inputText value="#{usuarioHome.instance.dadosBancarios}" required="false" useValidate="true" styleClass="defaultInput" />
+            </s:decorate>
+            
+            <s:decorate id="inVendedorAtivoField" template="layout/edit.xhtml">
+					<ui:define name="label">Vendedor Ativo</ui:define>
+					<h:selectOneRadio id="inVendedorAtivo" value="#{usuarioHome.instance.inVendedorAtivo}" styleClass="textoNegrito" onchange="hideCampos()">
+						<f:selectItem itemLabel="Sim" itemValue="true" />
+						<f:selectItem itemLabel="Não" itemValue="false" />	
+					</h:selectOneRadio>						 
+			</s:decorate>
+           
+            <div style="clear:both">
+                <span class="required">*</span>
+                Campos obrigatórios
+            </div>
+
+        </rich:panel>
+
+        <div class="actionButtons">
+
+            <h:commandButton id="save"
+                          value="Salvar"
+                         action="#{usuarioHome.persist}"
+                       disabled="#{!usuarioHome.wired}"
+                       rendered="#{!usuarioHome.managed}"/>
+
+            <h:commandButton id="update"
+                          value="Salvar"
+                         action="#{usuarioHome.update}"
+                       rendered="#{usuarioHome.managed}"/>
+
+            <h:commandButton id="delete"
+                          value="Excluir"
+                         action="#{usuarioHome.remove}"
+                         onclick="if (!confirm('Tem certeza que deseja Excluir este registro?')) return false"
+                      immediate="true"
+                       rendered="#{usuarioHome.managed and identity.hasRole(transacoes.transacaoUsuarioExcluir)}"/>
+
+            <s:button id="cancelEdit"
+                   value="Voltar"
+             propagation="end"
+                    view="/Usuario.xhtml"
+                rendered="#{usuarioHome.managed}"/>
+
+            <s:button id="cancelAdd"
+                   value="Voltar"
+             propagation="end"
+                    view="/#{empty usuarioFrom ? 'UsuarioList' : usuarioFrom}.xhtml"
+                rendered="#{!usuarioHome.managed}"/>
+
+        </div>
+    </h:form>
+
+<rich:tabPanel switchType="ajax">
+
+        <rich:tab label="Endereços">
+        
+        <a:form styleClass="association" id="enderecosChildren">
+			<h:panelGroup id="out">
+			 
+            <h:outputText value="Não existe endereço associado a este usuário."
+                       rendered="#{empty usuarioHome.enderecos}"/>
+
+             <rich:dataTable value="#{usuarioHome.enderecos}"
+                           var="_endereco"
+                      rendered="#{not empty usuarioHome.enderecos}"
+                            id="enderecosTable"
+			    onRowMouseOver="this.style.backgroundColor='#F0F0F0'"
+           		onRowMouseOut="this.style.backgroundColor='#{a4jSkin.rowBackgroundColor}'"
+           		columnClasses="center" 
+           		   rowClasses="tableRowOne,tableRowTwo">
+                
+                <ui:include src="/includes/includeListarEnderecos.xhtml"/>
+                  
+	            <rich:column styleClass="action" > 
+		            <f:facet name="header">Visualizar/Excluir</f:facet>
+		            <s:link view="/Endereco.xhtml" id="selectEndereco">
+		                <h:graphicImage url="/img/binoculo.jpg"/>
+		                <f:param name="enderecoCodEndereco" value="#{_endereco.codEndereco}"/>
+	                    <f:param name="enderecoFrom" value="Usuario"/>
+		            </s:link>
+		            <rich:toolTip for="selectEndereco" value="Visualizar Endereço" direction="top-left"/>
+		            
+		            #{' '}
+		            
+		            <a:commandLink id="delete" action="#{usuarioHome.removeEndereco}" reRender="out" >
+		                <h:graphicImage url="/img/lixeira.gif"/> 
+		                <f:param name="enderecoCodEndereco" value="#{_endereco.codEndereco}"/>
+		            </a:commandLink>
+		            <rich:toolTip for="delete" value="Excluir Endereço" direction="top-left"/>
+		        </rich:column>
+	            
+            </rich:dataTable>
+			</h:panelGroup>
+        </a:form>
+        
+        <f:subview rendered="#{usuarioHome.managed}" id="enderecos">
+        <div class="actionButtons">
+            <s:button id="addendereco"
+                   value="Adicionar endereço"
+                    view="/EnderecoEdit.xhtml"
+             propagation="none">
+                 <f:param name="usuarioCodUsuario"
+                         value="#{usuarioHome.instance.codUsuario}"/>
+                 <f:param name="enderecoFrom" value="Usuario"/>
+            </s:button>
+        </div>
+        </f:subview>
+        
+    </rich:tab>
+</rich:tabPanel>
+</ui:define>
+
+</ui:composition>

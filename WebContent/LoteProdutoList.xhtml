@@ -1,0 +1,262 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:s="http://jboss.com/products/seam/taglib"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:rich="http://richfaces.org/rich"
+    xmlns:a="http://richfaces.org/a4j"
+    template="layout/template.xhtml">
+
+<ui:define name="body">
+
+    <a:form id="loteProdutoSearch" focus="codProdutoExterno" ajaxSubmit="true" styleClass="edit">
+ 
+		<div>  
+			<a:commandLink>
+				<h:graphicImage value="/img/help.png" styleClass="help" id="helplink"/>
+				<rich:toolTip direction="bottom-left" attachTo="helplink" followMouse="true">
+		            <span style="white-space:nowrap">
+		             Por default não serão mostrados os lotes com quantidade igual a zero.<br/>		              
+		            </span>
+		       	</rich:toolTip>
+	      	</a:commandLink> 
+     	</div>
+
+        <rich:simpleTogglePanel label="Filtro de pesquisa de ESTOQUE" switchType="client">
+
+			<s:decorate template="layout/display.xhtml">
+                <ui:define name="label">Código compra</ui:define>
+                <h:inputText id="codCompra" value="#{loteProdutoList.codCompra}" styleClass="defaultInput2" maxlength="10"/>
+            </s:decorate>
+            
+			<s:decorate template="layout/display.xhtml">
+                <ui:define name="label">Código produto</ui:define>
+                <h:inputText id="codProdutoExterno" value="#{loteProdutoList.loteProduto.produto.codProdutoExterno}" styleClass="defaultInput2" maxlength="20"/>
+            </s:decorate>
+            
+            <s:decorate template="layout/display.xhtml">
+                <ui:define name="label">Código Barras Produto</ui:define>
+                <h:inputText id="codigoBarrasProduto" value="#{loteProdutoList.loteProduto.produto.codigoBarrasProduto}" styleClass="defaultInput2" maxlength="40"/>
+            </s:decorate>
+            
+             
+            <s:decorate template="layout/display.xhtml">
+                <ui:define name="label">Nome Produto</ui:define>
+                <h:inputText id="codCompra" value="#{loteProdutoList.loteProduto.produto.nomeProduto}" style="width: 420px" maxlength="120"/>
+            </s:decorate>        
+            			
+            			
+            <s:decorate template="layout/display.xhtml">
+                <ui:define name="label">Marca</ui:define>
+                
+                <h:selectOneMenu id="marca" value="#{loteProdutoList.codMarca}" style="width: 420px">
+					 <s:selectItems value="#{marcaList.resultList}" 
+			   				  var="marca" 			
+			   				  itemValue="#{marca.codMarca}"
+			                  itemLabel="#{marca.nomeMarca}"							                  
+			                  label="#{marca.nomeMarca}" 
+			                  noSelectionLabel="Selecione.." />	
+			                  <a:support event="onchange" reRender="produtoSelecionado" ajaxSingle="true" limitToList="true"  />
+				</h:selectOneMenu>
+            </s:decorate>             
+            
+            <s:decorate template="layout/display.xhtml">
+                <ui:define name="label">Produto</ui:define>
+                
+                
+                <h:selectOneMenu id="produtoSelecionado" value="#{loteProdutoList.loteProduto.produto.codProduto}" style="width: 420px">		
+				 		<s:selectItems value="#{produtoList.listarProdutos(loteProdutoList.codMarca)}" 
+				   				  var="produto" 			
+				   				  itemValue="#{produto.codProduto}"
+				                  itemLabel="#{produto.codigoBarrasProduto} - #{produto.nomeProduto}"							                  
+				                  label="#{produto.nomeProduto} (#{produto.nomeMarca})" 
+				                  noSelectionLabel="Selecione.." />	
+				</h:selectOneMenu>		
+                
+            </s:decorate>     
+           
+            <s:decorate template="layout/display.xhtml">
+                <ui:define name="label">Lote</ui:define>
+                <h:inputText id="identificacaoLote" value="#{loteProdutoList.loteProduto.identificacaoLote}" styleClass="defaultInput" maxlength="45"/>               
+            </s:decorate>
+            
+            <s:decorate template="layout/display.xhtml">
+                <ui:define name="label">Qtd. (Abaixo de)</ui:define>
+                <rich:inputNumberSpinner id="qtdEstoque" value="#{loteProdutoList.loteProduto.qtdEstoque}" step="1" inputSize="8" maxValue="9999999999" styleClass="inputDefault"/>					
+            </s:decorate> 
+            
+            <s:decorate template="layout/display.xhtml">
+                <ui:define name="label">Qtd. (A partir de)</ui:define>                                
+				<rich:inputNumberSpinner id="qtdMinimaEstoque" value="#{loteProdutoList.loteProduto.qtdMinimaEstoque}" step="1" inputSize="8" maxValue="9999999999" styleClass="inputDefault"/>				
+            </s:decorate> 
+            
+            <s:decorate template="layout/display.xhtml"> 
+                <ui:define name="label"><h:outputText value="Qtd. Linhas" title="Quantidade de linhas que serão exibidas na consulta" /></ui:define>                                
+				<rich:inputNumberSpinner id="numeroLinhasDT" value="#{loteProdutoList.numeroLinhasDT}" step="10" inputSize="8" maxValue="500" styleClass="inputDefault"/>				
+            </s:decorate>                     
+ 
+        </rich:simpleTogglePanel>
+
+         <div class="actionButtons">
+	          <a:commandButton id="search" type="submit" value="Pesquisar" action="#{loteProdutoList.setMostrarResultados(true)}" reRender="resultadoList, panelDiv, msnListaVazia, sc"/>
+	           
+	          <s:button id="reset" value="Limpar" includePageParams="false"/>   
+	   		   <rich:hotKey key="return"
+			    handler="#{rich:element('search')}.click()"/>
+	   </div>
+	   
+    </a:form>
+
+	<h:form>
+
+	<a:outputPanel id="msnListaVazia" ajaxRendered="true">
+	
+    <rich:panel id="loteProdutoPanel" rendered="#{loteProdutoList.mostrarResultados}">
+     
+    <f:facet name="header">
+		<a:outputPanel  id="panelDiv" ajaxRendered="true">
+	    	Produtos em ESTOQUE(#{empty loteProdutoList.resultList ? 0 : (loteProdutoList.paginated ? loteProdutoList.resultCount : loteProdutoList.resultList.size)})
+	    </a:outputPanel>
+    </f:facet>
+    
+    <h:outputText value="#{messages['mensagem.pesquisa.vazia']}" rendered="#{empty loteProdutoList.resultList}"/>
+    
+	<rich:dataTable id="resultadoList"
+		                var="_loteProduto"
+		              	value="#{loteProdutoList.resultList}"			           	
+			           	onRowMouseOver="this.style.backgroundColor='#F0F0F0'"
+			           	onRowMouseOut="this.style.backgroundColor='#{a4jSkin.rowBackgroundColor}'"
+			           	columnClasses="center" 
+			           	footerClass="center"		
+			           	rows="#{ loteProdutoList.numeroLinhasDT }"		           
+			           	rendered="#{not empty loteProdutoList.resultList}"
+			           	rowClasses="tableRowOne,tableRowTwo">
+
+         <rich:column sortBy="#{_loteProduto.produto.codProdutoExterno}"> 
+           <f:facet name="header">
+               <h:outputText value="Cód.Produto" title="Código do Produto"/>
+           </f:facet> 
+           <h:outputText value="#{_loteProduto.produto.codProdutoExterno}"/>
+         </rich:column> 
+         
+          <rich:column sortBy="#{_loteProduto.produto.codigoBarrasProduto}" styleClass="left"> 
+           <f:facet name="header">
+               <h:outputText value="Cód.Barras" title="Código de barras do produto"/>
+           </f:facet> 
+           <h:outputText value="#{_loteProduto.produto.codigoBarrasProduto}"/>
+         </rich:column> 
+         
+         <rich:column sortBy="#{_loteProduto.produto.nomeProduto}" styleClass="left"> 
+           <f:facet name="header">
+               <h:outputText value="Nome Produto" title="Nome do produto"/>
+           </f:facet> 
+           <h:outputText value="#{_loteProduto.produto.nomeProduto}" title="#{_loteProduto.produto.descProduto}"/>
+         </rich:column> 
+         
+         <rich:column sortBy="#{_loteProduto.produto.marca.nomeMarca}"> 
+           <f:facet name="header">
+               <h:outputText value="Marca" title="Marca do produto"/>
+           </f:facet> 
+           <h:outputText value="#{_loteProduto.produto.marca.nomeMarca}"/>
+         </rich:column> 
+         
+         <rich:column sortBy="#{_loteProduto.compra.codCompra}"> 
+           <f:facet name="header">
+               <h:outputText value="Compra" title="Código da Compra" />
+           </f:facet> 
+           <h:outputText value="#{_loteProduto.compra.codCompra}"/>
+         </rich:column>
+         
+         <rich:column sortBy="#{_loteProduto.compra.dataCompra}"> 
+           <f:facet name="header">
+               <h:outputText value="Dt.Compra" title="Data da Compra" />
+           </f:facet> 
+           <h:outputText value="#{_loteProduto.compra.dataCompra}">
+           		<s:convertDateTime type="date" pattern="dd/MM/yyyy"/>
+           </h:outputText>
+         </rich:column>  
+        
+          <rich:column sortBy="#{_loteProduto.produto.localizadorDefault}"> 
+           <f:facet name="header">
+               <h:outputText value="Localizador" title="Localizador do Produto"/>
+           </f:facet> 
+           <h:outputText value="#{_loteProduto.produto.localizadorDefault}"/>
+         </rich:column> 
+         
+         <rich:column sortBy="#{_loteProduto.identificacaoLote}"> 
+           <f:facet name="header">
+               <h:outputText value="Lote" title="Número de identificação do lote do produto"/>
+           </f:facet> 
+           <h:outputText value="#{_loteProduto.identificacaoLote}"/>
+         </rich:column>  
+         
+         <rich:column sortBy="#{_loteProduto.dataValidade}"> 
+           <f:facet name="header"><h:outputText value="Data Validade" title="Data de validade do produto"/></f:facet> 
+           <h:outputText value="#{_loteProduto.dataValidade}" rendered="#{not empty _loteProduto.dataValidade}">
+           	 <s:convertDateTime type="date" pattern="dd/MM/yyyy"/>
+           </h:outputText>
+           <h:outputText value="Indeterminada" rendered="#{empty _loteProduto.dataValidade}"/>
+         </rich:column>             
+         
+         <rich:column sortBy="#{_loteProduto.precoCompraUnidade}" 
+         	rendered="#{user.perfil.codPerfil == constantes.financeiro or user.perfil.codPerfil == constantes.administrador or user.perfil.codPerfil == constantes.gerente}" > 
+           <f:facet name="header">
+               <h:outputText value="Preço Custo" title="Preço de custo unitário"/>
+           </f:facet> 
+           <h:outputText value="#{_loteProduto.precoCompraUnidade}">
+           		<f:convertNumber currencySymbol="R$"  type="currency"  locale="pt_BR"/>
+           </h:outputText>
+           <f:facet name="footer">
+               <h:outputText value="#{loteProdutoList.precoCustoTotal}" tittle="Valor de custo atual em estoque" styleClass="textoNegrito">
+               		<f:convertNumber currencySymbol="R$"  type="currency"  locale="pt_BR"/>
+               </h:outputText>
+           </f:facet>
+         </rich:column>  
+         
+         <rich:column sortBy="#{_loteProduto.precoVendaUnidade}"> 
+           <f:facet name="header">
+               <h:outputText value="Preço Venda" title="Preço de venda unitário"/>
+           </f:facet> 
+           <h:outputText value="#{_loteProduto.precoVendaUnidade}">
+           		<f:convertNumber currencySymbol="R$"  type="currency"  locale="pt_BR"/>
+           </h:outputText>
+           <f:facet name="footer">
+               <h:outputText value="#{loteProdutoList.precoVendaTotal}" tittle="Valor de venda atual em estoque"  styleClass="textoNegrito">
+               		<f:convertNumber currencySymbol="R$"  type="currency"  locale="pt_BR"/>
+               </h:outputText>
+           </f:facet>
+         </rich:column>  
+         
+         <rich:column sortBy="#{_loteProduto.qtdCompra}"> 
+           <f:facet name="header">
+               <h:outputText value="Qtd Comprada" title="Quantidade comprada do produto"/>
+           </f:facet> 
+           <h:outputText value="#{_loteProduto.qtdCompra}"/>
+           <f:facet name="footer">
+               <h:outputText value="#{loteProdutoList.quantidadeCompradaTotal}" styleClass="textoNegrito"/>
+           </f:facet>
+         </rich:column>  
+         
+         <rich:column sortBy="#{_loteProduto.qtdEstoque}"> 
+           <f:facet name="header">
+               <h:outputText value="Qtd Estoque" title="Quantidade do produto em estoque"/>
+           </f:facet> 
+           <h:outputText value="#{_loteProduto.qtdEstoque}"/>
+           <f:facet name="footer">
+               <h:outputText value="#{loteProdutoList.quantidadeEstoqueTotal}" styleClass="textoNegrito"/>
+           </f:facet>
+         </rich:column>  
+              
+    </rich:dataTable>
+    
+    <ui:include src="/includes/includeDataScroller.xhtml"/>
+	
+    </rich:panel>
+    </a:outputPanel>
+    </h:form>
+	<rich:jQuery selector="#codProdutoExterno" timing="onload" query="focus()" />
+    </ui:define>
+
+</ui:composition>

@@ -1,0 +1,61 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:s="http://jboss.com/products/seam/taglib"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:rich="http://richfaces.org/rich"
+    template="layout/template.xhtml">
+
+<ui:define name="body">
+
+    <rich:panel>
+        <f:facet name="header">Detalhes do Tipo de Pagamento</f:facet>
+
+        <s:decorate id="descTipoPagamento" template="layout/display.xhtml">
+            <ui:define name="label">Tipo Pagamento</ui:define>
+            <h:outputText value="#{tipoPagamentoHome.instance.descTipoPagamento}"/>
+        </s:decorate>
+        
+        <s:decorate template="layout/display.xhtml">
+            <ui:define name="label">Número Vezes</ui:define>
+            <h:outputText value="#{tipoPagamentoHome.instance.numVezes}"/>
+        </s:decorate>
+        
+        <s:decorate template="layout/display.xhtml">
+            <ui:define name="label">Intervalo de Dias</ui:define>
+            <h:outputText value="#{tipoPagamentoHome.instance.intervaloDias}"/>
+        </s:decorate>
+        
+        <s:decorate template="layout/display.xhtml">
+            <ui:define name="label">Dias de Carência</ui:define>
+            <h:outputText value="#{tipoPagamentoHome.instance.diasCarencia}"/>
+        </s:decorate>
+        
+         <s:decorate template="layout/display.xhtml">
+            <ui:define name="label">Visibilidade</ui:define>
+            <h:panelGrid width="100%" >
+	            <h:outputText value="GerenciadorNet" rendered="#{tipoPagamentoHome.instance.inGN}"/>
+	            <h:outputText value="GerenciadorNetB2B" rendered="#{tipoPagamentoHome.instance.inGNb2b}"/>
+	            <h:outputText value="ECommerce" rendered="#{tipoPagamentoHome.instance.inECommerce}"/>
+            </h:panelGrid>
+        </s:decorate>
+
+        <div style="clear:both"/>
+
+    </rich:panel>
+
+    <div class="actionButtons">
+
+        <s:button view="/TipoPagamentoEdit.xhtml" rendered="#{identity.hasRole(transacoes.transacaoTipoPagamentoEditar)}"
+                    id="edit"
+                 value="Editar"/> 
+                 
+        <s:button view="/#{empty from ? 'TipoPagamentoList' : from}.xhtml"
+				includePageParams="true" propagation="join" id="done" value="Voltar" />
+    </div>
+    
+</ui:define>
+
+</ui:composition>

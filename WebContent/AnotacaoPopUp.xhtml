@@ -1,0 +1,84 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<rich:modalPanel id="panelPopUp" minWidth="600" minHeight="220" autosized="true" top="180px" onshow="focar()"
+	xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:s="http://jboss.com/products/seam/taglib"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html" 
+    xmlns:a="http://richfaces.org/a4j"
+    xmlns:rich="http://richfaces.org/rich">
+ 
+	<script>
+   		function focar(){
+    		document.getElementById("form:label:anotacaoTextArea").focus();
+      	}
+      	
+		function limitarInput(obj) {
+		    obj.value = obj.value.substring(0,200); 
+		}
+   	</script>
+
+	<f:facet name="header">
+        <h:panelGroup>
+            <h:outputText value="Cadastrar anotação para o cliente"></h:outputText>
+        </h:panelGroup>
+    </f:facet>
+
+	<f:facet name="controls">
+		<h:panelGroup>
+			<h:graphicImage value="/img/close.png" id="hidelink" style="cursor:pointer;" />
+			<rich:componentControl for="panelPopUp" attachTo="hidelink" operation="hide" event="onclick" />
+		</h:panelGroup>
+	</f:facet>
+	
+	<h:form id="form">
+		<rich:panel>
+			<a:outputPanel ajaxRendered="true" id="panelGlobalMessages">
+				<h:messages id="messages" globalOnly="false" styleClass="message"
+					errorClass="errormsg" infoClass="infomsg" warnClass="warnmsg"
+					rendered="#{showGlobalMessages != 'false'}" />
+			</a:outputPanel>
+
+			<h:panelGrid columns="1">
+				<s:decorate id="label" template="layout/display.xhtml">	
+					<ui:define name="label">
+						<h:outputText value="Anotação" />
+					</ui:define>
+					<h:inputTextarea id="anotacaoTextArea" value="#{clienteHome.novaAnotacao.descAnotacao}" onkeyup="limitarInput(this)" cols="50" rows="5" />
+				</s:decorate>
+				<s:decorate template="layout/display.xhtml">	
+					<ui:define name="label">						
+					</ui:define>
+					<h:outputText value="* (Máx. 200 Caracteres)" class="textoMedioVermelho" />
+				</s:decorate>
+			</h:panelGrid>
+			
+			
+			<table width="100%">
+				<tbody>
+					<tr>
+						<td align="right" width="50%">
+							<a:commandButton value="Salvar"
+								id="btnSalvar"
+								ajaxSingle="true"
+								limitToList="true"
+								process="anotacaoTextArea"
+								action="#{clienteHome.persistAnotacao()}"
+								oncomplete="#{rich:component('panelPopUp')}.hide();"
+								reRender="anotacoesPanel, anotacaoTextArea"/>
+								
+						</td>
+	
+						<td align="left" width="50%">
+							<input value="Cancelar" type="button" onclick="#{rich:component('panelPopUp')}.hide();"/>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+			<rich:hotKey key="esc" handler="#{rich:component('panelPopUp')}.hide();"/>
+			<rich:hotKey key="return" selector="#anotacaoTextArea" handler="#{rich:element('btnSalvar')}.click()"/> 
+		</rich:panel>
+	</h:form>
+	
+</rich:modalPanel>

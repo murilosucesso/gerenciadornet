@@ -1,0 +1,224 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:s="http://jboss.com/products/seam/taglib"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:rich="http://richfaces.org/rich"
+    xmlns:a="http://richfaces.org/a4j"
+    template="layout/template.xhtml">
+
+
+<ui:define name="head">
+		
+	<a:loadScript src="https://www.google.com/jsapi"/>
+
+	<script type="text/javascript">
+		Array.prototype.reduce = undefined;
+		google.load('visualization', '1', {packages: ['corechart', 'table']});
+
+		// ----------------------------------------- Gráfico 1 - Scatter chart - --------------------------------------	  
+		google.setOnLoadCallback(drawVisualization);
+		
+		function drawVisualization() {
+			
+			
+		        var data = new google.visualization.DataTable();
+		        data.addColumn('number', 'Quantidade');
+		        data.addColumn('number', 'Valor');
+		        // A column for custom tooltip content
+		        data.addColumn({type: 'string', role: 'tooltip'});
+		        data.addRows([
+		            #{relatorioInstituicaoList.respostaScatterChart}  
+		        ]);
+
+		        var options = {
+				          title: 'Quantidade X Valor',
+			              hAxis: {title: 'Quantidade'},
+			              vAxis: {title: 'Valor Total'},
+			              chartArea:{left:100,top:50,width:"75%",height:"75%"},
+	                  legend: 'none'
+				        };
+
+	        
+		    // Create and draw the visualization.
+		    new google.visualization.ScatterChart(document.getElementById('visualization')).
+		        draw(data,options);
+		  }
+
+		 
+
+	</script>
+	</ui:define>		  
+
+<ui:define name="body">
+
+    <a:form id="vendaSearch" styleClass="edit">
+		
+        <rich:simpleTogglePanel label="Pesquisa por Instituição" switchType="client">
+			
+			 <table width="100%" align="left">
+			 	<tr>
+		        	<td width="20%" nowrap="nowrap">
+			             <s:decorate template="layout/display.xhtml">
+			                <ui:define name="label">Entidade</ui:define>
+			                 <h:selectOneMenu id="entidade" required="false" requiredMessage="Selecione a Instituição" value="#{relatorioInstituicaoList.entidade}" styleClass="defaultInput">		
+							   <s:selectItems value="#{entidadeList.resultList}" 
+							   				  var="entidade" 			
+							                  label="#{entidade.nome}"
+							                  noSelectionLabel="Selecione.." />							       		
+							   <s:convertEntity />			
+							</h:selectOneMenu>		
+			            </s:decorate>
+			        </td>
+				</tr>
+				<tr>
+		        	<td width="20%" nowrap="nowrap">
+			             <s:decorate template="layout/display.xhtml">
+			                <ui:define name="label">Grupo(Carteira)</ui:define>
+							<h:selectOneMenu id="grupo" value="#{relatorioInstituicaoList.grupoCarteira}" styleClass="defaultInput">		
+							   <s:selectItems value="#{grupoList.resultList}" 
+							   				  var="grupo" 			
+							                  label="#{grupo.nomeGrupo}"
+							                  required="false"
+							                  noSelectionLabel="Selecione.." />							       		
+							   <s:convertEntity />			
+							</h:selectOneMenu>	
+			            </s:decorate>
+			        </td>
+				</tr>
+	            <tr>
+		            <td>
+		            	<h:outputLabel value="Data Início*" styleClass="name"/>
+		            	<rich:spacer width="5px"/>
+		                <rich:calendar id="dataInicioVenda" required="true" requiredMessage="O campo Data Início é obrigatório" value="#{relatorioInstituicaoList.dataInicioVenda}" defaultTime="00:00" resetTimeOnDateSelect="true" datePattern="dd/MM/yyyy">
+		                	<f:convertDateTime pattern="yyyy-MM-dd HH:mm"/>
+		                </rich:calendar>  
+ 						<rich:spacer width="20px"/>
+		            	<h:outputLabel value="Data Fim*" styleClass="textoNegrito"/>
+		            	<rich:spacer width="15" />
+		                <rich:calendar id="dataFimVenda" required="true" requiredMessage="O campo Data Fim é obrigatório" value="#{relatorioInstituicaoList.dataFimVenda}" defaultTime="23:59" resetTimeOnDateSelect="false" datePattern="dd/MM/yyyy">
+		                	<f:convertDateTime pattern="yyyy-MM-dd HH:mm"/>
+		                </rich:calendar>
+		            </td>
+	            </tr>   
+	             <tr>
+		            <td>
+	            		<s:decorate template="layout/display.xhtml"> 
+			                <ui:define name="label"><h:outputText value="Qtd. Linhas" title="Quantidade de linhas que serão exibidas na consulta" /></ui:define>                                
+							<rich:inputNumberSpinner id="numeroLinhasDT" value="#{relatorioInstituicaoList.numeroLinhasDT}" step="10" inputSize="8" maxValue="500" styleClass="inputDefault"/>				
+			            </s:decorate> 
+			       </td>
+	            </tr>                 
+           	</table>    
+            <div style="clear:both">
+                <span class="required">*</span>
+                Campos obrigatórios            
+            </div>
+                       
+        </rich:simpleTogglePanel>
+
+         <div class="actionButtons">
+	          <h:commandButton id="search" type="submit" value="Pesquisar" action="#{relatorioInstituicaoList.setMostrarResultados(true)}"  actionListener="#{relatorioInstituicaoList.listarVendasInstituicao()}" />
+	           
+	          <s:button id="reset" value="Limpar" includePageParams="false"/>   
+	   		  <rich:hotKey key="return" handler="#{rich:element('search')}.click()"/>
+	   	</div>
+
+    </a:form>
+    
+	<h:form>
+		<a:outputPanel ajaxRendered="true">
+		
+		 <rich:panel rendered="#{relatorioInstituicaoList.mostrarResultados}">
+		    
+		    <f:facet name="header">   
+			    <a:outputPanel  id="panelDiv" ajaxRendered="true">
+			    	Relatório de Vendas
+			    </a:outputPanel> 
+		    </f:facet> 
+
+		    <h:outputText value="Vendas na Instituição"  styleClass="textoNegrito" />
+		    <rich:spacer height="10" />
+		    
+		    <table border="0" width="100%">
+	       		<tr>
+	       			<td width="50%" ><div id="visualization" style="width: 600px; height: 350px; float: center"/></td>
+	       			<td valign="top">
+<!-- Lista de Recebimentos do cliente para o período pesquisado -->
+
+					    <rich:dataTable id="resultadoList" var="_relatorioInsituicaoListDTO"
+								value="#{relatorioInstituicaoList.listaRelatorioInstituicaoListDTO}"
+								onRowMouseOver="this.style.backgroundColor='#F0F0F0'"
+								onRowMouseOut="this.style.backgroundColor='#{a4jSkin.rowBackgroundColor}'"
+								footerClass="center"
+								rows="#{relatorioInstituicaoList.numeroLinhasDT}" 
+								rowClasses="tableRowOne,tableRowTwo"
+								rowKeyVar="row">
+					
+							<rich:column styleClass="left">
+								<f:facet name="header">
+									<h:outputText value="Cliente" />
+								</f:facet>
+								<h:outputText value="#{_relatorioInsituicaoListDTO.nomeCliente}"
+									id="dataVenda">
+								</h:outputText>
+							</rich:column>
+					
+							<rich:column styleClass="center">
+								<f:facet name="header">
+									<h:outputText value="Telefone" />
+								</f:facet>
+								<h:outputText value="#{_relatorioInsituicaoListDTO.telefoneCliente}" />
+								
+								 <f:facet name="footer">
+						             <h:outputText>
+						             		<h:outputLabel styleClass="textoNegrito" value="Total"/>
+						             </h:outputText>
+						         </f:facet>
+							</rich:column>
+					
+							<rich:column styleClass="center">
+								<f:facet name="header">
+									<h:outputText value="Quantidade"/>
+								</f:facet>
+								<h:outputText value="#{_relatorioInsituicaoListDTO.qtdVendasTotal}" />
+								
+								<f:facet name="footer">
+									<h:outputText value="#{relatorioInstituicaoList.qtdTotal}"/>
+								</f:facet>
+							</rich:column>
+					
+							<rich:column styleClass="center">
+								<f:facet name="header">
+									<h:outputText value="Total Comprado" title="Valor total das vendas do cliente"/>
+								</f:facet>
+					
+								<h:outputText value="#{_relatorioInsituicaoListDTO.valorVendasTotal}">
+									<f:convertNumber currencySymbol="R$" type="currency" locale="pt_BR" />
+								</h:outputText>
+					
+								<f:facet name="footer">
+									<h:outputText value="#{relatorioInstituicaoList.valorTotal}">
+										<f:convertNumber currencySymbol="R$" type="currency" locale="pt_BR" />
+									</h:outputText>
+								</f:facet>
+							</rich:column>
+						</rich:dataTable>
+					    <rich:datascroller align="center" renderIfSinglePage="false" for="resultadoList" maxPages="10" id="sc"/>
+					</td>
+	       		</tr>
+	       	</table>
+		    
+		</rich:panel>
+		  
+		<h:outputText id="msnListaVazia" value="A pesquisa realizada não retornou resultados." rendered="#{relatorioInstituicaoList.msnListaVazia and relatorioInstituicaoList.mostrarResultados}"/>
+		    
+	    </a:outputPanel>
+	    <rich:jQuery selector="#entidade" timing="onload" query="focus()" />
+	</h:form>
+   
+</ui:define>
+
+</ui:composition>

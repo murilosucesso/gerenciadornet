@@ -1,0 +1,103 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:s="http://jboss.com/products/seam/taglib"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:rich="http://richfaces.org/rich"
+    template="layout/template.xhtml">
+
+<ui:define name="body">
+
+    <rich:panel>
+        <f:facet name="header">Detalhes do Historico</f:facet>
+
+
+        <s:decorate id="descHistorico" template="layout/display.xhtml">
+            <ui:define name="label">Desc historico</ui:define>
+            <h:outputText value="#{historicoHome.instance.descHistorico}"/>
+        </s:decorate>
+
+        <s:decorate id="dataHistorico" template="layout/display.xhtml">
+            <ui:define name="label">Data historico</ui:define>
+            <h:outputText value="#{historicoHome.instance.dataHistorico}">
+                <s:convertDateTime type="both" dateStyle="short"/>
+            </h:outputText>
+        </s:decorate>
+
+        <div style="clear:both"/>
+
+    </rich:panel>
+
+    <div class="actionButtons">
+
+        <s:button view="/HistoricoEdit.xhtml"
+                    id="edit"
+                 value="Editar"/>
+
+        <s:button view="/#{empty historicoFrom ? 'HistoricoList' : historicoFrom}.xhtml"
+                    id="done"
+                 value="Voltar"/>
+
+    </div>
+
+    <rich:tabPanel switchType="ajax">
+
+    <rich:tab>
+        <f:facet name="label">
+            <h:panelGroup><h:graphicImage value="/img/manytoone.gif" style="vertical-align: middle; padding-right: 4px;"/>Usuario</h:panelGroup>
+        </f:facet>
+    <div class="association" id="usuarioParent">
+
+        <h:outputText value="Nao existem usuarios associados com este historico."
+                   rendered="#{historicoHome.instance.usuario == null}"/>
+
+        <rich:dataTable var="_usuario"
+                   value="#{historicoHome.instance.usuario}"
+                rendered="#{historicoHome.instance.usuario != null}"
+              rowClasses="rvgRowOne,rvgRowTwo"
+                      id="usuarioTable">
+            <h:column>
+                <f:facet name="header">Cod usuario</f:facet>
+                <h:outputText value="#{_usuario.codUsuario}"/>
+            </h:column>
+            <h:column>
+                <f:facet name="header">Login usuario</f:facet>
+                <h:outputText value="#{_usuario.loginUsuario}"/>
+            </h:column>
+            <h:column>
+                <f:facet name="header">Senha</f:facet>
+                <h:outputText value="#{_usuario.senha}"/>
+            </h:column>
+            <h:column>
+                <f:facet name="header">Cpf</f:facet>
+                <h:outputText value="#{_usuario.cpf}"/>
+            </h:column>
+            <h:column>
+                <f:facet name="header">Num rg</f:facet>
+                <h:outputText value="#{_usuario.numRg}"/>
+            </h:column>
+            <h:column>
+                <f:facet name="header">Data nasc</f:facet>
+                <h:outputText value="#{_usuario.dataNasc}">
+                    <s:convertDateTime type="date" dateStyle="short"/>
+                </h:outputText>
+            </h:column>
+            <h:column styleClass="action">
+                <f:facet name="header">Action</f:facet>
+                <s:link id="viewusuario"
+                     value="View"
+                      view="/Usuario.xhtml">
+                    <f:param name="usuarioCodUsuario"
+                           value="#{_usuario.codUsuario}"/>
+                </s:link>
+            </h:column>
+        </rich:dataTable>
+
+    </div>
+    </rich:tab>
+</rich:tabPanel>
+</ui:define>
+
+</ui:composition>

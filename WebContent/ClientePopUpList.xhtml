@@ -1,0 +1,165 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<rich:modalPanel id="panelPopUpCliente" minWidth="800" minHeight="450" autosized="true" top="15px"
+	xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:s="http://jboss.com/products/seam/taglib"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html" 
+    xmlns:a="http://richfaces.org/a4j"
+    xmlns:rich="http://richfaces.org/rich">
+ 
+	<script>
+   		function focarProduto(){
+    		Richfaces.hideModalPanel('panelPopUpCliente');
+    		document.getElementById('venda:pesquisarCliente:pesquisaGeralCliente').value = "";
+    		document.getElementById('venda:pesquisar:pesquisarGeral').focus();
+      	}
+   		function focarBotaoAddCliente(){
+   			document.getElementById('listaClientes:0:selecionarClienteButton').focus();   			                         
+ 
+   		}
+   		
+   		function cadastrarNovoCliente(){
+    		Richfaces.hideModalPanel('panelPopUpCliente');
+    		Richfaces.showModalPanel('panelClienteEditPopUp');
+    		document.getElementById('cliente:nomeField:nome').focus();
+    	}
+   	</script>
+   	
+   	<style>
+   		.btn-salvar{
+			margin-bottom: 10px;
+			text-align: center;
+			padding: 15px;
+		}
+   	</style>
+
+	<f:facet name="header">
+        <h:panelGroup>
+            <h:outputText value="Pesquisa de Clientes"></h:outputText>
+        </h:panelGroup>
+    </f:facet>
+    
+	<f:facet name="controls">
+		<h:panelGroup>		
+			<a:commandLink>
+				<h:graphicImage value="/img/help.png"/>
+				<rich:toolTip direction="bottom-left" followMouse="true">
+		            <span style="white-space:nowrap">
+		                Serão listados apenas 100 Clientes. Use o filtro para refinar sua busca.
+		            </span>
+	        	</rich:toolTip>
+        	</a:commandLink>	
+			#{' '}
+			<h:graphicImage value="/img/close.png" id="clienteListHidelink" style="cursor:pointer;"/>
+            <rich:componentControl for="panelPopUpCliente" attachTo="clienteListHidelink" operation="hide" event="onclick"/>
+		</h:panelGroup>		       
+	</f:facet>
+	<rich:spacer height="5"/>	
+	
+    
+    <a:outputPanel ajaxRendered="true"> 
+   
+     <h:outputText value="Cliente pesquisado: "/>
+     <h:outputText id="textoPesquisadoCliente" value=" #{clienteList.cliente.nome}" styleClass="textoNegrito" />          
+    
+    <h:form prependId="false" id="listFormCliente">
+    
+    <rich:panel style="height:360px" >
+     
+    <f:facet name="header">
+    	<h:outputText>
+    		Resultado da Pesquisa de Clientes
+    	</h:outputText>
+    </f:facet>
+    
+    <rich:dataTable id="listaClientes"  
+           var="_cliente" 
+           rowKeyVar="row"                     
+           value="#{clienteList.getResultListPopUp()}"                   
+           onRowMouseOver="this.style.backgroundColor='#F0F0F0'"
+           onRowMouseOut="this.style.backgroundColor='#{a4jSkin.rowBackgroundColor}'"
+           columnsWidth="0*, *, *, *, *, *, 0*"           
+           columnClasses="center, left, center, center, center" 
+           footerClass="tableRowTwo"
+           rowClasses="tableRowOne,tableRowTwo"
+	       rows="7">
+	
+			<rich:column sortBy="#{_cliente.codCliente}" styleClass="center">
+				<f:facet name="header">
+					<h:outputText value="Código" />
+				</f:facet>
+				<h:outputText value="#{_cliente.codCliente}" />
+			</rich:column>
+	
+			<rich:column sortBy="#{_cliente.nome}" styleClass="left">
+				<f:facet name="header">
+					<h:outputText value="Nome / Razão Social" />
+				</f:facet>
+				<h:outputText value="#{_cliente.nome}" />
+			</rich:column>
+	
+			<rich:column sortBy="#{_cliente.cpfCnpj}">
+				<f:facet name="header">
+					<h:outputText value="CPF / CNPJ" />
+				</f:facet>
+				<h:outputText value="#{_cliente.cpfCnpj}" />
+			</rich:column>
+			
+			<rich:column>
+				<f:facet name="header">
+					<h:outputText value="Grupo/Carteira" />
+				</f:facet>
+				<h:outputText value="#{_cliente.grupo.nomeGrupo}" />
+			</rich:column>
+	
+			<rich:column styleClass="center">
+				<f:facet name="header">
+					<h:outputText value="Telefone" />
+				</f:facet>
+				<h:outputText value="#{_cliente.telefone}" />
+			</rich:column>	
+			
+			<rich:column styleClass="center">
+				<f:facet name="header">
+					<h:outputText value="Situação" />
+				</f:facet>
+				<h:outputText value="#{_cliente.inAdimplente  ? 'Adimplente' : 'Inadimplente'}" />
+			</rich:column>			
+        
+        <rich:column>
+            <f:facet name="header">Selecionar</f:facet>          									
+				<a:commandButton id="selecionarClienteButton"  value="Adicionar" oncomplete="focarProduto()"	 
+					reRender="pesquisarCliente2"					
+					ajaxSingle="true" 
+					tabindex="#{row}" 
+					eventsQueue="selecionarQueue" 
+					ignoreDupResponses="true"
+					action="#{vendaHome.instance.setCliente(_cliente)}"
+					actionListener="#{vendaHome.setCodCliente(_cliente.codCliente)}"
+					disabled="#{_cliente.inAdimplente ? false : true}">
+				
+					 <rich:toolTip for="selecionarCliente" direction="top-left" followMouse="true">
+			            <span style="white-space:nowrap">
+			                <strong>Adicionar Cliente</strong>
+			            </span>
+			       	 </rich:toolTip>
+			       
+				</a:commandButton>
+				  	
+        </rich:column>
+        
+        <f:facet name="footer">
+           <h:outputText value="Cliente não localizado." styleClass="textoMedioVermelho" rendered="#{ClienteList.listaVazia}"/>           
+        </f:facet>        
+       	</rich:dataTable>
+    	
+    	<rich:datascroller align="center" for="listaClientes" maxPages="10" id="scPesquisaCliente"/>
+    	<div class="btn-salvar">
+	    	<input value="Novo Cliente" type="button" onclick="cadastrarNovoCliente();"/>
+    	</div>
+    </rich:panel>
+	</h:form>	
+    </a:outputPanel>
+</rich:modalPanel>

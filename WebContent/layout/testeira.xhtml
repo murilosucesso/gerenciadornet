@@ -1,0 +1,66 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:a4j="http://richfaces.org/a4j"
+      xmlns:rich="http://richfaces.org/rich"
+      xmlns:s="http://jboss.com/products/seam/taglib">   
+      <div>  
+      	 
+      	 <table width="100%" style=" height : 45px; background-image:url(img/background.jpg)">
+      	 <tr>
+	      	 <td rowspan="4">
+	      	 <s:link view="/home.xhtml" propagation="none">
+	      	 	<h:graphicImage id="logo-superior" url="/img#{facesContext.externalContext.requestContextPath}/logo.png" rendered="#{identity.loggedIn}"/>
+	      	 </s:link>
+	      	 </td>
+	     </tr>  
+	     <tr align="right" valign="top">
+	     	<td >
+				<h:graphicImage url="/img/user.png" rendered="#{identity.loggedIn}"  style="width : 16px; height : 16px;"/>
+			</td>
+			<td  width="5%"  nowrap="nowrap" align="left">
+				<rich:spacer width="3px"/>
+				<h:outputText id="menuWelcomeId" value="Usuario: #{credentials.username}" rendered="#{identity.loggedIn}" styleClass="textoMedioCinza2"/>						        	        							
+			</td>
+			<td>
+				<h:graphicImage url="/img/grupo.jpg" rendered="#{identity.loggedIn}" style="width : 16px; height : 16px;"/>
+			</td>
+			<td  width="5%"  nowrap="nowrap"  align="left">
+				<rich:spacer width="3px"/>
+				<h:outputText id="menuWelcomePerfil" value="Perfil: #{user.perfil.nomePerfil}" rendered="#{identity.loggedIn}" styleClass="textoMedioCinza2"/>		        
+			</td>
+			<td  align="right">
+				<h:graphicImage url="/img/home.gif" style="width : 16px; height : 16px;"/>
+			</td>	
+			<td align="left" width="5%"  nowrap="nowrap" > 
+				<rich:spacer width="3px"/>
+				<s:link id="menuHomeId" view="/home.xhtml" value="Pagina Inicial" propagation="none" styleClass="textoMedioCinza2"/>					
+			</td>
+			
+			<td align="right" width="3%" nowrap="nowrap"> 
+				<rich:spacer width="3px"/>
+		    	<h:graphicImage url="/img/logout.png" style="width : 16px; height : 16px;" rendered="#{identity.loggedIn}"/>
+		    	<h:graphicImage url="/img/login.png" style="width : 16px; height : 16px;" rendered="#{not identity.loggedIn}"/>
+			</td>
+			
+			<td align="left"  width="3%"  nowrap="nowrap">	
+				<rich:spacer width="3px"/>
+		    	<s:link id="menuLogoutId" view="/homeLite.xhtml" action="#{identity.logout}" actionListener="#{conversation.killAllOthers()}" value="Sair" rendered="#{identity.loggedIn}" styleClass="textoMedioCinza2" propagation="none"/>
+		        <s:link id="menuLoginId" view="/login.xhtml" value="Entrar" rendered="#{not identity.loggedIn}" propagation="none" styleClass="textoMedioCinza2"/>        					
+			</td>								
+	     </tr>  
+	     <tr align="right" valign="top">	  
+	     	<td colspan="8"> 
+	     		<h:outputText value="Novo Pedido" title="Existem novos pedidos em aberto." styleClass="blink" rendered="#{novoPedido and identity.loggedIn}" />
+	     		<h:outputText value="#{mensagensGerais}" styleClass="blink" rendered="#{identity.loggedIn}" />
+				<h:graphicImage url="/img/logo.jpg" style="width : 114px; height : 30px;"/>
+			</td>	   	    	 
+      	 </tr>    
+	     </table>      	         	  
+      </div>     
+       
+</ui:composition>
+
+           
+     

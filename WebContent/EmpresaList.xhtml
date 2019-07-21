@@ -1,0 +1,103 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:s="http://jboss.com/products/seam/taglib"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:rich="http://richfaces.org/rich"
+    template="layout/template.xhtml">
+
+<ui:define name="body">
+   <h:form>
+    <rich:panel>
+        <f:facet name="header">Resultado da consulta de Empresa(#{empty empresaList.resultList ? 0 : (empresaList.paginated ? empresaList.resultCount : empresaList.resultList.size)})</f:facet>
+    <div class="results">
+
+    <h:outputText value="#{messages['mensagem.pesquisa.vazia']}"
+               rendered="#{empty empresaList.resultList}"/>
+
+    <rich:dataTable id="empresaList"
+                var="_empresa"
+              value="#{empresaList.resultList}"
+           rendered="#{not empty empresaList.resultList}">
+           
+            <rich:column sortBy="#{_empresa.codEmpresa}" styleClass="center"> 
+		           <f:facet name="header">
+		               <h:outputText value="Código"/>
+		           </f:facet> 
+		           <h:outputText value="#{_empresa.codEmpresa}"/>
+		    </rich:column> 
+		    
+		    <rich:column sortBy="#{_empresa.nomeFantasia}" styleClass="left"> 
+		           <f:facet name="header">
+		               <h:outputText value="Nome Fantasia"/>
+		           </f:facet> 
+		           <h:outputText value="#{_empresa.nomeFantasia}"/>
+		    </rich:column>
+		    
+		    <rich:column sortBy="#{_empresa.razaoSocial}" styleClass="left"> 
+		           <f:facet name="header">
+		               <h:outputText value="Razão Social"/>
+		           </f:facet> 
+		           <h:outputText value="#{_empresa.razaoSocial}"/>
+		    </rich:column>
+		    
+		    <rich:column styleClass="center"> 
+		           <f:facet name="header">
+		               <h:outputText value="Telefone"/>
+		           </f:facet> 
+		           <h:outputText value="#{_empresa.telefone}"/>
+		    </rich:column>
+		    
+		    <rich:column sortBy="#{_empresa.inContaAtrasada}" styleClass="center"> 
+		           <f:facet name="header">
+		               <h:outputText value="Inadimplente"/>
+		           </f:facet> 		           
+		            <h:outputText value="SIM" rendered="#{_empresa.inContaAtrasada}"/>
+		           <h:outputText value="NÃO" rendered="#{!_empresa.inContaAtrasada}"/>
+		    </rich:column>
+		    
+		     <rich:column sortBy="#{_empresa.inEmpresaAtiva}" styleClass="center"> 
+		           <f:facet name="header">
+		               <h:outputText value="Empresa Ativa"/>
+		           </f:facet> 
+		           <h:outputText value="SIM" rendered="#{_empresa.inEmpresaAtiva}"/>
+		           <h:outputText value="NÃO" rendered="#{!_empresa.inEmpresaAtiva}"/>
+		    </rich:column>
+               
+	        <rich:column styleClass="action" > 
+	            <f:facet name="header">Visualizar/Editar</f:facet>
+	            <s:link view="/#{empty from ? 'Empresa' : from}.xhtml"
+	             propagation="#{empty from ? 'none' : 'default'}" id="empresaViewId">
+	                <h:graphicImage url="/img/binoculo.jpg"/>
+	                <f:param name="empresaCodEmpresa" value="#{_empresa.codEmpresa}"/>
+	            </s:link>
+	            <rich:toolTip for="empresaViewId" value="Visualizar Empresa" direction="top-left"/>
+	            
+	            #{' '}
+	            
+	            <s:link view="/EmpresaEdit.xhtml" propagation="none" id="empresaEdit" rendered="#{empty from}">
+	                <h:graphicImage url="/img/editar.jpg"/> 
+	                <f:param name="empresaCodEmpresa" value="#{_empresa.codEmpresa}"/>
+	            </s:link>
+	            <rich:toolTip for="empresaEdit" value="Editar Empresa" direction="top-left"/>
+	        </rich:column>
+        
+    </rich:dataTable>
+    
+    </div>
+    </rich:panel>    
+<!-- 
+    <s:div styleClass="actionButtons" rendered="#{empty from}">
+        <s:button view="/EmpresaEdit.xhtml"
+                    id="create"
+           propagation="none"
+                 value="Nova Empresa">
+            <f:param name="empresaCodEmpresa"/>
+        </s:button>
+    </s:div> -->
+</h:form>
+</ui:define>
+
+</ui:composition>

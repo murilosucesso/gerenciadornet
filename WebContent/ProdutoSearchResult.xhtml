@@ -1,0 +1,89 @@
+
+<rich:panel xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:s="http://jboss.com/products/seam/taglib"
+    xmlns:rich="http://richfaces.org/rich">
+	<h:form>
+    <f:facet name="header">Produto Search Results (#{empty produtoList.resultList ? 0 : (produtoList.paginated ? produtoList.resultCount : produtoList.resultList.size)})</f:facet>
+    <div class="results" id="produtoList">
+
+    <h:outputText value="The produto search returned no results."
+               rendered="#{empty produtoList.resultList}"/>
+
+    <rich:dataTable id="produtoList"
+                var="_produto"
+              value="#{produtoListParam.resultList}"
+           rendered="#{not empty produtoList.resultList}"
+           onRowMouseOver="this.style.backgroundColor='#F0F0F0'"
+           onRowMouseOut="this.style.backgroundColor='#{a4jSkin.rowBackgroundColor}'"
+           columnClasses="center" 
+           rowClasses="tableRowOne,tableRowTwo">
+    
+         <rich:column sortBy="#{_produto.codProdutoExterno}"> 
+           <f:facet name="header">
+               <h:outputText value="Codigo produto"/>
+           </f:facet> 
+           <h:outputText value="#{_produto.codProdutoExterno}"/>
+         </rich:column>  
+               
+         <rich:column sortBy="#{_produto.nomeProduto}"> 
+           <f:facet name="header">
+               <h:outputText value="Nome produto"/>
+           </f:facet> 
+           <h:outputText value="#{_produto.nomeProduto}"/>
+         </rich:column>
+   
+         <rich:column sortBy="#{_produto.categoria.nomeCategoria}"> 
+           <f:facet name="header">
+               <h:outputText value="Categoria"/>
+           </f:facet> 
+           <h:outputText value="#{_produto.categoria.nomeCategoria}"/>
+         </rich:column>
+        
+         <rich:column sortBy="#{_produto.marca.nomeMarca}"> 
+           <f:facet name="header">
+               <h:outputText value="Marca"/>
+           </f:facet> 
+           <h:outputText value="#{_produto.marca.nomeMarca}"/>
+         </rich:column>
+    
+        <rich:column sortBy="#{_produto.descProduto}"> 
+           <f:facet name="header">
+               <h:outputText value="Descricao produto"/>
+           </f:facet> 
+           <h:outputText value="#{_produto.descProduto}"/>
+         </rich:column>             
+       
+         <rich:column sortBy="#{_produto.inExclusao}"> 
+           <f:facet name="header">
+               <h:outputText value="#{messages['link.excluir']}"/> 
+           </f:facet> 
+           <h:outputText value="#{_produto.inExclusao}"/>
+         </rich:column>
+        
+        <rich:column styleClass="action">
+            <f:facet name="header">Action</f:facet>
+            <s:link view="/#{empty from ? 'Produto' : from}.xhtml"
+                   value="#{empty from ? 'View' : 'Select'}"
+             propagation="#{empty from ? 'none' : 'default'}"
+                      id="produtoViewId">
+                <f:param name="produtoCodProduto"
+                        value="#{_produto.codProduto}"/>
+            </s:link>
+            #{' '}
+            <s:link view="/ProdutoEdit.xhtml"
+                   value="Edit"
+             propagation="none"
+                      id="produtoEdit"
+                rendered="#{empty from}">
+                <f:param name="produtoCodProduto"
+                        value="#{_produto.codProduto}"/>
+            </s:link>
+        </rich:column>
+    </rich:dataTable>
+    </div>
+    </h:form>
+</rich:panel>
+	

@@ -1,0 +1,220 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<rich:modalPanel id="imprimirEstoquePopUp" minWidth="900" minHeight="530" autosized="true" top="15px" 
+		onshow="window.print();alert('Impressão Finalizada. A janela será fechada.'),Richfaces.hideModalPanel('imprimirEstoquePopUp')"
+	xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:s="http://jboss.com/products/seam/taglib"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html" 
+    xmlns:a="http://richfaces.org/a4j"
+    xmlns:rich="http://richfaces.org/rich">
+
+	<style type="text/css">
+	@media print {
+		 body > * {
+		 display: none;
+		 }
+		 
+		 body > .rich-modalpanel {
+		 display: block;
+		 }
+		 
+		 .rich-mpnl_panel, .rich-mpnl_panel > div {
+		 position: static !important;
+		 }
+		 
+		 .rich-mpnl-mask-div, .rich-mpnl-shadow {
+		 display: none !important;
+		 }
+		 
+		 .rich-mp-content {
+		 overflow: visible !important;
+		 width: auto !important;
+		 height: auto !important;
+		 }
+	}
+	
+	.cell-one{
+		width: 15%;
+	}
+	.cell-two{
+		width: 35%;
+	}
+	</style>
+	
+	<div>
+	<a:form>
+		<ui:include src="/includes/includeCabecalhoDental.xhtml" />
+				
+		<h:panelGrid border="0" styleClass="painelGridCinza" columns="4" width="100%" cellpadding="0" columnClasses="cell-one, cell-two, cell-one, cell-two">
+		
+			<h:outputLabel styleClass="textoImpressaoNegrito" value="Vendedor "/>	
+			<h:outputText value="#{vendaHome.instance.usuario.nomeUsuario}" styleClass="textoImpressao"/>							
+	 
+			<h:outputLabel styleClass="textoImpressaoNegrito" value="Número nota fiscal " />	
+			<h:outputText value="#{vendaHome.instance.numNotaFiscal}" styleClass="textoImpressao"/>							
+	 
+			<h:outputLabel styleClass="textoImpressaoNegrito" value="Tipo pagamento "/>	
+			<h:outputText value="#{vendaHome.instance.tipoPagamento.descTipoPagamento}" styleClass="textoImpressao"/>							
+	 
+			<h:outputLabel styleClass="textoImpressaoNegrito" value="Data "/>	
+			<h:outputText value="#{vendaHome.instance.dataInicioVenda}" styleClass="textoImpressao">
+				 <s:convertDateTime type="date" pattern="dd/MM/yyyy" />
+			</h:outputText>							
+
+			<h:outputLabel styleClass="textoImpressaoNegrito" value="Cliente"/>	
+			<h:outputText value="#{vendaHome.instance.cliente.nome}" styleClass="textoImpressao"/>							
+	 
+			<h:outputLabel styleClass="textoImpressaoNegrito" value="Email "/>	
+			<h:outputText value="#{vendaHome.instance.cliente.email}" styleClass="textoImpressao"/>							
+	 
+			<h:outputLabel styleClass="textoImpressaoNegrito" value="Grupo(Carteira)"/>	
+			<h:outputText value="#{vendaHome.instance.cliente.grupo.nomeGrupo}" styleClass="textoMedioCinza3"/>							
+			 
+		</h:panelGrid>
+			
+		
+		<h:panelGrid border="0" styleClass="painelGridCinza" columns="2" width="100%" cellpadding="0" columnClasses="left">
+			
+			 <rich:column style="border: 0px;">	
+			 	<h:outputLabel styleClass="textoImpressaoNegrito" value="Endereço"/>	
+			 </rich:column>	
+			 
+			 <rich:column style="border: 0px;">	
+			 	<h:dataTable id="enderecoList" width="100%"
+               	 	var="_endereco"
+              		value="#{vendaHome.getEnderecosCliente()}">	
+	           	
+		            <h:column>		              
+		                <h:outputText styleClass="textoImpressao" value="#{_endereco.endereco} #{_endereco.numero} #{_endereco.complemento}  Bairro: #{_endereco.bairro} CEP: #{_endereco.cep} #{_endereco.cidade} - #{_endereco.uf} Fone: #{_endereco.telefone1} #{_endereco.tefefone2} "/>
+		            </h:column>
+		            
+	           </h:dataTable>
+		 	</rich:column>
+		 	
+		 	 <rich:column style="border: 0px;">	
+			 	<h:outputLabel styleClass="textoImpressaoNegrito" value="Observação: "/>	
+			 </rich:column>	
+			 
+			 <rich:column style="border: 0px;">	
+			 	<h:outputText value="#{vendaHome.instance.obsVenda}" styleClass="textoImpressao"/>
+			 </rich:column> 
+		</h:panelGrid>
+		
+		<rich:spacer height="7"/>	
+		
+		<rich:dataTable
+                var="_servicoRealizado"
+              	value="#{vendaHome.servicoRealizados}"			           	
+	           	onRowMouseOver="this.style.backgroundColor='#F0F0F0'"
+	           	onRowMouseOut="this.style.backgroundColor='#{a4jSkin.rowBackgroundColor}'"
+	           	columnClasses="center" 
+	           	headerClass="textoImpressaoNegrito"
+	           	rowClasses="tableRowOne,tableRowTwo">	
+
+	         <f:facet name="header">
+                      <rich:columnGroup>                                                       
+                          <rich:column rendered="#{not empty vendaHome.servicoRealizados}">
+                              <h:outputText value="Serviço" />
+                          </rich:column >                                                        
+                      </rich:columnGroup>
+                  </f:facet>		         
+                 
+                   <rich:column rendered="#{not empty vendaHome.servicoRealizados}">
+                       <h:outputText value="#{_servicoRealizado.servico.descServico}"></h:outputText>
+                   </rich:column>
+                                         
+	    </rich:dataTable>			
+	    
+	   	<rich:spacer height="7"/>			    
+	    
+	    <rich:dataTable
+                var="_produtoVendido"
+              	value="#{vendaHome.getProdutoVendidosOrdenadosLocalizador()}"			           	
+	           	onRowMouseOver="this.style.backgroundColor='#F0F0F0'"
+	           	onRowMouseOut="this.style.backgroundColor='#{a4jSkin.rowBackgroundColor}'"
+	           	columnClasses="center" 
+	           	footerClass="center"
+	           	rowClasses="tableRowOne,tableRowTwo">	
+				
+					<rich:column  rendered="#{not empty vendaHome.produtoVendidos}">
+                   		<f:facet name="header">
+                   	 		 <h:outputText value="Localizador"/>
+                   	   	</f:facet>       
+                       <h:outputText value="#{_produtoVendido.loteProduto.produto.localizadorDefault}" styleClass="textoImpressao"/>
+                   </rich:column>
+                   
+					<rich:column  rendered="#{not empty vendaHome.produtoVendidos}">
+                   	 	<f:facet name="header">
+                   	 		 <h:outputText value="Código Produto" />
+                   	 	</f:facet>
+                   	 	
+                       	<h:outputText value="#{_produtoVendido.loteProduto.produto.codProdutoExterno}" styleClass="textoImpressao"/>
+                   </rich:column>
+                   
+                   	<rich:column  rendered="#{not empty vendaHome.produtoVendidos}">
+                   	 	<f:facet name="header">
+                   	 		 <h:outputText value="Código Barras" />
+                   	 	</f:facet>
+                   	 	
+                       	<h:outputText value="#{_produtoVendido.loteProduto.produto.codigoBarrasProduto}" styleClass="textoImpressao"/>
+                   </rich:column>
+                   
+                   <rich:column  rendered="#{not empty vendaHome.produtoVendidos}" styleClass="left">
+                   	 	<f:facet name="header">
+                   	 		 <h:outputText value="Produto" />
+                   	 	</f:facet>
+                   	 	
+                       <h:outputText value="#{_produtoVendido.loteProduto.produto.nomeProduto}" styleClass="textoImpressao"/>
+                   </rich:column>
+                  
+                   <rich:column  rendered="#{not empty vendaHome.produtoVendidos}">
+                   		<f:facet name="header">
+                   	 		<h:outputText value="Marca" />
+                   	 	</f:facet>
+                       <h:outputText value="#{_produtoVendido.loteProduto.produto.marca.nomeMarca}" styleClass="textoImpressao"/>
+                   </rich:column>
+                   
+                   <rich:column  rendered="#{not empty vendaHome.produtoVendidos}">
+                   	   <f:facet name="header">
+                   	 		 <h:outputText value="Lote" />
+                   	 	</f:facet>
+                       <h:outputText value="#{_produtoVendido.loteProduto.identificacaoLote}" styleClass="textoImpressao"/>
+                       <f:facet name="footer">
+                         <h:outputText value="Total" styleClass="textoImpressaoNegrito"/>
+                       </f:facet>
+                   </rich:column>
+                   
+                   <rich:column  rendered="#{not empty vendaHome.produtoVendidos}">      
+                   		<f:facet name="header">
+                   	 		 <h:outputText value="Quantidade" />
+                   	   	</f:facet>                   
+                       	<h:outputText value="#{_produtoVendido.qtd}" styleClass="textoImpressao"/>
+                       	<f:facet name="footer" >                             
+                           <h:outputText value="#{vendaHome.subTotalProdutoQtd}" styleClass="textoImpressaoNegrito"/>
+                       	</f:facet>
+                   </rich:column>
+                                                      
+	    </rich:dataTable>
+	    
+	    <rich:spacer height="7"/>
+	    		
+		<rich:spacer height="30px"/>
+		<h:panelGrid border="0" width="100%" cellpadding="0" columnClasses="center">
+			<hr align="center" width="350px" />
+			<h:outputText value="Assinatura Estoquista" styleClass="textoImpressao"/>				
+		</h:panelGrid>
+		
+		<rich:spacer height="7"/>
+	    		
+		<rich:spacer height="30px"/>
+		<h:panelGrid border="0" width="100%" cellpadding="0" columnClasses="center">
+			<hr align="center" width="350px" />
+			<h:outputText value="Assinatura Conferente" styleClass="textoImpressao"/>				
+		</h:panelGrid>
+		
+		
+	</a:form>
+	</div>
+</rich:modalPanel>

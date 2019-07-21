@@ -1,0 +1,134 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<rich:modalPanel id="editPanel" minWidth="520" minHeight="300"
+	autosized="true" top="150px" onshow="document.getElementById('form:enderecoField:endereco').focus()"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:s="http://jboss.com/products/seam/taglib"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html" 
+	xmlns:easy="http://easyfaces.com.br/easyfaces" 
+	xmlns:a="http://richfaces.org/a4j"
+	xmlns:rich="http://richfaces.org/rich">
+
+
+		<f:facet name="header">
+		    <h:outputText value="#{clienteHome.novoEndereco ? 'Novo Endereço' : 'Editar Endereço'}"/>
+		</f:facet>
+		        
+        <f:facet name="controls">
+            <h:panelGroup>
+                <h:graphicImage value="/img/close.png" id="hidelink" style="cursor:pointer;"/>
+                <rich:componentControl for="editPanel" attachTo="hidelink" operation="hide" event="onclick" />
+            </h:panelGroup>
+        </f:facet>
+		        
+        <h:form id="form">
+	            
+			<rich:panel>
+	            
+				<h:panelGrid columns="1">
+
+					<s:decorate id="enderecoField" template="../layout/edit.xhtml">
+						<ui:define name="label"><h:outputText value="Endereço"/></ui:define>
+						 <h:inputText id="endereco"
+					                    	required="true"
+					                   maxlength="60"
+					                   		size="25"
+					                       value="#{clienteHome.novoEnderecoEntity.endereco}"/>
+					</s:decorate>
+					
+					<s:decorate id="numeroField" template="../layout/edit.xhtml">
+						<ui:define name="label"><h:outputText value="Número"/></ui:define>
+								 <h:inputText id="numero"
+			                			required="true"
+			                     	   maxlength="15"
+			                     	   size="15"
+			                          	   value="#{clienteHome.novoEnderecoEntity.numero}"/>
+					</s:decorate>
+					
+					<s:decorate id="complementoField" template="../layout/edit.xhtml">
+		                <ui:define name="label">Complemento</ui:define>
+		                <h:inputText id="complemento"
+		                           size="25"
+		                      maxlength="60"
+		                          value="#{clienteHome.novoEnderecoEntity.complemento}">
+		                </h:inputText>
+		            </s:decorate>
+
+		            <s:decorate id="bairroField" template="../layout/edit.xhtml">
+		                <ui:define name="label">Bairro</ui:define>
+		                <h:inputText id="bairro"
+		                           size="25"
+		                      maxlength="60"
+		                          value="#{clienteHome.novoEnderecoEntity.bairro}">
+		                </h:inputText>
+		            </s:decorate>
+
+		            <s:decorate id="cidadeField" template="../layout/edit.xhtml">
+		                <ui:define name="label">Cidade</ui:define>
+		                <h:inputText id="cidade"
+		                		required="true"
+		                           size="15"
+		                      maxlength="60"
+		                          value="#{clienteHome.novoEnderecoEntity.cidade}">
+		                </h:inputText>
+		            </s:decorate>
+
+		            <s:decorate id="ufField" template="../layout/edit.xhtml">
+		                <ui:define name="label">UF</ui:define>
+		                <h:inputText id="uf"
+		                		required="true"
+		                           size="2"
+		                      maxlength="2"
+		                          value="#{clienteHome.novoEnderecoEntity.uf}">
+		                </h:inputText>
+		            </s:decorate>
+            
+		             <s:decorate template="../layout/edit.xhtml">
+		               <ui:define name="label">CEP</ui:define>		              
+    				    <easy:inputCep id="cep" value="#{clienteHome.novoEnderecoEntity.cep}" 
+					               required="true" 
+					               submitWithMask="true" 
+					               useValidate="true" 
+					               validatorMessage="CEP inválido"
+					               useMask="true"/>			               
+		            </s:decorate>
+
+
+		            <s:decorate id="telefone1Field" template="../layout/edit.xhtml">
+		                <ui:define name="label">Telefone</ui:define>
+		
+						<h:inputText id="telefone" required="false" maxlength="15" onkeypress="mascara( this, mtel )" value="#{clienteHome.novoEnderecoEntity.telefone1}"/>		                
+		            </s:decorate>
+
+
+		            <s:decorate id="tefefone2Field" template="../layout/edit.xhtml">
+		                <ui:define name="label">Telefone</ui:define>
+						<h:inputText id="telefone2" required="false" maxlength="15" onkeypress="mascara( this, mtel )" value="#{clienteHome.novoEnderecoEntity.tefefone2}"/>				                 
+		            </s:decorate>
+
+				
+					<div style="clear: both">
+						<span class="required">*</span> Campos obrigatórios
+					</div>
+				</h:panelGrid>
+				
+				</rich:panel>
+				
+				<div align="center">
+					<a:commandButton id="save" value="Adicionar" 
+						ajaxSingle="true" 
+						process="endereco,numero,complemento,bairro,cidade,uf,cep,telefone1,telefone2"
+						limitToList="true"
+						action="#{clienteHome.adicionarEndereco()}"
+						reRender="painelEnderecos,form"
+						oncomplete="#{rich:element('endereco')}.focus();"/>
+						
+					<input id="Sair" value="Sair" type="button" onclick="#{rich:component('editPanel')}.hide();"/>
+				</div>
+							
+			</h:form>
+			<rich:hotKey key="esc" handler="#{rich:component('editPanel')}.hide();"/>
+
+</rich:modalPanel>

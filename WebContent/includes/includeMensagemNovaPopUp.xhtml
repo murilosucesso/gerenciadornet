@@ -1,0 +1,78 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<rich:modalPanel id="novaMensagemPopUp" minWidth="520" minHeight="300"
+	autosized="true" top="150px"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:s="http://jboss.com/products/seam/taglib"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:a="http://richfaces.org/a4j"
+	xmlns:rich="http://richfaces.org/rich">
+
+	<f:facet name="header">
+		<h:panelGroup>
+			<h:outputText value="Nova Mensagem"></h:outputText>
+		</h:panelGroup>
+	</f:facet>
+
+	<f:facet name="controls">
+		<h:panelGroup>
+			<h:graphicImage value="/img/close.png" id="closeNovaMsgPopUp" style="cursor:pointer;" />
+			<rich:componentControl for="novaMensagemPopUp" attachTo="closeNovaMsgPopUp" operation="hide" event="onclick" />
+		</h:panelGroup>
+	</f:facet>
+	
+	<a:outputPanel id="movaMensagemPanel" ajaxRendered="true"> 
+	<h:form id="novaMensagemForm" styleClass="edit">
+	 
+			<rich:panel> 
+				<h:messages id="messages" globalOnly="false" styleClass="message"
+					errorClass="errormsg" infoClass="infomsg" warnClass="warnmsg"
+					rendered="#{showGlobalMessages != 'false'}" />
+				
+				<s:decorate template="../layout/display.xhtml">
+						<ui:define name="label">Para</ui:define>
+					  	
+						<h:selectOneMenu 
+							id="destinatario"
+							value="#{mensagemUsuarioHome.usuarioDetino}"
+							required="true" 
+							requiredMessage="Selecione destinatário" 
+							styleClass="defaultInput">		
+						   <s:selectItems value="#{usuarioList.resultListAtivos}" 
+						   				  var="usuario" 		
+						   				  noSelectionLabel="Selecione.."				   				  		
+						                  label="#{usuario.nomeUsuario}"/>				   							   							       
+						 		<s:convertEntity />	
+						</h:selectOneMenu>										
+				</s:decorate>
+				 
+				
+				<s:decorate template="../layout/display.xhtml">
+						<ui:define name="label">Assunto:</ui:define>
+						<h:inputText id="assunto" value="#{mensagemUsuarioHome.novaMensagem.assunto}" styleClass="defaultInput" maxlength="100" />
+				</s:decorate>
+				
+				<s:decorate template="../layout/display.xhtml">
+						<ui:define name="label">De:</ui:define>
+						<h:outputText id="de" value="#{user.nomeUsuario}" styleClass="textoNegrito6" />
+				</s:decorate>
+				
+				<h:inputTextarea id="mensagem" value="#{mensagemUsuarioHome.novaMensagem.mensagem}"  cols="60" rows="7"/>	
+				
+				<div align="center">
+					<a:commandButton id="save" value="Enviar" 
+						ajaxSingle="true" 
+						process="destinatario,assunto,de,mensagem"
+						limitToList="true"
+						action="#{mensagemUsuarioHome.salvarMensagem}"
+						reRender="listaMensagensPanel,novaMensagemForm"/>
+						
+					<input value="Fechar" type="button" onclick="#{rich:component('novaMensagemPopUp')}.hide();"/>
+				</div>
+			</rich:panel> 
+		
+	</h:form>
+	</a:outputPanel>
+</rich:modalPanel>

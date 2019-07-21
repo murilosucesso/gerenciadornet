@@ -1,0 +1,132 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:s="http://jboss.com/products/seam/taglib"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:rich="http://richfaces.org/rich"
+    xmlns:a="http://richfaces.org/a4j"
+    template="layout/template.xhtml">
+
+<ui:define name="body">
+
+    <h:form id="transacaoSearch" styleClass="edit">
+
+		<ui:include src="/paginas/help/GenericListHelp.xhtml"/>
+    	
+        <rich:simpleTogglePanel label="Filtro de pesquisa de Transacao" switchType="client">
+
+            <s:decorate template="layout/display.xhtml">
+                <ui:define name="label">Sigla Transação</ui:define>
+                <h:inputText id="siglaTransacao" value="#{transacaoList.transacao.siglaTransacao}" size="6" maxlength="5"/>
+            </s:decorate>
+            
+            <s:decorate template="layout/display.xhtml">
+                <ui:define name="label">Nome Transação</ui:define>
+                <h:inputText id="nome" value="#{transacaoList.transacao.nome}" styleClass="defaultInput" maxlength="50"/>
+            </s:decorate>
+
+            <s:decorate template="layout/display.xhtml">
+                <ui:define name="label">Desc. Transação</ui:define>
+                <h:inputText id="descTransacao" value="#{transacaoList.transacao.descTransacao}" styleClass="defaultInput" maxlength="100"/>
+            </s:decorate>
+
+        </rich:simpleTogglePanel>
+
+        <ui:include src="/includes/includeBotoesPesquisarLimpar.xhtml" />
+
+    </h:form>
+	
+	<h:form>
+    <rich:panel>
+    
+    <f:facet name="header">
+		<a:outputPanel  id="panelDiv" ajaxRendered="true">
+	    	Resultado da pesquisa de Transação(#{empty transacaoList.resultList ? 0 : (transacaoList.paginated ? transacaoList.resultCount : transacaoList.resultList.size)})
+	    </a:outputPanel>
+    </f:facet>
+    	    
+    <a:outputPanel id="msnListaVazia" ajaxRendered="true">
+   	
+   	<h:outputText value="#{messages['mensagem.pesquisa.vazia']}" rendered="#{empty transacaoList.resultList}"/>
+	
+	 <rich:dataTable id="resultadoList"
+                var="_transacao"
+              value="#{transacaoList.resultList}"
+           rendered="#{not empty transacaoList.resultList}"
+           onRowMouseOver="this.style.backgroundColor='#F0F0F0'"
+           onRowMouseOut="this.style.backgroundColor='#{a4jSkin.rowBackgroundColor}'"
+           columnClasses="center"  
+           			rows="15"
+            columnsWidth="*, *, *, *, *"            
+              rowClasses="tableRowOne,tableRowTwo">
+        
+         <rich:column sortBy="#{_transacao.siglaTransacao}"> 
+           <f:facet name="header">
+               <h:outputText value="Sigla Transação"/>
+           </f:facet> 
+           <h:outputText value="#{_transacao.siglaTransacao}"/>
+        </rich:column>
+        
+         <rich:column sortBy="#{_transacao.nome}" styleClass="left"> 
+           <f:facet name="header">
+               <h:outputText value="Nome Transação"/>
+           </f:facet> 
+           <h:outputText value="#{_transacao.nome}"/>
+        </rich:column> 
+        
+        <rich:column sortBy="#{_transacao.descTransacao}"> 
+           <f:facet name="header">
+               <h:outputText value="Descrição Transação"/>
+           </f:facet> 
+           <h:outputText value="#{_transacao.descTransacao}"/>
+        </rich:column>
+        
+         <rich:column sortBy="#{_transacao.inExclusao}"> 
+           <f:facet name="header">
+               <h:outputText value="Transação Ativa"/>
+           </f:facet> 
+           <h:outputText value="SIM" rendered="#{!__transacao.inExclusao}"/>
+           <h:outputText value="NAO" rendered="#{__transacao.inExclusao}"/>
+        </rich:column>     
+        
+        <rich:column styleClass="action">
+            <f:facet name="header">Visualizar/Editar</f:facet>
+            <s:link view="/#{empty from ? 'Transacao' : from}.xhtml"  propagation="#{empty from ? 'none' : 'default'}"
+                      id="transacaoViewId">
+                <h:graphicImage url="/img/binoculo.jpg"/>
+                <f:param name="transacaoCodTransacao" value="#{_transacao.codTransacao}"/>
+            </s:link>
+            <rich:toolTip for="transacaoViewId" value="Visualizar Transação" direction="top-left"/>
+            
+            #{' '}
+            
+            <s:link view="/TransacaoEdit.xhtml" propagation="none" id="transacaoEdit" rendered="#{empty from}">
+            	<h:graphicImage url="/img/editar.jpg"/>
+                <f:param name="transacaoCodTransacao" value="#{_transacao.codTransacao}"/>
+            </s:link>
+            <rich:toolTip for="transacaoEdit" value="Editar Transação" direction="top-left"/>
+            
+        </rich:column>
+    </rich:dataTable>
+	
+	<ui:include src="/includes/includeDataScroller.xhtml"/>
+    
+    </a:outputPanel>
+    </rich:panel>
+	</h:form>
+	
+	
+    <s:div styleClass="actionButtons" rendered="#{empty from}">
+        <s:button view="/TransacaoEdit.xhtml"
+                    id="create"
+           propagation="none"
+                 value="Nova Transação">
+            <f:param name="transacaoCodTransacao"/>
+        </s:button>
+    </s:div>
+
+</ui:define>
+
+</ui:composition>

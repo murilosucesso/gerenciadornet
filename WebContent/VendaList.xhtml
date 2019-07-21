@@ -1,0 +1,433 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:s="http://jboss.com/products/seam/taglib"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:rich="http://richfaces.org/rich"
+    xmlns:a="http://richfaces.org/a4j"
+    template="layout/template.xhtml">
+
+<ui:define name="body">
+
+    <a:form id="vendaSearch" styleClass="edit">
+
+		<ui:include src="/paginas/help/GenericListHelp.xhtml"/>	
+
+        <rich:simpleTogglePanel label="Filtro de pesquisa de Vendas" switchType="client">
+			
+            <s:decorate template="layout/display.xhtml">
+                <ui:define name="label">Venda/Orçamento</ui:define>
+                <h:inputText id="codVenda" value="#{vendaList.venda.codVenda}"/>
+            </s:decorate>
+            
+            <s:decorate template="layout/display.xhtml">
+                <ui:define name="label">Código Cliente</ui:define>
+                <h:inputText maxlength="10" id="cliente" value="#{vendaList.venda.cliente.codCliente}" styleClass="defaultInput"/>
+            </s:decorate>
+            
+            <s:decorate template="layout/display.xhtml">
+                <ui:define name="label">Nome Cliente</ui:define>
+                <h:inputText maxlength="100" id="nomeCliente" value="#{vendaList.venda.cliente.nome}" styleClass="defaultInput"/>
+            </s:decorate>
+            
+            <s:decorate template="layout/display.xhtml">
+                <ui:define name="label">Vendedor</ui:define>                
+                <h:selectOneMenu id="usuario" value="#{vendaList.venda.usuario}" styleClass="defaultInput" rendered="#{user.perfil.codPerfil != constantes.vendedor}">		
+				   <s:selectItems value="#{usuarioList.resultList}" 
+				   				  var="usuario" 			
+				                  label="#{usuario.nomeUsuario}"
+				                  required="false"
+				                  noSelectionLabel="Selecione.." />							       		
+				   <s:convertEntity />			
+				</h:selectOneMenu>		
+				<h:outputText value="#{user.nomeUsuario}" rendered="#{user.perfil.codPerfil == constantes.vendedor}"/>
+            </s:decorate>
+            
+            <s:decorate template="layout/display.xhtml">
+                <ui:define name="label">Responsável</ui:define>                
+                <h:selectOneMenu id="vendedorResponsavel" value="#{vendaList.vendedorResponsavel}" styleClass="defaultInput">		
+				   <s:selectItems value="#{usuarioList.resultList}" 
+				   				  var="usuarioAux" 			
+				                  label="#{usuarioAux.nomeUsuario}"
+				                  required="false"
+				                  noSelectionLabel="Selecione.." />							       		
+				   <s:convertEntity />			
+				</h:selectOneMenu>		
+            </s:decorate>
+            
+             <s:decorate template="layout/display.xhtml">
+                <ui:define name="label">Usuário Cadastro</ui:define>                
+                <h:selectOneMenu id="usuarioCadastro" value="#{vendaList.usuarioCadastro}" styleClass="defaultInput">		
+				   <s:selectItems value="#{usuarioList.resultList}" 
+				   				  var="usuario" 			
+				                  label="#{usuario.nomeUsuario}"
+				                  required="false"
+				                  noSelectionLabel="Selecione.." />							       		
+				   <s:convertEntity />			
+				</h:selectOneMenu>		
+            </s:decorate>
+
+
+ 			<s:decorate template="layout/display.xhtml">
+                <ui:define name="label">Tipo de Pagamento</ui:define>                
+				   <h:selectOneMenu id="tipoPagamento" value="#{vendaList.codTipoPagamento}" title="Cliente da venda" styleClass="defaultInput">		
+					   <s:selectItems value="#{tipoPagamentoList.resultList}" 
+					   				    var="tipoPagamento" 									
+					   				itemValue="#{tipoPagamento.codTipoPagamento}"
+					                  label="#{tipoPagamento.descTipoPagamento}"
+					                  required="false"
+					                  noSelectionLabel="Selecione.." />							       		
+					</h:selectOneMenu>	
+            </s:decorate>
+             
+            <s:decorate template="layout/display.xhtml">
+                <ui:define name="label">Sistema de Origem</ui:define>
+                <h:selectOneMenu id="canal" value="#{vendaList.venda.canal}" styleClass="textoNegrito defaultInput">
+                	<f:selectItem itemLabel="Todos" />					
+                	<f:selectItem itemLabel="GerenciadorNet" itemValue="#{constantes.canalGn}" />
+                	<f:selectItem itemLabel="GerenciadorNetB2B" itemValue="#{constantes.canalGnB2b}" />
+                	<f:selectItem itemLabel="ECommerce" itemValue="#{constantes.canalEcommerce}" />
+				</h:selectOneMenu>				
+            </s:decorate>
+            
+            <s:decorate template="layout/display.xhtml" id="statusDiv">
+                <ui:define name="label"><h:outputText value="Status Venda" rendered="#{empty vendaList.statusVendaDefault}"/> </ui:define>
+                <h:selectOneMenu id="statusVenda" value="#{vendaList.statusVenda}" 
+                	rendered="#{empty vendaList.statusVendaDefault}" styleClass="textoNegrito  defaultInput">
+         
+					<s:selectItems value="#{statusVendaList.resultList}" 
+				   				  var="status" 		
+				   				  required="false"	
+				   				  itemValue="#{status.codStatusVenda}"
+				                  label="#{status.descStatusVenda}" 
+				                  noSelectionLabel="Todas"/>
+				</h:selectOneMenu>				
+            </s:decorate>
+            
+            <s:decorate template="layout/edit.xhtml">
+                <ui:define name="label">Data Início</ui:define>
+                <rich:calendar id="dataInicioVenda" required="true" value="#{vendaList.venda.dataInicioVenda}" defaultTime="00:00" resetTimeOnDateSelect="true" datePattern="dd/MM/yyyy">
+                	<f:convertDateTime pattern="yyyy-MM-dd HH:mm"/>
+                </rich:calendar>
+            </s:decorate>
+             
+            <s:decorate template="layout/edit.xhtml"> 
+                <ui:define name="label">Data Fim</ui:define> 
+                <rich:calendar id="dataFimVenda" required="true" value="#{vendaList.venda.dataFimVenda}" defaultTime="23:59" resetTimeOnDateSelect="false" datePattern="dd/MM/yyyy">
+                	<f:convertDateTime pattern="yyyy-MM-dd HH:mm"/>
+                </rich:calendar>
+            </s:decorate>
+			
+			<s:decorate template="layout/display.xhtml"  rendered="#{empty vendaList.statusVendaDefault}" >
+                <ui:define name="label"></ui:define>
+                <h:selectOneRadio id="inOrcamento" value="#{vendaList.inOrcamento}" styleClass="textoNegrito">
+					<f:selectItem id="todos" itemLabel="Todos" itemValue="2" />
+					<f:selectItem id="orcamento" itemLabel="Venda" itemValue="0" />							
+					<f:selectItem id="venda" itemLabel="Orçamento" itemValue="1" />
+				</h:selectOneRadio>				
+            </s:decorate>
+            
+            <div style="clear:both">
+                <span class="required">*</span>
+                Campos obrigatórios
+            </div>
+                   
+        </rich:simpleTogglePanel>
+
+		<table border="0" width="10%">
+			<tr>
+				<td nowrap="nowrap">
+					 <div class="actionButtons">
+				          <a:commandButton id="search" type="button" ajaxSingle="true" limitToList="true" process="codVenda,  cliente, nomeCliente, usuario,usuarioCadastro, vendedorResponsavel, tipoPagamento, dataInicioVenda, dataFimVenda, inOrcamento, canal, statusVenda" 
+				          	value="Pesquisar" action="#{vendaList.setMostrarResultados(true)}" actionListener="#{vendaList.setRestriction()}" reRender="msnListaVazia, sc" oncomplete="#{rich:element('codVenda')}.focus()" />
+				           								          
+				          <s:button id="reset" value="Limpar" includePageParams="false"/>   
+				   		  <rich:hotKey key="return"
+						    handler="#{rich:element('search')}.click()"/>
+				   	 </div>
+				</td>
+				<td nowrap="nowrap">    
+					<s:div styleClass="actionButtons" rendered="#{empty from and identity.hasRole(transacoes.transacaoVendaInserir)}">
+				        <s:button view="/VendaEdit.xhtml"
+				                    id="create"
+				           propagation="none"
+				                 value="Nova Venda">
+				            <f:param name="vendaCodVenda"/>
+				        </s:button>
+				    </s:div>
+				</td>
+			</tr>
+		</table>
+    </a:form>
+    
+	<h:form>
+	<a:outputPanel id="msnListaVazia" ajaxRendered="true">
+    <rich:panel  rendered="#{vendaList.mostrarResultados}">
+    
+	    <f:facet name="header">
+			<a:outputPanel  id="panelDiv" ajaxRendered="true">
+		    	<h:outputText value=" Resultado da pesquisa de Vendas (#{empty vendaList.resultList ? 0 : (vendaList.paginated ? vendaList.resultCount : vendaList.qtdResultados)})"/>
+		    </a:outputPanel>
+	    </f:facet>
+   
+   	<h:outputText value="#{messages['mensagem.pesquisa.vazia']}" rendered="#{vendaList.pesquisaVazia}"/>
+
+    <rich:dataTable id="resultadoList"
+		                var="_venda"
+		                rows="12"
+		              	value="#{vendaList.resultList}"			           	
+			           	onRowMouseOver="this.style.backgroundColor='#F0F0F0'"
+			           	onRowMouseOut="this.style.backgroundColor='#{a4jSkin.rowBackgroundColor}'"
+			           	columnClasses="center" 
+			           	footerClass="center"	
+			           	columnsWidth="*,*,*,*,*,*,*,*,*,*,1%,1%"
+			           	rendered="#{not vendaList.pesquisaVazia}"	
+			           	rowClasses="tableRowOne,tableRowTwo">
+         
+         <rich:column sortBy="#{_venda.codVenda}"> 
+           <f:facet name="header">
+               <h:outputText value="Venda"/>
+           </f:facet>  
+           <h:outputText value="#{_venda.codVenda}"/>
+         </rich:column> 
+		
+		 <rich:column sortBy="#{_venda.cliente.nome}" styleClass="left"> 
+           <f:facet name="header">
+               <h:outputText value="Cliente"  title="Código do Cliente - Nome do Cliente"/>
+           </f:facet> 
+           <h:outputText value="#{_venda.cliente.codCliente} - #{_venda.cliente.nome}" title="#{_venda.cliente.nomeFantasiaApelido}"/>
+         </rich:column>      
+         
+         <rich:column sortBy="#{_venda.usuario.nomeUsuario}" > 
+           <f:facet name="header">
+               <h:outputText value="Vendedor" title="Nome do vendedor"/>
+           </f:facet> 
+           <h:outputText value="#{_venda.usuario.nomeUsuario}"/>
+         </rich:column>  
+         
+         <rich:column sortBy="#{_venda.usuario.nomeUsuario}" > 
+           <f:facet name="header">
+               <h:outputText value="Usuário" title="Usuário que cadastrou a venda"/>
+           </f:facet> 
+           <h:outputText value="#{_venda.usuarioCadastro.nomeUsuario}"/>
+         </rich:column>     
+         
+          <rich:column sortBy="#{_venda.tipoPagamento.descTipoPagamento}}" > 
+           <f:facet name="header">
+               <h:outputText value="Tipo Pagamento" title="Tipo de Pagamento"/>
+           </f:facet> 
+           <h:outputText value="#{ _venda.tipoPagamento.descTipoPagamento}"/>
+         </rich:column>
+         
+         <rich:column sortBy="#{_venda.dataInicioVenda}" > 
+           <f:facet name="header">
+               <h:outputText value="Data Início" title="Data de início da venda"/>
+           </f:facet> 
+           <h:outputText value="#{_venda.dataInicioVenda}">
+           		<s:convertDateTime type="date" pattern="dd/MM/yyyy HH:mm"/>
+           </h:outputText>
+         </rich:column>    
+          
+         <rich:column sortBy="#{_venda.dataFimVenda}" > 
+           <f:facet name="header">
+               <h:outputText value="Data Fim" title="Data de finalização da venda"/>
+           </f:facet> 
+           <h:outputText value="#{_venda.dataFimVenda}">
+           		<s:convertDateTime type="date" pattern="dd/MM/yyyy HH:mm"/>
+           </h:outputText>
+         </rich:column> 
+        
+         <rich:column sortBy="#{_venda.inOrcamento}" > 
+           <f:facet name="header">
+               <h:outputText value="Tipo" title="Venda / Orçamento / Pedido"/>
+           </f:facet> 
+           <h:outputText value="#{ _venda.inOrcamento ? 'Orcamento' : 'Venda'}"/>
+         </rich:column>
+         
+         <rich:column sortBy="#{_venda.statusVenda.descStatusVenda}" > 
+           <f:facet name="header">
+               <h:outputText value="Status"/>
+           </f:facet> 
+           <h:outputText value="#{ _venda.statusVenda.descStatusVenda}"/>
+           
+            <f:facet name="footer">
+               <h:outputText value="Total" styleClass="textoNegrito" title="Valor total das vendas pesquisadas."/>
+           </f:facet> 
+         </rich:column>
+         
+         <rich:column  sortBy="#{_venda.valorTotalVenda}"> 
+           <f:facet name="header">
+               <h:outputText value="Valor Venda" title="Valor total da venda"/>
+           </f:facet> 
+           <h:outputText value="#{_venda.valorTotalVenda}">
+           		<f:convertNumber currencySymbol="R$"  type="currency"  locale="pt_BR"/>
+           </h:outputText>    
+           
+           <f:facet name="footer">
+               <h:outputText value="#{vendaList.valorTotal}" styleClass="textoNegrito" title="Valor total das vendas pesquisadas.">
+               		<f:convertNumber currencySymbol="R$"  type="currency"  locale="pt_BR"/>
+               	</h:outputText>    
+           </f:facet> 
+                 
+         </rich:column>    
+         
+<!--   ANDAMENTOS  -->         
+         <rich:column sortBy="#{_venda.statusVenda.descStatusVenda}" style="padding:0px;heigth:15px;"> 
+           <f:facet name="header">
+               <h:outputText value="Andamento" title="Dar andamento à venda."/>
+           </f:facet> 
+            
+			<!-- Passo 01 - PEDIDO POR GNB2B -ACAO: REALIZAR PEDIDO - STATUS:NOVO PEDIDO -->      
+           <s:link id="realizarPedido" view="/VendaEdit.xhtml" propagation="#{empty from ? 'none' : 'default'}" rendered="#{!_venda.inOrcamento and _venda.statusVenda.codStatusVenda == constantes.pedido}">
+                <h:graphicImage url="/img/novoPedido.jpg"/>                
+                <f:param name="vendaCodVenda" value="#{_venda.codVenda}"/>
+            	<rich:toolTip for="realizarPedido" value="Novo Pedido - Autorizar Pedido" direction="top-left" styleClass="textoMedioCinza2" />
+            </s:link>
+            
+            <!-- Passo 02 - PEDIDO POR GNB2B -ACAO: APROVAR PEDIDO - STATUS:PEDIDO AUTORIZADO -->      
+            <s:link id="pedidoAprovado" view="/VendaEdit.xhtml" propagation="#{empty from ? 'none' : 'default'}" rendered="#{!_venda.inOrcamento and _venda.statusVenda.codStatusVenda == constantes.pedidoAutorizado}">
+                <h:graphicImage url="/img/novoPedido.jpg"/>                
+                <f:param name="vendaCodVenda" value="#{_venda.codVenda}"/>
+            	<rich:toolTip for="pedidoAprovado" value="Pedido Autorizado - Realizar Venda" direction="top-left" styleClass="textoMedioCinza2" />
+            </s:link>
+            
+           <!-- Passo 01 - ACAO:NOVA VENDA - STATUS:VENDA EM EDICAO -->
+           <s:link id="vendaEmEdicao" view="/VendaEdit.xhtml" propagation="#{empty from ? 'none' : 'default'}" rendered="#{!_venda.inOrcamento and _venda.statusVenda.codStatusVenda == constantes.emEdicao}">
+                <h:graphicImage url="/img/emEdicao.jpg"/>                
+                <f:param name="vendaCodVenda" value="#{_venda.codVenda}"/>
+            	<rich:toolTip for="vendaEmEdicao" value="Venda em edição" direction="top-left" styleClass="textoMedioCinza2" />
+            </s:link>
+            
+            <!-- Passo 02 -ACAO:LIBERAR VENDA - STATUS:NOVA VENDA -->
+           <s:link id="confirmarPagamentoId" view="/VendaEditConfirmaPagamento.xhtml" propagation="#{empty from ? 'none' : 'default'}" rendered="#{!_venda.inOrcamento and (_venda.statusVenda.codStatusVenda == constantes.aberta)}">
+                <h:graphicImage url="/img/novaVenda.gif"/>                
+                <f:param name="vendaCodVenda" value="#{_venda.codVenda}"/>
+            	<rich:toolTip for="confirmarPagamentoId" value="Liberar Venda - Financeiro libera a entrega da mercadoria pelo estoque" direction="top-left" styleClass="textoMedioCinza2"/>
+            </s:link>
+            
+             <!-- Passo 03 - ACAO: INICIAR SEPARACAO DE MATERIAL - STATUS:CONFIRMADA FINANCEIRO -->
+            <s:link id="iniciarSeparacaoMaterialId" view="/VendaEditConfirmaPagamento.xhtml" propagation="none" rendered="#{!_venda.inOrcamento and (_venda.statusVenda.codStatusVenda == constantes.confirmadaFinanceiro)}">
+                <h:graphicImage url="/img/iniciar-separacao-material.gif"/>                
+                <f:param name="vendaCodVenda" value="#{_venda.codVenda}"/>
+            	<rich:toolTip for="iniciarSeparacaoMaterialId" value="Iniciar a separação do material" direction="top-left"/>
+            </s:link>
+            
+            <!-- Passo 04 - ACAO:VALIDAR SEPARAÇÃO - STATUS: SEPARANDO MATERIAL -->
+            <s:link id="validarSeparacaoId" view="/VendaEditConfirmaEntregaEstoque.xhtml" propagation="none" rendered="#{!_venda.inOrcamento and (_venda.statusVenda.codStatusVenda == constantes.separandoMaterial)}">
+                <h:graphicImage url="/img/validar-separacao-material.png"/>                
+                <f:param name="vendaCodVenda" value="#{_venda.codVenda}"/>
+            	<rich:toolTip for="validarSeparacaoId" value="Validar a separação do material" direction="top-left" styleClass="textoMedioCinza2"/>
+            </s:link>
+            
+             <!-- Passo 04 - ACAO: CONFIRMAR ENTREGA - STATUS:EM FASE DE ENTREGA -->
+            <s:link id="confirmarEntregaId" view="/VendaEditConfirmaPagamento.xhtml" propagation="none" rendered="#{!_venda.inOrcamento and (_venda.statusVenda.codStatusVenda == constantes.emFaseEntrega)}">
+                <h:graphicImage url="/img/confirmarEntrega.jpg"/>                
+                <f:param name="vendaCodVenda" value="#{_venda.codVenda}"/>
+            	<rich:toolTip for="confirmarEntregaId" value="Confirmar a entrega do material" direction="top-left"/>
+            </s:link>
+            
+            <!-- Passo 05 - ACAO: FINALIZAR VENDA - STATUS: CONFIRMADA ESTOQUE -->
+            <!-- Alteração Domcarecone -->
+            <a:commandLink styleClass="right" title="Confirmar Pagamento / Finalizar Venda" action="#{vendaHome.andamentoFinalizarVenda(_venda)}" ajaxSingle="true" 
+            	rendered="#{!_venda.inOrcamento and identity.hasRole(transacoes.transacaoVendaFinalizar) and _venda.statusVenda.codStatusVenda == constantes.confirmadaEstoque  and empresa.inFluxo == constantes.inFluxoResumido}">
+            	<h:graphicImage url="/img/confirmarPagamento.jpg"/>     
+            </a:commandLink>
+            
+            <s:link id="finalizarVendaId" view="/#{empty from ? 'Venda' : from}.xhtml" propagation="none" rendered="#{!_venda.inOrcamento and (_venda.statusVenda.codStatusVenda == constantes.confirmadaEstoque) and empresa.inFluxo == constantes.inFluxoCompleto}">
+                <h:graphicImage url="/img/confirmarPagamento.jpg"/>                
+                <f:param name="vendaCodVenda" value="#{_venda.codVenda}"/>
+            	<rich:toolTip for="finalizarVendaId" value="Finalizar Venda - Confirmar Pagamento" direction="top-left"/>
+            </s:link>
+            
+            <!-- STATUS: VENDA CONCLUIDA - FINALIZADA -->
+            <s:link id="vendaFinalizadaId" view="/#{empty from ? 'Venda' : from}.xhtml" propagation="#{empty from ? 'none' : 'default'}" rendered="#{!_venda.inOrcamento and (_venda.statusVenda.codStatusVenda == constantes.concluida)}">
+                <h:graphicImage url="/img/vendaFinalizada.jpg"/>                
+                <f:param name="vendaCodVenda" value="#{_venda.codVenda}"/>
+            	<rich:toolTip for="vendaFinalizadaId" value="Venda Finalizada - Visualizar Venda" direction="top-left" styleClass="textoMedioCinza2"/>
+            </s:link>
+            
+            <!-- STATUS: VENDA CANCELADA -->
+            <s:link id="vendaCanceladaId" view="/#{empty from ? 'Venda' : from}.xhtml" propagation="#{empty from ? 'none' : 'default'}" rendered="#{!_venda.inOrcamento and (_venda.statusVenda.codStatusVenda == constantes.cancelada)}">
+                <h:graphicImage url="/img/cancelada.jpg"/>                
+                <f:param name="vendaCodVenda" value="#{_venda.codVenda}"/>
+            	<rich:toolTip for="vendaCanceladaId" value="Venda Cancelada - Visualizar Venda" direction="top-left" styleClass="textoMedioCinza2"/>
+            </s:link>
+            
+            <!-- STATUS: ORCAMENTO -->
+             <s:link id="orcamentoId" view="/#{empty from ? 'Venda' : from}.xhtml" propagation="#{empty from ? 'none' : 'default'}" rendered="#{_venda.inOrcamento}">
+                <h:graphicImage url="/img/orcamento.gif"/>                
+                <f:param name="vendaCodVenda" value="#{_venda.codVenda}"/>
+            	<rich:toolTip for="orcamentoId" value="Realizar Orçamento" direction="top-left" styleClass="textoMedioCinza2"/>
+            </s:link>
+            
+             <f:facet name="footer">
+                <a:commandLink styleClass="right" title="Confirmar Todos os Pagamento da Lista/ Finalizar Todas as Vendas" 
+                		rendered="#{identity.hasRole(transacoes.transacaoVendaFinalizar)}"
+                		action="#{vendaHome.andamentoFinalizarTodasVendas(vendaList.resultList)}" ajaxSingle="true">
+	            	<h:graphicImage url="/img/confirmarPagamento_black.jpg"/>     
+	            </a:commandLink>
+           </f:facet>
+           
+            <!-- Passo 05 - ACAO: FINALIZAR VENDA - STATUS: CONFIRMADA ESTOQUE -->
+            <!-- Alteração Domcarecone -->
+           
+            
+         </rich:column>
+         
+         <rich:column>
+          <f:facet name="header"><h:outputLabel value="NFe" title="Nota Fiscal Eletrônica" /></f:facet>
+           <h:graphicImage  id="nfe"  url="/img/nfe.jpg" rendered="#{_venda.inNfeEmitida}"/> 
+           <rich:toolTip for="nfe" value="Nota Fiscal Eletrônica Emitida" direction="top-left"  rendered="#{_venda.inNfeEmitida}"/>
+         </rich:column>
+         
+         <rich:column styleClass="action" >
+         <table width="100%" align="center">
+         	<tr>
+         	<td width="33%" style="text-aling:right">
+	            <f:facet name="header">Ver / Editar</f:facet>
+	            <s:link view="/Venda.xhtml" propagation="default" id="vendaViewId">
+	                <h:graphicImage url="/img/binoculo.jpg"/>                
+	                <f:param name="vendaCodVenda" value="#{_venda.codVenda}"/>
+	                <f:param name="vendaFrom" value="VendaList" />
+	            </s:link>
+	            <rich:toolTip for="vendaViewId" value="Visualizar / Realizar Orçamento" direction="top-left" rendered="#{_venda.inOrcamento}"/>
+	            <rich:toolTip for="vendaViewId" value="Visualizar Venda" direction="top-left" rendered="#{!_venda.inOrcamento}"/>
+            </td>
+            <td>          
+	            <s:link view="/VendaEdit.xhtml" propagation="default" id="vendaEdit"
+	            	rendered="#{((_venda.statusVenda.codStatusVenda != constantes.concluida and _venda.statusVenda.codStatusVenda != constantes.cancelada and !_venda.inTrava) or user.perfil.codPerfil == constantes.administrador) and identity.hasRole(transacoes.transacaoVendaEditar)}">
+	                <h:graphicImage url="/img/editar.jpg"/>                
+	                <f:param name="vendaCodVenda" value="#{_venda.codVenda}"/>
+	                <f:param name="vendaFrom" value="VendaList" />
+	            </s:link>
+	            <h:graphicImage id="locked" url="/img/locked.gif" rendered="#{_venda.inTrava and user.perfil.codPerfil != constantes.administrador}"/> 
+	            <rich:toolTip for="vendaEdit" value="Editar Venda" direction="top-left"  rendered="#{!_venda.inOrcamento}"/>
+	            <rich:toolTip for="vendaEdit" value="Editar Orçamento" direction="top-left"  rendered="#{_venda.inOrcamento}"/>
+	            <rich:toolTip for="locked" value="Esta venda não pode ser editada." direction="top-left"  rendered="#{_venda.inTrava and user.perfil.codPerfil != constantes.administrador}"/>
+            </td>
+            <td>
+            	<a target="_blank" href="https://api.whatsapp.com/send?phone=#{_venda.cliente.telefoneWhatsapp}">
+					<h:graphicImage id="linkZap" url="/img/whatsapp.png" style="width:1.26rem;height:1.26rem" rendered="#{not empty _venda.cliente.telefone}"/>
+					<rich:toolTip for="linkZap" direction="top-left" rendered="#{not empty _venda.cliente.telefone}" >
+						Enviar mensagem Whattsapp 
+					</rich:toolTip>
+				</a>		 	
+		    </td>    
+		           
+            </tr>
+        </table>
+		</rich:column>
+    </rich:dataTable>
+
+    <ui:include src="/includes/includeDataScroller.xhtml"/>
+
+    </rich:panel>
+    </a:outputPanel>
+	</h:form>
+    
+<rich:jQuery selector="#codVenda" timing="onload" query="focus()" />
+</ui:define>
+
+</ui:composition>

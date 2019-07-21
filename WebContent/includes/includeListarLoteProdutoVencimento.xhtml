@@ -1,0 +1,84 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:s="http://jboss.com/products/seam/taglib"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:a="http://richfaces.org/a4j"
+    xmlns:rich="http://richfaces.org/rich">
+     
+     <a:outputPanel ajaxRendered="false">
+     <h:form id="listarLoteProdutoVencimentoForm" styleClass="edit">
+    			
+	    <rich:panel header="Controle de Estoque" styleClass="panelHeightHome">
+	     	
+	     	<div>
+				<table border="0" style="height: 15px;">
+			      	 <tr>
+				      	 <td valign="middle" >
+							<h:outputText value="Produtos vencendo nos próximos 30 dias" styleClass="textoMedioCinza4"/>
+				      	 </td>
+				     </tr>
+				</table>
+			</div> 
+			
+			<rich:dataTable id="resultadoList"
+		                var="_loteProduto"
+		              	value="#{loteProdutoVencimentoList.listarProdutosVencendo()}"			           	
+			           	onRowMouseOver="this.style.backgroundColor='#F0F0F0'"
+			           	onRowMouseOut="this.style.backgroundColor='#{a4jSkin.rowBackgroundColor}'"
+			           	columnClasses="center" 
+			           	footerClass="center"	
+			           	rows="8"			
+			           	headerClass="tableHeaderHome"
+			           	styleClass="tableHeightHome"		           		          
+			           	rowClasses="tableRowOne,tableRowTwo">
+         
+		          <rich:column rendered="#{not empty loteProdutoVencimentoList.resultList}"> 
+		          
+		           	<f:facet name="header"><h:outputText value="Data Validade"/></f:facet> 
+		            <h:outputText value="#{_loteProduto.dataValidade}">
+		            	<s:convertDateTime type="date" pattern="dd/MM/yyyy"/>
+		            </h:outputText>
+		           
+		         </rich:column>             
+		        
+		         <rich:column rendered="#{not empty loteProdutoVencimentoList.resultList}" styleClass="left"> 
+		           <f:facet name="header">
+		               <h:outputText value="Nome Produto"/>
+		           </f:facet> 
+		           <h:outputText value="#{_loteProduto.produto.nomeProduto}"/>
+		         </rich:column> 
+		         
+		         <rich:column rendered="#{not empty loteProdutoVencimentoList.resultList}"> 
+		           <f:facet name="header">
+		               <h:outputText value="Marca"/>
+		           </f:facet>            
+		           <h:outputText value="#{_loteProduto.produto.marca.nomeMarca}"/>
+		         </rich:column> 
+		         
+		         		         
+		         <rich:column rendered="#{not empty loteProdutoVencimentoList.resultList}"> 
+		           <f:facet name="header">
+		               <h:outputText value="Lote"/>
+		           </f:facet> 
+		           <h:outputText value="#{_loteProduto.identificacaoLote}"/>
+		         </rich:column>
+		         
+		          <rich:column rendered="#{not empty loteProdutoVencimentoList.resultList}"> 
+		           <f:facet name="header">
+		               <h:outputText value="Qtd"/>
+		           </f:facet> 
+		           <h:outputText value="#{_loteProduto.qtdEstoque}"/>
+		         </rich:column>  
+		
+		        </rich:dataTable>
+
+				<rich:datascroller align="center" ajaxSingle="true" limitToList="true" renderIfSinglePage="false" for="resultadoList" maxPages="10" id="sc"/>
+			
+		</rich:panel>
+	</h:form>
+	</a:outputPanel>
+</ui:composition>
