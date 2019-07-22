@@ -1299,8 +1299,14 @@ public class VendaHome extends EntityHome<Venda> {
 		TipoPagamento tipoPagamento = venda.getTipoPagamento();
 		Set<Recebimento> recebimentosList = new TreeSet<Recebimento>();
 		
+		Date dataPrimeiraParcela  = venda.getDataCobrancaVenda();
+		
+		if(dataPrimeiraParcela == null){
+			dataPrimeiraParcela = new Date(System.currentTimeMillis());
+		}
+		
 		//calcular datas dos recebimentos
-		List<Date> datasRecebimentos = CalculosUtil.calcularDatasPagamento(tipoPagamento, new Date(System.currentTimeMillis()));
+		List<Date> datasRecebimentos = CalculosUtil.calcularDatasPagamento(tipoPagamento, dataPrimeiraParcela);
 		
 		//calcular valores dos recebimentos
 		List<Float> valoresRecebimentos  = CalculosUtil.calcularParcelas(tipoPagamento, venda.getValorTotalVenda());
