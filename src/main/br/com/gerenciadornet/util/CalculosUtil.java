@@ -35,6 +35,7 @@ public class CalculosUtil{
 			
 			Date dataFutura = new Date();
 			if(isMesMaior(dataAtual)){
+								
 				if(tipoPagamento.getNumVezes() > 1){
 					dataFutura = new Date(dataAtual.getTime() + diasCarencia + intervaloDias * umDia + umDia);
 				} else {
@@ -54,7 +55,15 @@ public class CalculosUtil{
 			Long dataAtualAux = dataAtual.getTime();
 			for(int i = 0; i < tipoPagamento.getNumVezes(); i++){
 				if(i == 0){
-					dataAtualAux += diasCarencia;
+					if(isMesMaior(new Date(dataAtualAux))){
+						//Se for mensal e o mes é de 31 dias
+						if(diasCarencia == 30){
+							dataAtualAux += (diasCarencia + umDia);
+						}
+					} else {						
+						dataAtualAux += diasCarencia;
+					}
+					
 				} else { 
 					if(isMesMaior(new Date(dataAtualAux))){
 						dataAtualAux = dataAtualAux + intervaloDias * umDia + umDia;
@@ -67,7 +76,7 @@ public class CalculosUtil{
 				
 				//subtrai o dia adicionado
 				if(isMesMaior(new Date(dataAtualAux))){
-					//dataAtualAux -= umDia;
+					dataAtualAux -= umDia;
 				}
 			}
 		}

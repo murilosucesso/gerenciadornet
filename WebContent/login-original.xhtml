@@ -1,0 +1,50 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:s="http://jboss.com/products/seam/taglib"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:rich="http://richfaces.org/rich"
+    template="layout/template.xhtml">
+
+<ui:define name="body">
+
+    <h:form id="loginForm">
+    <table width="100%"  border="0" >
+		<tr>
+			<td align="center">
+			<rich:panel style="width:50%; float:center" headerClass="left">
+				<f:facet name="header">Login</f:facet>
+	
+				<img id="imagem_logo" src="img#{facesContext.externalContext.requestContextPath}/logo.jpg"/>
+				
+				<div class="dialog">
+					<h:panelGrid columns="2" rowClasses="prop"
+						columnClasses="name,value">
+	
+						<h:outputLabel for="username">Usuário</h:outputLabel>
+						<h:inputText id="username" value="#{credentials.username}"
+							styleClass="defaultInput2" />
+	
+						<h:outputLabel for="password">Senha</h:outputLabel>
+						<h:inputSecret id="password" value="#{credentials.password}"
+							styleClass="defaultInput2" />
+	
+						<h:outputLabel for="rememberMe">Lembrar-me</h:outputLabel>
+						<h:selectBooleanCheckbox id="rememberMe"
+							value="#{rememberMe.enabled}" />
+	
+					</h:panelGrid>
+				</div>
+				<br />
+				<br />
+			</rich:panel>
+		
+			<div class="actionButtons">
+				<h:commandButton id="submit" value="Entrar" action="#{identity.login}" />
+				<s:button view="/homeLite.xhtml" id="cancel" propagation="none" value="Cancelar" />
+			</div>
+	</td></tr></table>
+	<rich:jQuery selector="#username" timing="onload" query="focus()" />
+	</h:form>	
+ </ui:define>
+</ui:composition>

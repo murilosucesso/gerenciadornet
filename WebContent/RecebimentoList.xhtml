@@ -232,7 +232,12 @@
 							<f:facet name="header">
 								<h:outputText value="Venda" />
 							</f:facet>
-							<h:outputText value="#{_recebimento.venda.codVenda}"/>
+				                                
+							<s:link view="/Venda.xhtml" propagation="default" id="vendaViewId">
+								<h:outputText value="#{_recebimento.venda.codVenda}"/>
+				                <f:param name="vendaCodVenda" value="#{_recebimento.venda.codVenda}"/>
+				                <f:param name="vendaFrom" value="RecebimentoList" />
+				            </s:link>
 						</rich:column>
 						
 						<rich:column styleClass="#{_recebimento.inConferencia ? 'tableRowSelecionada center': 'center'}">

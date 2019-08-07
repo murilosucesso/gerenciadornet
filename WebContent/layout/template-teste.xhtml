@@ -1,0 +1,699 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<f:view xmlns="http://www.w3.org/1999/xhtml"
+xmlns:ui="http://java.sun.com/jsf/facelets"
+xmlns:f="http://java.sun.com/jsf/core"
+xmlns:h="http://java.sun.com/jsf/html"
+xmlns:a="http://richfaces.org/a4j"
+xmlns:s="http://jboss.com/products/seam/taglib" contentType="text/html">
+
+<html lang="pt_br">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <!-- Tell the browser to be responsive to screen width -->
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <meta name="description" content="Sistema Gerenciador Net - By AhausTI"/>
+    <meta name="author" content="Murilo Martins de Oliveira"/>
+    <!-- Favicon icon -->
+    <!--
+    <link rel="icon" type="image/png" sizes="16x16" href="../../assets/images/favicon.png">
+    -->
+    <title>GN - AhausTI</title>
+    <!-- Custom CSS
+    <link href="../../assets/libs/flot/css/float-chart.css" rel="stylesheet"> -->
+    <!-- Custom CSS -->
+    <link href="dist/css/style.min.css" rel="stylesheet"/>
+     
+    <!-- exclusivos GN begin -->
+    <link id="favicon" rel="icon" href="img#{facesContext.externalContext.requestContextPath}/favicon.ico"/>
+
+	<a:loadStyle src="resource:///stylesheet/theme.xcss" />
+	<a:loadStyle src="/stylesheet/theme.css" />
+	<a:loadStyle src="/stylesheet/gerenciadornet.css" />
+	<f:loadBundle basename="messages_en" var="messages" />
+	<ui:insert name="head" />
+
+    <!-- exclusivos GN end -->
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+<![endif]-->
+</head>
+
+<body  onload="escreverTitle()">
+    <!-- ============================================================== -->
+    <!-- Preloader - style you can find in spinners.css -->
+    <!-- ============================================================== -->
+    <div class="preloader">
+        <div class="lds-ripple">
+            <div class="lds-pos"></div>
+            <div class="lds-pos"></div>
+        </div>
+    </div>
+    <!-- ============================================================== -->
+    <!-- Main wrapper - style you can find in pages.scss -->
+    <!-- ============================================================== -->
+    <div id="main-wrapper">
+        <!-- ============================================================== -->
+        <!-- Topbar header - style you can find in pages.scss -->
+        <!-- ============================================================== -->
+        <header class="topbar" data-navbarbg="skin5">
+            <nav class="navbar top-navbar navbar-expand-md navbar-dark">
+                <div class="navbar-header" data-logobg="skin5">
+                    <!-- This is for the sidebar toggle which is visible on mobile only -->
+                    <a class="nav-toggler waves-effect waves-light d-block d-md-none" href="javascript:void(0)"><i class="ti-menu ti-close"></i></a>
+                    <!-- ============================================================== -->
+                    <!-- Logo -->
+                    <!-- ============================================================== -->
+                    <a class="navbar-brand" href="index.html">
+                        <!-- Logo icon -->
+                        <b class="logo-icon p-l-10">
+                            <!--You can put here icon as well // <i class="wi wi-sunset"></i> //-->
+                            <!-- Dark Logo icon -->
+                            <img src="assets/images/logo-icon.png" alt="homepage" class="light-logo" />
+                            <!--You
+                            <s:link view="/home.xhtml" propagation="none">
+                                <h:graphicImage id="logo-superior" url="/img#{facesContext.externalContext.requestContextPath}/logo.png" rendered="#{identity.loggedIn}"/>
+                            </s:link>
+                            -->
+                        </b>
+                        <!--End Logo icon -->
+                         <!-- Logo text -->
+                        <span class="logo-text">
+                             <img src="assets/images/logo-text.png" alt="homepage" class="light-logo" />														                              
+                        </span>
+						                     
+                    </a>
+                    <!-- ============================================================== -->
+                    <!-- End Logo -->
+                    <!-- ============================================================== -->
+                    <!-- ============================================================== -->
+                    <!-- Toggle which is visible on mobile only -->
+                    <!-- ============================================================== -->
+                    <a class="topbartoggler d-block d-md-none waves-effect waves-light" href="javascript:void(0)" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><i class="ti-more"></i></a>
+                </div>
+                <!-- ============================================================== -->
+                <!-- End Logo -->
+                <!-- ============================================================== -->
+                <div class="navbar-collapse collapse" id="navbarSupportedContent" data-navbarbg="skin5">
+                    <!-- ============================================================== -->
+                    <!-- toggle and nav items -->
+                    <!-- ============================================================== -->
+                    <ul class="navbar-nav float-left mr-auto">
+                        <li class="nav-item d-none d-md-block"><a class="nav-link sidebartoggler waves-effect waves-light" href="javascript:void(0)" data-sidebartype="mini-sidebar"><i class="mdi mdi-menu font-24"></i></a></li>
+                        <!-- ============================================================== -->
+                        <!-- create new -->
+                        <!-- ============================================================== -->
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                             <span class="d-none d-md-block">Acesso rápido <i class="fa fa-angle-down"></i></span>
+                             <span class="d-block d-md-none"><i class="fa fa-plus"></i></span>  
+                            </a>
+                            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <a class="dropdown-item" href="#">Nova Venda</a>
+                                <!-- Nova Venda -->
+                                <s:link view="/VendaEdit.xhtml"  styleClass="dropdown-item"  value="Nova Venda/Orçamento"  action="#{conversation.killAllOthers()}"
+                                    id="NovaVendaOrcamentoId" includePageParams="false" propagation="none" />
+                                <!-- Nova Compra -->                                                        
+                                <s:link view="/CompraEdit.xhtml" styleClass="dropdown-item" value="Nova Compra"  action="#{conversation.killAllOthers()}"
+                                    id="AdicionarCompraId" includePageParams="false" propagation="none" />
+                                <!-- Novo Atendimento -->                                                        
+                                <s:link view="/AtendimentoEdit.xhtml" styleClass="dropdown-item" value="Novo Atendimento"  action="#{conversation.killAllOthers()}"
+                                    includePageParams="false" propagation="none" />
+                               
+                                <div class="dropdown-divider"></div>                            
+                                <!-- Admin. Pagamentos -->
+                                <s:link view="/PagamentoList.xhtml" styleClass="dropdown-item" value="Admin. Pagamentos" title="Consulta e administra as contas a pagar"
+                                            rendered="#{identity.hasRole(transacoes.transacaoGerenciarPagamentos)}"
+                                            id="pagamentoId" includePageParams="false" propagation="none" action="#{conversation.killAllOthers()}">
+                                </s:link>
+                                <!-- Admin. Recebimentos -->
+                                <s:link view="/RecebimentoList.xhtml" styleClass="dropdown-item" value="Admin. Recebimentos"
+                                    title="Consulta e administra os recebimentos relacionados às vendas."
+                                    rendered="#{identity.hasRole(transacoes.transacaoGerenciarRecebimentos)}"
+								   id="recebimentoId" includePageParams="false" propagation="none" action="#{conversation.killAllOthers()}">
+								</s:link>
+                               
+                                <div class="dropdown-divider"></div>
+                               
+                                <!-- Admin. Clientes -->      
+                                <s:link id="ClienteId" styleClass="dropdown-item" view="/ClienteList.xhtml" value="Admin. Clientes"
+                                    includePageParams="false" propagation="none" action="#{conversation.killAllOthers()}"/>
+                                <!-- Admin. Fornecedores -->  
+                                <s:link view="/FornecedorList.xhtml" styleClass="dropdown-item" value="Admin. Fornecedores" action="#{conversation.killAllOthers()}"
+                                        id="FornecedorId" includePageParams="false" propagation="none" />                                          
+                                <div class="dropdown-divider"></div>
+                                <!-- Rel. Vendas -->                                  
+                                <s:link id="relatorios" styleClass="dropdown-item" view="/RelatorioList.xhtml"
+                                    includePageParams="false" value="Relatório de Vendas" propagation="none" action="#{conversation.killAllOthers()}"/>                                
+                            </div>
+                        </li>
+                        <!-- ============================================================== -->
+                        <!-- Search -->
+                        <!-- ============================================================== -->
+                        <li class="nav-item search-box"> <a class="nav-link waves-effect waves-dark" href="javascript:void(0)"><i class="ti-search"></i></a>
+                            <form class="app-search position-absolute">
+                                <input type="text" class="form-control" placeholder="Pesquisar &amp; enter"/> <a class="srh-btn"><i class="ti-close"></i></a>
+                            </form>
+                        </li>
+                    </ul>
+                    <!-- ============================================================== -->
+                    <!-- Right side toggle and nav items -->
+                    <!-- ============================================================== -->
+                    <ul class="navbar-nav float-right">
+                        <!-- ============================================================== -->
+                        <!-- Comment -->
+                        <!-- ============================================================== -->
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle waves-effect waves-dark" href="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="mdi mdi-bell font-24"></i>
+                            </a>
+                             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <a class="dropdown-item" href="#">Action</a>
+                                <a class="dropdown-item" href="#">Another action</a>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item" href="#">Something else here</a>
+                            </div>
+                        </li>
+                        <!-- ============================================================== -->
+                        <!-- End Comment -->
+                        <!-- ============================================================== -->
+                        <!-- ============================================================== -->
+                        <!-- Messages -->
+                        <!-- ============================================================== -->
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle waves-effect waves-dark" href="" id="2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="font-24 mdi mdi-comment-processing"></i>
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-right mailbox animated bounceInDown" aria-labelledby="2">
+                                <ul class="list-style-none">
+                                    <li>
+                                        <div class="">
+                                             <!-- Message -->
+                                            <a href="javascript:void(0)" class="link border-top">
+                                                <div class="d-flex no-block align-items-center p-10">
+                                                    <span class="btn btn-success btn-circle"><i class="ti-calendar"></i></span>
+                                                    <div class="m-l-10">
+                                                        <h5 class="m-b-0">Event today</h5>
+                                                        <span class="mail-desc">Just a reminder that event</span>
+                                                    </div>
+                                                </div>
+                                            </a>
+                                            <!-- Message -->
+                                            <a href="javascript:void(0)" class="link border-top">
+                                                <div class="d-flex no-block align-items-center p-10">
+                                                    <span class="btn btn-info btn-circle"><i class="ti-settings"></i></span>
+                                                    <div class="m-l-10">
+                                                        <h5 class="m-b-0">Settings</h5>
+                                                        <span class="mail-desc">You can customize this template</span>
+                                                    </div>
+                                                </div>
+                                            </a>
+                                            <!-- Message -->
+                                            <a href="javascript:void(0)" class="link border-top">
+                                                <div class="d-flex no-block align-items-center p-10">
+                                                    <span class="btn btn-primary btn-circle"><i class="ti-user"></i></span>
+                                                    <div class="m-l-10">
+                                                        <h5 class="m-b-0">Pavan kumar</h5>
+                                                        <span class="mail-desc">Just see the my admin!</span>
+                                                    </div>
+                                                </div>
+                                            </a>
+                                            <!-- Message -->
+                                            <a href="javascript:void(0)" class="link border-top">
+                                                <div class="d-flex no-block align-items-center p-10">
+                                                    <span class="btn btn-danger btn-circle"><i class="fa fa-link"></i></span>
+                                                    <div class="m-l-10">
+                                                        <h5 class="m-b-0">Luanch Admin</h5>
+                                                        <span class="mail-desc">Just see the my new admin!</span>
+                                                    </div>
+                                                </div>
+                                            </a>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+                        <!-- ============================================================== -->
+                        <!-- End Messages -->
+                        <!-- ============================================================== -->
+
+                        <!-- ============================================================== -->
+                        <!-- User profile and search -->
+                        <!-- ============================================================== -->
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle text-muted waves-effect waves-dark pro-pic" href="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><img src="assets/images/users/d1.jpg" alt="user" class="rounded-circle" width="31"/></a>
+                            <div class="dropdown-menu dropdown-menu-right user-dd animated">
+                                <a class="dropdown-item" href="javascript:void(0)"><i class="ti-user m-r-5 m-l-5"></i> Meu Perfil</a>                                                                
+                                <div class="dropdown-divider"></div>                                
+								<s:link id="menuLogoutId" view="/homeLite.xhtml" action="#{identity.logout}" actionListener="#{conversation.killAllOthers()}" rendered="#{identity.loggedIn}" styleClass="dropdown-item" propagation="none">
+									<i class="fa fa-power-off m-r-5 m-l-5"></i> Sair
+								</s:link>
+                            </div>
+                        </li>
+                        <!-- ============================================================== -->
+                        <!-- User profile and search -->
+                        <!-- ============================================================== -->
+                    </ul>
+                </div>
+            </nav>
+        </header>
+        <!-- ============================================================== -->
+        <!-- End Topbar header -->
+        <!-- ============================================================== -->
+        <!-- ============================================================== -->
+        <!-- Left Sidebar - style you can find in sidebar.scss  -->
+        <!-- ============================================================== -->
+        <aside class="left-sidebar" data-sidebarbg="skin5">
+            <!-- Sidebar scroll-->
+            <div class="scroll-sidebar">
+                <!-- Sidebar navigation-->
+                <nav class="sidebar-nav">
+                    <ul id="sidebarnav" class="p-t-10">
+                           
+                        <li class="sidebar-item">
+							<s:link view="/home.xhtml" styleClass="sidebar-link waves-effect waves-dark sidebar-link" action="#{conversation.killAllOthers()}" includePageParams="false" propagation="none">
+								<i class="mdi mdi-view-dashboard"></i><span class="hide-menu">Dashboard</span>
+							</s:link>
+						</li>          
+                        	         
+                        <li class="sidebar-item"> <a class="sidebar-link has-arrow waves-effect waves-dark" href="javascript:void(0)" aria-expanded="false"><i class="mdi mdi-cart-outline"></i><span class="hide-menu">Vendas </span></a>
+                            <ul aria-expanded="false" class="collapse  first-level">
+                               <!-- MenuItem Nova Venda-Orçamento-->
+                                <li class="sidebar-item">
+									<s:link view="/VendaEdit.xhtml" styleClass="sidebar-link" action="#{conversation.killAllOthers()}" includePageParams="false" propagation="none" rendered="#{identity.hasRole(transacoes.transacaoVendaInserir)}">
+										<i class="mdi mdi-cart-plus"></i><span class="hide-menu">Nova Venda-Orçamento</span>
+									</s:link>
+								</li>
+								<!-- MenuItem Consultar Vendas-Orçamentos-->
+								<li class="sidebar-item">
+									<s:link view="/VendaList.xhtml" styleClass="sidebar-link" action="#{conversation.killAllOthers()}" includePageParams="false" propagation="none" rendered="#{identity.hasRole(transacoes.transacaoVendaConsultar)}">
+										<i class="mdi mdi-note-plus-outline"></i><span class="hide-menu">Consultar Vendas-Orçamentos</span>
+									</s:link>
+								</li>
+								<!-- MenuItem Admin. Serviços-->
+								<li class="sidebar-item">
+									<s:link view="/ServicoList.xhtml" styleClass="sidebar-link" action="#{conversation.killAllOthers()}" includePageParams="false" propagation="none" rendered="#{identity.hasRole(transacoes.transacaoServicoConsultar)}">
+										<i class="mdi mdi-worker"></i><span class="hide-menu">Admin. Serviços</span>
+									</s:link>
+								</li>    
+                            </ul>
+                        </li>
+                        <li class="sidebar-item"> <a class="sidebar-link has-arrow waves-effect waves-dark" href="javascript:void(0)" aria-expanded="false"><i class="mdi mdi-cash-usd"></i><span class="hide-menu">Financeiro </span></a>
+                            <ul aria-expanded="false" class="collapse  first-level">
+								<!-- MenuItem Pagamentos-->
+								<li class="sidebar-item">
+									<s:link view="/PagamentoList.xhtml" styleClass="sidebar-link" action="#{conversation.killAllOthers()}" includePageParams="false" propagation="none" rendered="#{identity.hasRole(transacoes.transacaoGerenciarPagamentos)}">
+										<i class="mdi mdi-barcode-scan"></i><span class="hide-menu">Pagamentos</span>
+									</s:link>
+								</li>
+								<!-- MenuItem Recebimentos-->
+								<li class="sidebar-item">
+									<s:link view="/RecebimentoList.xhtml" styleClass="sidebar-link" action="#{conversation.killAllOthers()}" includePageParams="false" propagation="none" rendered="#{identity.hasRole(transacoes.transacaoGerenciarRecebimentos)}">
+										<i class="mdi mdi-square-inc-cash"></i><span class="hide-menu">Recebimentos</span>
+									</s:link>
+								</li>
+								<!-- MenuItem Formas de Pagamento-->
+                                <li class="sidebar-item">
+									<s:link view="/TipoPagamentoList.xhtml" styleClass="sidebar-link" action="#{conversation.killAllOthers()}" includePageParams="false" propagation="none" rendered="#{identity.hasRole(transacoes.transacaoTipoPagamentoConsultar)}">
+										<i class="mdi mdi-credit-card-multiple"></i><span class="hide-menu">Formas de Pagamento</span>
+									</s:link>
+								</li>
+                                <!-- MenuItem Categorias de Pagamento-->
+                                <li class="sidebar-item">
+									<s:link view="/TipoDebitoList.xhtml" styleClass="sidebar-link" action="#{conversation.killAllOthers()}" includePageParams="false" propagation="none" rendered="#{identity.hasRole(transacoes.transacaoAdminTipoDebito)}">
+										<i class="mdi mdi-credit-card-scan"></i><span class="hide-menu">Categorias de Pagamento</span>
+									</s:link>
+								</li>
+								<!-- MenuItem Fontes Pagadoras-->
+								<li class="sidebar-item">
+									<s:link view="/FontePagadoraList.xhtml" styleClass="sidebar-link" action="#{conversation.killAllOthers()}" includePageParams="false" propagation="none" rendered="#{identity.hasRole(transacoes.transacaoAdminFontePagadora)}">
+										<i class="mdi mdi-bank"></i><span class="hide-menu">Fontes Pagadoras</span>
+									</s:link>
+								</li>
+								                                                               
+                            </ul>
+                        </li>
+                        <li class="sidebar-item"> <a class="sidebar-link has-arrow waves-effect waves-dark" href="javascript:void(0)" aria-expanded="false"><i class="mdi mdi-treasure-chest"></i><span class="hide-menu">Estoque</span></a>
+                            <ul aria-expanded="false" class="collapse  first-level">
+								<!-- MenuItem Consultar Estoque-->
+                                <li class="sidebar-item">
+									<s:link view="/LoteProdutoList.xhtml" styleClass="sidebar-link" action="#{conversation.killAllOthers()}" includePageParams="false" propagation="none" rendered="#{identity.hasRole(transacoes.transacaoEstoqueConsultar)}">
+										<i class="mdi mdi-search-web"></i><span class="hide-menu">Consultar Estoque</span>
+									</s:link>
+								</li>								
+								<!-- MenuItem Estoque em Vencimento-->
+                                <li class="sidebar-item">
+									<s:link view="/LoteProdutoVencimentoList.xhtml" styleClass="sidebar-link" action="#{conversation.killAllOthers()}" includePageParams="false" propagation="none" rendered="#{identity.hasRole(transacoes.transacaoEstoqueVencimento)}">
+										<i class="mdi mdi-update"></i><span class="hide-menu">Estoque em Vencimento</span>
+									</s:link>
+								</li>
+                                <!-- MenuItem Estoque Balancete-->
+                                <li class="sidebar-item">
+									<s:link view="/LoteProdutoListBalancete.xhtml" styleClass="sidebar-link" action="#{conversation.killAllOthers()}" includePageParams="false" propagation="none" rendered="#{identity.hasRole(transacoes.transacaoEstoqueBalancete)}">
+										<i class="mdi mdi-scale-balance"></i><span class="hide-menu">Estoque Balancete</span>
+									</s:link>
+								</li>
+								<!-- MenuItem Valores do Estoque-->
+                                <li class="sidebar-item">
+									<s:link view="/LoteProdutoTotaisList.xhtml" styleClass="sidebar-link" action="#{conversation.killAllOthers()}" includePageParams="false" propagation="none" rendered="#{identity.hasRole(transacoes.transacaoEstoqueValores)}">
+										<i class="mdi mdi-cash-100"></i><span class="hide-menu">Valores do Estoque</span>
+									</s:link>
+								</li>
+                            </ul>
+                        </li>
+                        <li class="sidebar-item"> <a class="sidebar-link has-arrow waves-effect waves-dark" href="javascript:void(0)" aria-expanded="false"><i class="mdi mdi-account-multiple-outline"></i><span class="hide-menu">Clientes</span></a>
+                            <ul aria-expanded="false" class="collapse  first-level">
+								<!-- MenuItem Admin. Clientes-->
+                                <li class="sidebar-item">
+									<s:link view="/ClienteList.xhtml" styleClass="sidebar-link" action="#{conversation.killAllOthers()}" includePageParams="false" propagation="none" rendered="#{identity.hasRole(transacoes.transacaoClienteConsultar)}">
+										<i class="mdi mdi-account-outline"></i><span class="hide-menu">Admin. Clientes</span>
+									</s:link>
+								</li>
+								<!-- MenuItem Gestão de Clientes-->
+                                <li class="sidebar-item">
+									<s:link view="/ClienteGestaoList.xhtml" styleClass="sidebar-link" action="#{conversation.killAllOthers()}" includePageParams="false" propagation="none" rendered="#{identity.hasRole(transacoes.transacaoClienteGestao)}">
+										<i class="mdi mdi-account-network"></i><span class="hide-menu">Gestão de Clientes</span>
+									</s:link>
+								</li>
+                                <!-- MenuItem Admin. Atendimentos-->
+                                <li class="sidebar-item">
+									<s:link view="/AtendimentoList.xhtml" styleClass="sidebar-link" action="#{conversation.killAllOthers()}" includePageParams="false" propagation="none" rendered="#{identity.hasRole(transacoes.transacaoAtendimentoConsultar)}">
+										<i class="mdi mdi-phone-classic"></i><span class="hide-menu">Admin. Atendimentos</span>
+									</s:link>
+								</li>
+                                <!-- MenuItem Novo Atendimento-->
+                                <li class="sidebar-item">
+									<s:link view="/AtendimentoEdit.xhtml" styleClass="sidebar-link" action="#{conversation.killAllOthers()}" includePageParams="false" propagation="none" rendered="#{identity.hasRole(transacoes.transacaoAtendimentoInserir)}">
+										<i class="mdi mdi-phone-in-talk"></i><span class="hide-menu">Novo Atendimento</span>
+									</s:link>
+								</li>
+                            </ul>
+                        </li>
+                        <li class="sidebar-item"> <a class="sidebar-link has-arrow waves-effect waves-dark" href="javascript:void(0)" aria-expanded="false"><i class="mdi mdi-store-24-hour"></i><span class="hide-menu">Compras</span></a>
+                            <ul aria-expanded="false" class="collapse  first-level">
+								<!-- MenuItem Nova Compra-->
+                                <li class="sidebar-item">
+									<s:link view="/CompraEdit.xhtml" styleClass="sidebar-link" action="#{conversation.killAllOthers()}" includePageParams="false" propagation="none" rendered="#{identity.hasRole(transacoes.transacaoCompraInserir)}">
+										<i class="mdi mdi-package-down"></i><span class="hide-menu">Nova Compra</span>
+									</s:link>
+								</li>
+								<!-- MenuItem Admin. Compras-->
+                                <li class="sidebar-item">
+									<s:link view="/CompraList.xhtml" styleClass="sidebar-link" action="#{conversation.killAllOthers()}" includePageParams="false" propagation="none" rendered="#{identity.hasRole(transacoes.transacaoCompraConsultar)}">
+										<i class="mdi mdi-package-variant-closed"></i><span class="hide-menu">Admin. Compras</span>
+									</s:link>
+								</li>                                                               
+                            </ul>
+                        </li>
+                        <li class="sidebar-item"> <a class="sidebar-link has-arrow waves-effect waves-dark" href="javascript:void(0)" aria-expanded="false"><i class="mdi mdi-rhombus-outline"></i><span class="hide-menu">Produtos</span></a>
+                            <ul aria-expanded="false" class="collapse  first-level">
+								<!-- MenuItem Admin. Fornecedores-->
+                                <li class="sidebar-item">
+									<s:link view="/FornecedorList.xhtml" styleClass="sidebar-link" action="#{conversation.killAllOthers()}" includePageParams="false" propagation="none" rendered="#{identity.hasRole(transacoes.transacaoFornecedorConsultar)}">
+										<i class="mdi mdi-truck"></i><span class="hide-menu">Admin. Fornecedores</span>
+									</s:link>
+								</li>
+                                <li class="sidebar-item"><a href="form-basic.html" class="sidebar-link"><i class="mdi mdi-truck"></i><span class="hide-menu">Admin. Fornecedores</span></a></li>
+								<!-- MenuItem Admin. Vendedores-->
+                                <li class="sidebar-item">
+									<s:link view="/VendedorList.xhtml" styleClass="sidebar-link" action="#{conversation.killAllOthers()}" includePageParams="false" propagation="none" rendered="#{identity.hasRole(transacoes.transacaoVendedorConsultar)}">
+										<i class="mdi mdi-truck-delivery"></i><span class="hide-menu">Admin. Vendedores</span>
+									</s:link>
+								</li>								                               
+								<!-- MenuItem Admin. Marcas-->
+                                <li class="sidebar-item">
+									<s:link view="/MarcaList.xhtml" styleClass="sidebar-link" action="#{conversation.killAllOthers()}" includePageParams="false" propagation="none" rendered="#{identity.hasRole(transacoes.transacaoMarcaConsultar)}">
+										<i class="mdi mdi-apple"></i><span class="hide-menu">Admin. Marcas</span>
+									</s:link>
+								</li>
+								                                
+								<!-- MenuItem Admin. Categorias-->
+                                <li class="sidebar-item">
+									<s:link view="/CategoriaList.xhtml" styleClass="sidebar-link" action="#{conversation.killAllOthers()}" includePageParams="false" propagation="none" rendered="#{identity.hasRole(transacoes.transacaoCategoriaConsultar)}">
+										<i class="mdi mdi-umbrella-outline"></i><span class="hide-menu">Admin. Categorias</span>
+									</s:link>
+								</li>
+								<!-- MenuItem Admin. Produtos-->
+                                <li class="sidebar-item">
+									<s:link view="/ProdutoList.xhtml" styleClass="sidebar-link" action="#{conversation.killAllOthers()}" includePageParams="false" propagation="none" rendered="#{identity.hasRole(transacoes.transacaoProdutoConsultar)}">
+										<i class="mdi mdi-rhombus"></i><span class="hide-menu">Admin. Produtos</span>
+									</s:link>
+								</li>
+                            </ul>
+                        </li>
+                        <li class="sidebar-item"> <a class="sidebar-link has-arrow waves-effect waves-dark" href="javascript:void(0)" aria-expanded="false"><i class="mdi mdi-chart-bar"></i><span class="hide-menu">Relatórios</span></a>
+                            <ul aria-expanded="false" class="collapse  first-level">
+								
+								<!-- MenuItem Rel. Vendas-->
+                                <li class="sidebar-item">
+									<s:link view="/RelatorioList.xhtml" styleClass="sidebar-link" action="#{conversation.killAllOthers()}" includePageParams="false" propagation="none" rendered="#{identity.hasRole(transacoes.transacaoRelatorioVendas)}">
+										<i class="mdi mdi-view-list"></i><span class="hide-menu">Rel. Vendas</span>
+									</s:link>
+								</li>
+                                								
+								<!-- MenuItem Rel. Vendas x Cliente -->
+                                <li class="sidebar-item">
+									<s:link view="/RelatorioClienteList.xhtml" styleClass="sidebar-link" action="#{conversation.killAllOthers()}" includePageParams="false" propagation="none" rendered="#{identity.hasRole(transacoes.transacaoRelatorioParaOCliente)}">
+										<i class="mdi mdi-account-box-outline"></i><span class="hide-menu">Rel. Vendas x Cliente</span>
+									</s:link>
+								</li>
+                                								
+								<!-- MenuItem Rel.Vendas x Ano -->
+                                <li class="sidebar-item">
+									<s:link view="/RelatorioGraficoVendas.xhtml" styleClass="sidebar-link" action="#{conversation.killAllOthers()}" includePageParams="false" propagation="none" rendered="#{identity.hasRole(transacoes.transacaoRelatorioVendasXAno)}">
+										<i class="mdi mdi-calendar-clock"></i><span class="hide-menu">Rel. Vendas x Ano </span>
+									</s:link>
+								</li>
+                                								
+								<!-- MenuItem Rel. Vendas x Grupo-->
+                                <li class="sidebar-item">
+									<s:link view="/RelatorioGraficoGrupoVendas.xhtml" styleClass="sidebar-link" action="#{conversation.killAllOthers()}" includePageParams="false" propagation="none" rendered="#{identity.hasRole(transacoes.transacaoRelatorioVendasXGrupo)}">
+										<i class="mdi mdi-chart-pie"></i><span class="hide-menu">Rel. Vendas x Grupo</span>
+									</s:link>
+								</li>
+                                								
+								<!-- MenuItem Rel. Vendas x Produto -->
+                                <li class="sidebar-item">
+									<s:link view="/RelatorioProdutoList.xhtml" styleClass="sidebar-link" action="#{conversation.killAllOthers()}" includePageParams="false" propagation="none" rendered="#{identity.hasRole(transacoes.transacaoRelatorioVendasXProduto)}">
+										<i class="mdi mdi-chart-histogram"></i><span class="hide-menu">Rel. Vendas x Produto</span>
+									</s:link>
+								</li>
+                                								
+								<!-- MenuItem Rel. -->
+                                <li class="sidebar-item">
+									<s:link view="/RelatorioInstituicaoList.xhtml" styleClass="sidebar-link" action="#{conversation.killAllOthers()}" includePageParams="false" propagation="none" rendered="#{identity.hasRole(transacoes.transacaoRelatorioVendasXInstituicao)}">
+										<i class="mdi mdi-chart-scatterplot-hexbin"></i><span class="hide-menu">Rel. Vendas x Instituição</span>
+									</s:link>
+								</li>
+                                								
+								<!-- MenuItem Rel.Periodicidade -->
+                                <li class="sidebar-item">
+									<s:link view="/RelatorioClienteVendasList.xhtml" styleClass="sidebar-link" action="#{conversation.killAllOthers()}" includePageParams="false" propagation="none" rendered="#{identity.hasRole(transacoes.transacaoRelatorioPeriodicidadeCliente)}">
+										<i class="mdi mdi-calendar-remove"></i><span class="hide-menu">Rel. Periodicidade</span>
+									</s:link>
+								</li>
+                                								
+								<!-- MenuItem Rel. Contas x Recebimentos -->
+                                <li class="sidebar-item">
+									<s:link view="/RelatorioGraficoRecebXPaga.xhtml" styleClass="sidebar-link" action="#{conversation.killAllOthers()}" includePageParams="false" propagation="none" rendered="#{identity.hasRole(transacoes.transacaoRelatorioContasXRecebimento)}">
+										<i class="mdi mdi-chart-line"></i><span class="hide-menu">Rel. Contas x Recebimentos</span>
+									</s:link>
+								</li>
+                                								
+								<!-- MenuItem Rel. Fechamento Funcionário -->
+                                <li class="sidebar-item">
+									<s:link view="/RelatorioDetalhadoFuncionarioList.xhtml" styleClass="sidebar-link" action="#{conversation.killAllOthers()}" includePageParams="false" propagation="none" rendered="#{identity.hasRole(transacoes.transacaoRelatorioFechamentoMensal)}">
+										<i class="mdi mdi-certificate"></i><span class="hide-menu">Rel. Fechamento de Funcionário</span>
+									</s:link>
+								</li>
+                                								
+								<!-- MenuItem Rel. Fechamento Mensal -->
+                                <li class="sidebar-item">
+									<s:link view="/RelatorioFechamentoMensalList.xhtml" styleClass="sidebar-link" action="#{conversation.killAllOthers()}" includePageParams="false" propagation="none" rendered="#{identity.hasRole(transacoes.transacaoRelatorioFechamentoMensal)}">
+										<i class="mdi mdi-trophy"></i><span class="hide-menu">Rel. Fechamento Mensal</span>
+									</s:link>
+								</li>                                
+                            </ul>
+                        </li>
+                        <li class="sidebar-item"> <a class="sidebar-link has-arrow waves-effect waves-dark" href="javascript:void(0)" aria-expanded="false"><i class="mdi mdi-account-multiple"></i><span class="hide-menu">Usuários</span></a>
+                            <ul aria-expanded="false" class="collapse  first-level">
+								<!-- MenuItem Admin. Usuários  -->
+                                <li class="sidebar-item">
+									<s:link view="/UsuarioList.xhtml" styleClass="sidebar-link" action="#{conversation.killAllOthers()}" includePageParams="false" propagation="none" rendered="#{identity.hasRole(transacoes.transacaoUsuarioConsultar)}">
+										<i class="mdi mdi-account-multiple-plus"></i><span class="hide-menu">Admin. Usuários</span>
+									</s:link>
+								</li>  
+                                								
+								<!-- MenuItem Admin. Acessos x Usuários -->
+                                <li class="sidebar-item">
+									<s:link view="/AcessoList.xhtml" styleClass="sidebar-link" action="#{conversation.killAllOthers()}" includePageParams="false" propagation="none" rendered="#{identity.hasRole(transacoes.transacaoAcessoConsultar)}">
+										<i class="mdi mdi-security"></i><span class="hide-menu">Admin. Acessos x Usuários</span>
+									</s:link>
+								</li>  
+                               								
+								<!-- MenuItem Admin. Acessos x Perfil -->
+                                <li class="sidebar-item">
+									<s:link view="/AcessoDefaultList.xhtml" styleClass="sidebar-link" action="#{conversation.killAllOthers()}" includePageParams="false" propagation="none" rendered="#{identity.hasRole(transacoes.transacaoAcessoPerfil)}">
+										<i class="mdi mdi-security-network"></i><span class="hide-menu">Admin. Acessos x Perfil</span>
+									</s:link>
+								</li>  
+                                								
+								<!-- MenuItem Meus Dados-->
+                                <li class="sidebar-item">
+									<s:link view="/UsuarioEdit.xhtml" styleClass="sidebar-link" action="#{conversation.killAllOthers()}" includePageParams="false" propagation="none">
+										<i class="mdi mdi-account-circle"></i><span class="hide-menu">>Meus Dados</span>
+										<f:param name="usuarioCodUsuario" value="#{user.codUsuario}"/>
+									</s:link>
+								</li>  
+                                								
+								<!-- MenuItem Histórico de Usuários -->
+                                <li class="sidebar-item">
+									<s:link view="/HistoricoList.xhtml" styleClass="sidebar-link" action="#{conversation.killAllOthers()}" includePageParams="false" propagation="none" rendered="#{identity.hasRole(transacoes.transacaoHistoricoUsuarioConsultar)}">
+										<i class="mdi mdi-calendar-question"></i><span class="hide-menu">Histórico de Usuários</span>
+									</s:link>
+								</li>                                  
+                            </ul>
+                        </li>
+
+                         <li class="sidebar-item"> <a class="sidebar-link has-arrow waves-effect waves-dark" href="javascript:void(0)" aria-expanded="false"><i class="mdi mdi-desktop-mac"></i><span class="hide-menu">Sistema</span></a>
+                            <ul aria-expanded="false" class="collapse  first-level">
+								<!-- MenuItem Admin. Empresa -->
+                                <li class="sidebar-item">
+									<s:link view="/EmpresaList.xhtml" styleClass="sidebar-link" action="#{conversation.killAllOthers()}" includePageParams="false" propagation="none" rendered="#{user.codUsuario == '1'}">
+										<i class="mdi mdi-factory"></i><span class="hide-menu">Admin. Empresa</span>
+									</s:link>
+								</li>      
+                                								
+								<!-- MenuItem Admin. Transações -->
+                                <li class="sidebar-item">
+									<s:link view="/TransacaoList.xhtml" styleClass="sidebar-link" action="#{conversation.killAllOthers()}" includePageParams="false" propagation="none" rendered="#{user.codUsuario == '1'}">
+										<i class="mdi mdi-arrow-all"></i><span class="hide-menu">Admin. Transações</span>
+									</s:link>
+								</li>      
+                                
+                            </ul>
+                        </li>
+                    </ul>
+                </nav>
+                <!-- End Sidebar navigation -->
+            </div>
+            <!-- End Sidebar scroll-->
+        </aside>
+        <!-- ============================================================== -->
+        <!-- End Left Sidebar - style you can find in sidebar.scss  -->
+        <!-- ============================================================== -->
+        <!-- ============================================================== -->
+        <!-- Page wrapper  -->
+        <!-- ============================================================== -->
+        <div class="page-wrapper">
+            <!-- ============================================================== -->
+            <!-- Bread crumb and right sidebar toggle -->
+            <!-- ============================================================== -->
+            <!--
+             <div class="page-breadcrumb">
+                <div class="row">
+                    <div class="col-12 d-flex no-block align-items-center">
+                        <h4 class="page-title">Dashboard</h4>
+                        <div class="ml-auto text-right">
+                            <nav aria-label="breadcrumb">
+                                <ol class="breadcrumb">
+                                    <li class="breadcrumb-item"><a href="#">Home</a></li>
+                                    <li class="breadcrumb-item active" aria-current="page">Dashboard</li>
+                                </ol>
+                            </nav>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            -->
+            <!-- ============================================================== -->
+            <!-- End Bread crumb and right sidebar toggle -->
+            <!-- ============================================================== -->
+            <!-- ============================================================== -->
+            <!-- Container fluid  -->
+            <!-- ============================================================== -->
+            <div class="container-fluid">
+           
+                <!-- ============================================================== -->
+                <!-- Body includes -->
+                <!-- ============================================================== -->
+
+                <ui:include src="/carregando.popup.xhtml" />
+
+                <div id="body" class="body">
+
+                    <a:outputPanel ajaxRendered="true" id="panelGlobalMessages">
+                        <h:messages id="messages" globalOnly="false" styleClass="message"
+                            errorClass="errormsg" infoClass="infomsg" warnClass="warnmsg"
+                            rendered="#{showGlobalMessages != 'false'}" />
+                    </a:outputPanel>
+
+                    <ui:insert name="body" />
+
+                </div>
+
+                 <!-- Body includes end -->
+            </div>
+            <!-- ============================================================== -->
+            <!-- End Container fluid  -->
+            <!-- ============================================================== -->
+            <!-- ============================================================== -->
+            <!-- footer -->
+            <!-- ============================================================== -->
+            <footer class="footer text-center">
+                All Rights Reserved by AHAUSTI. <a href="https://www.ahausti.com.br">Desenvolvido por AHAUS
+						TECNOLOGIA DA INFORMAÇÃO - AHAUSTI &#174;</a>.
+            </footer>
+            <!-- ============================================================== -->
+            <!-- End footer -->
+            <!-- ============================================================== -->
+        </div>
+        <!-- ============================================================== -->
+        <!-- End Page wrapper  -->
+        <!-- ============================================================== -->
+    </div>
+    <!-- ============================================================== -->
+    <!-- End Wrapper -->
+    <!-- ============================================================== -->
+    <!-- ============================================================== -->
+    <!-- All Jquery -->
+    <!-- ============================================================== -->
+   
+   	<a:loadScript src="assets/libs/jquery/dist/jquery.min.js"/>
+   <!-- 
+    <script src="assets/libs/jquery/dist/jquery.min.js"></script>
+    -->
+    <!-- Bootstrap tether Core JavaScript -->
+    <script src="assets/libs/popper.js/dist/umd/popper.min.js"></script>
+    <script src="assets/libs/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script src="assets/libs/perfect-scrollbar/dist/perfect-scrollbar.jquery.min.js"></script>
+    <script src="assets/extra-libs/sparkline/sparkline.js"></script>
+    <!--Wave Effects
+    <script src="../../dist/js/waves.js"></script> -->
+    <!--Menu sidebar -->
+    <script src="dist/js/sidebarmenu.js"></script>
+    <!--Custom JavaScript -->
+    <script src="dist/js/custom.min.js"></script>
+    <!--This page JavaScript -->
+    <!-- <script src="../../dist/js/pages/dashboards/dashboard1.js"></script> -->
+    <!-- Charts js Files
+    <script src="../../assets/libs/flot/excanvas.js"></script>
+    <script src="../../assets/libs/flot/jquery.flot.js"></script>
+    <script src="../../assets/libs/flot/jquery.flot.pie.js"></script>
+    <script src="../../assets/libs/flot/jquery.flot.time.js"></script>
+    <script src="../../assets/libs/flot/jquery.flot.stack.js"></script>
+    <script src="../../assets/libs/flot/jquery.flot.crosshair.js"></script>
+    <script src="../../assets/libs/flot.tooltip/js/jquery.flot.tooltip.min.js"></script>
+    <script src="../../dist/js/pages/chart/chart-page-init.js"></script> -->
+    <!-- scripts gerenciadornet -->
+    <script src="dist/js/gerenciadornet.js"></script>
+    <!-- to avoid the conflict between Prototype and Jquery. -->
+    
+
+</body>
+
+</html>
+</f:view>

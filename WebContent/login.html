@@ -1,22 +1,15 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<f:view xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:f="http://java.sun.com/jsf/core"
-	xmlns:h="http://java.sun.com/jsf/html" contentType="text/html">
-
 <html>
 <head>
   	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
   	<meta name="viewport" content="width=device-width, initial-scale=1"/>
   
-    <link id="favicon" rel="icon"  href="img#{facesContext.externalContext.requestContextPath}/favicon.ico"/>	
+    <link id="favicon" rel="icon"  href="img/gerenciadornet/favicon.ico"/>	
     <title>Gerenciador NET</title>
     
 	<link href="login.css" rel="stylesheet"/>
 </head>
 <body>
-	<div id="wrapper2">
+	<div id="wrapper">
 		<div>
 		
 		<div id="login-box" class="text-center">
@@ -26,20 +19,19 @@
 			</span>			
 			</div>
 			<!-- form -->
-			<h:form id="loginForm" styleClass="login-form text-left">
+			<form id="loginForm" name="loginForm" method="post" class="login-form text-left" enctype="application/x-www-form-urlencoded">
 				<span style="font-size:11px;">Por favor, faça o seu <b>login</b></span>
 			<div class="container">
-				<h:inputText  id="username" value="#{credentials.username}" placeholder="Seu nome de usu&aacute;rio" required="true"/>
-
-				<h:inputSecret id="password" value="#{credentials.password}" placeholder="Entre sua senha" required="true"/>
-																		                
-				<h:commandButton id="submit" styleClass="my-button" value="Entrar" action="#{identity.login}" />   
-				     
+									
+				<input id="loginForm:username" name="loginForm:username" type="text" placeholder="Seu nome de usu&aacute;rio"  required="required"/>
+				<input id="loginForm:password" name="loginForm:password" type="password" placeholder="Entre sua senha" required="required"/>
+        									                
+				<input id="loginForm:submit" type="submit" name="loginForm:submit" value="Entrar"></input>     
 				<label>
-					<h:selectBooleanCheckbox id="rememberMe" value="#{rememberMe.enabled}" />Lembre-me
+					<input id="loginForm:rememberMe" type="checkbox" checked="checked" name="loginForm:rememberMe"/> Lembre-se
 				</label>
 			</div>
-			</h:form>
+			</form>
 		</div>
 		<div class="clear"></div>
 			<div id="login-footer" class="text-center">
@@ -52,4 +44,3 @@
 	</div>
 </body>
 </html>
-</f:view>
