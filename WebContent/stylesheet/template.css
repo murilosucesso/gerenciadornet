@@ -1,0 +1,75 @@
+.topnav {
+	position: relative;    
+    padding: 10px 0px 0px 10px;
+    overflow: hidden;
+    z-index: 2;
+    background-color: #343a40;
+    height: 40px;
+}
+.logoempresa {
+    z-index: 100;
+    background-color: #343a40;
+    position: relative;
+    float: left;
+    height: 82px;
+    padding-left: 15px;
+}
+.toplogo { 
+  box-sizing: border-box;
+  overflow: hidden;
+  background-color: #343a40;
+  height: 32px;   
+  padding: 0px 20px 5px 5px;
+}
+
+.toplogo img{  	
+  float: right;
+  
+}
+
+/* Style the topnav links */
+.topnav a {
+  float: right;
+  display: block;  
+  padding: 0px 22px 0px 20px;
+  color: #e0e0e0;
+  text-align: center;
+  text-decoration: none;   
+  font-size:14px;
+}
+
+.topnav i {
+  margin-right: 8px;
+}
+
+/* Change color on hover */
+.topnav a:hover {
+	color: #ffffff;
+}
+
+/* Style the content */
+.content {
+  padding: 10px;
+  min-height: 400px; /* Should be removed. Only for demonstration */
+}
+
+.footer {    
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    background-color: #8c8c8c;
+    color: #f2f2f2;
+    text-align: right;
+    padding: 10px 0px 0px 0px;
+    height: 20px;
+    margin-bottom: 0px;
+    line-height: 5px;
+}
+.footer a{    
+   text-decoration: none;
+   padding-right: 25px;
+   padding-left: 5px;
+   font-size:12px;
+   color:#f2f2f2;
+}

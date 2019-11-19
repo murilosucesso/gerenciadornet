@@ -14,10 +14,10 @@
 
     <h:form id="usuario" styleClass="edit">
 		<ui:include src="/paginas/help/UsuarioEditHelp.xhtml"/>
-        <rich:panel>
+        <rich:panel >
             <f:facet name="header">#{usuarioHome.managed ? 'Editar' : 'Adicionar'} Usuario</f:facet>
 
-			 <s:decorate id="nomeUsuarioField" template="layout/edit.xhtml" rendered="#{identity.hasRole(transacoes.transacaoUsuarioEditar) and (user.perfil.codPerfil == constantes.administrador)}">
+			 <s:decorate id="nomeUsuarioField" template="layout/edit.xhtml" rendered="#{!usuarioHome.managed}">
                 <ui:define name="label">Nome</ui:define>
                 <h:inputText id="nomeUsuario"
                        required="true"
@@ -27,7 +27,7 @@
                           value="#{usuarioHome.instance.nomeUsuario}">
                 </h:inputText>
             </s:decorate>
-             <s:decorate template="layout/edit.xhtml" rendered="#{!identity.hasRole(transacoes.transacaoUsuarioEditar) or !(user.perfil.codPerfil == constantes.administrador)}" >
+             <s:decorate template="layout/edit.xhtml" rendered="#{usuarioHome.managed}">
                 <ui:define name="label">Nome</ui:define>
                 <h:outputText value="#{usuarioHome.instance.nomeUsuario}"/>
             </s:decorate>
@@ -43,7 +43,7 @@
                 </h:inputText>
             </s:decorate>
             
-            <s:decorate id="perfilUsuarioField" template="layout/edit.xhtml" rendered="#{identity.hasRole(transacoes.transacaoUsuarioEditar) and (user.perfil.codPerfil == constantes.administrador)}" >
+            <s:decorate id="perfilUsuarioField" template="layout/edit.xhtml" rendered="#{identity.hasRole(transacoes.transacaoUsuarioEditar)}" >
                 <ui:define name="label">Perfil</ui:define>
                 <h:selectOneMenu value="#{usuarioHome.instance.perfil}" required="true"  requiredMessage="Campo Obrigatório" styleClass="defaultInput2">		
 				   <s:selectItems value="#{perfilList.resultList}" 
@@ -53,7 +53,6 @@
 				                  />			
 				   <s:convertEntity />			
 				</h:selectOneMenu>
-				<h:outputText value="#{usuarioHome.instance.perfil.nomePerfil}" rendered="#{!identity.hasRole(transacoes.transacaoUsuarioEditar) or !(user.perfil.codPerfil == constantes.administrador)}"/>
             </s:decorate>
 
             <s:decorate id="senhaField" template="layout/edit.xhtml">
@@ -81,10 +80,7 @@
             <s:decorate id="cpfField" template="layout/edit.xhtml">
                 <ui:define name="label">CPF</ui:define>           
                 <easy:inputCpf id="cpf" styleClass="defaultInput2" useMask="true"   
-                	useValidate="true" submitWithMask="true" value="#{usuarioHome.instance.cpf}" useMaskSize="true" 
-                	rendered="#{identity.hasRole(transacoes.transacaoUsuarioEditar) and (user.perfil.codPerfil == constantes.administrador)}"/> 
-                	
-                <h:outputText value="#{usuarioHome.instance.cpf}" rendered="#{!identity.hasRole(transacoes.transacaoUsuarioEditar) or !(user.perfil.codPerfil == constantes.administrador)}"/>                         
+                	useValidate="true" submitWithMask="true" value="#{usuarioHome.instance.cpf}" useMaskSize="true"/>                 	
             </s:decorate>
 
 
@@ -94,10 +90,10 @@
                      styleClass="defaultInput2"
                       maxlength="20"
                           value="#{usuarioHome.instance.numRg}"
-                       rendered="#{identity.hasRole(transacoes.transacaoUsuarioEditar) and (user.perfil.codPerfil == constantes.administrador)}">
+                       rendered="#{identity.hasRole(transacoes.transacaoUsuarioEditar)}">
                 </h:inputText>
                 
-                <h:outputText value="#{usuarioHome.instance.numRg}" rendered="#{!identity.hasRole(transacoes.transacaoUsuarioEditar) or !(user.perfil.codPerfil == constantes.administrador)}"/>          
+                <h:outputText value="#{usuarioHome.instance.numRg}"/>          
             </s:decorate>
 
 
@@ -105,11 +101,7 @@
                 <ui:define name="label">Data Nascimento</ui:define>
                 <rich:calendar id="dataNasc"
                           value="#{usuarioHome.instance.dataNasc}" datePattern="dd/MM/yyyy" 
-                          rendered="#{identity.hasRole(transacoes.transacaoUsuarioEditar) and (user.perfil.codPerfil == constantes.administrador)}"/>
-                          
-                <h:outputText value="#{usuarioHome.instance.dataNasc}" rendered="#{!identity.hasRole(transacoes.transacaoUsuarioEditar) or !(user.perfil.codPerfil == constantes.administrador)}">
-                	<s:convertDateTime type="date" pattern="dd/MM/yyyy"/>
-                </h:outputText>
+                          rendered="#{identity.hasRole(transacoes.transacaoUsuarioEditar)}"/>
             </s:decorate>
             
             <s:decorate id="emailField" template="layout/edit.xhtml">
@@ -172,7 +164,7 @@
         </div>
     </h:form>
 
-<rich:tabPanel switchType="ajax">
+<rich:tabPanel switchType="ajax" rendered="#{usuarioHome.managed ? identity.hasRole(transacoes.transacaoUsuarioEditar): identity.hasRole(transacoes.transacaoUsuarioInserir)}">
 
         <rich:tab label="Endereços">
         

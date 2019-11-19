@@ -1,78 +1,99 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<pages login-view-id="/login.xhtml"
- no-conversation-view-id="/home.xhtml"
- xmlns="http://jboss.com/products/seam/pages"
- xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jboss.com/products/seam/pages http://jboss.com/products/seam/pages-2.2.xsd">
- <page view-id="*">
-  <navigation>
-   <rule if-outcome="home">
-    <redirect view-id="/home.xhtml"/>
-   </rule>
-  </navigation>
- </page>
- <exception class="org.jboss.seam.framework.EntityNotFoundException">
-  <redirect view-id="/error.xhtml">
-   <message severity="warn">Registro não encontrado. Código: 001</message>
-  </redirect>
- </exception>
- <exception class="javax.persistence.EntityNotFoundException">
-  <end-conversation/>
-  <redirect view-id="/error.xhtml">
-   <message severity="warn">Algo inesperado aconteceu, por favor tente novamente. Código: 009</message>
-  </redirect>
- </exception>
- <exception class="javax.persistence.EntityExistsException">
-  <redirect view-id="/error.xhtml">
-   <message severity="warn">Registro duplicado.Código: 003</message>
-  </redirect>
- </exception>
- <exception class="javax.persistence.OptimisticLockException">
-  <end-conversation/>
-  <redirect view-id="/error.xhtml">
-   <message severity="warn">Outro usuário alterou este mesmo dado, tente novamente.Código: 004</message>
-  </redirect>
- </exception>
- <exception class="org.jboss.seam.security.AuthorizationException">
-  <redirect view-id="/error.xhtml">
-   <message severity="warn">ACESSO NEGADO!!! Você não possui permissão para acessar este recurso.Código: 005</message>
-  </redirect>
- </exception>
- <exception class="org.jboss.seam.security.NotLoggedInException">
-  <redirect view-id="/login.xhtml">
-   <message severity="warn">Por favor, realize o login primeiro.</message>
-  </redirect>
- </exception>
- <exception class="javax.faces.application.ViewExpiredException">
-  <redirect view-id="/login.xhtml">
-   <message severity="warn">O tempo de sua sessão expirou, por favor tente novamente.</message>
-  </redirect>
- </exception>
- <exception class="org.jboss.seam.ConcurrentRequestTimeoutException" log-level="trace">
-  <redirect view-id="/error.xhtml">
-   <message severity="warn">Múltiplas transações ocorreram, verifique novamente se foram concluídas. Código: 006</message>
-  </redirect>
- </exception>
- <exception class="javax.el.PropertyNotFoundException" log-level="trace">
-  <redirect view-id="/error.xhtml">
-   <message severity="warn">Múltiplas transações ocorreram, verifique novamente se foram concluídas. Código: 007</message>
-  </redirect>
- </exception>
- <exception class="javax.persistence.PersistenceException" log-level="trace">
-  <end-conversation/>
-  <redirect view-id="/error.xhtml">
-   <message severity="warn">Algo inesperado aconteceu, por favor tente novamente. Código: 008</message>
-  </redirect>
- </exception>
- <exception class="javax.faces.FacesException">
-  <end-conversation/>
-  <redirect view-id="/error.xhtml">
-   <message severity="warn">Algo inesperado aconteceu, por favor tente novamente. Código: 010</message>
-  </redirect>
- </exception>
- <exception>
-  <end-conversation/>
-  <redirect view-id="/error.xhtml">
-   <message severity="warn">Algo inesperado aconteceu, por favor tente novamente.</message>
-  </redirect>
- </exception>
+<pages xmlns="http://jboss.com/products/seam/pages"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://jboss.com/products/seam/pages http://jboss.com/products/seam/pages-2.2.xsd"
+       no-conversation-view-id="/home.xhtml"
+       login-view-id="/login.xhtml">
+    
+    <page view-id="*">
+        <navigation>
+            <rule if-outcome="home">
+                <redirect view-id="/home.xhtml"/>
+            </rule>
+        </navigation>
+    </page>
+
+    <exception class="org.jboss.seam.framework.EntityNotFoundException">
+        <redirect view-id="/error.xhtml">
+            <message severity="warn">Registro não encontrado. Código: 001</message>
+        </redirect>
+    </exception>
+    
+    <exception class="javax.persistence.EntityNotFoundException">
+        <redirect view-id="/error.xhtml">
+            <message severity="warn">Registro não encontrado.Código: 002</message>
+        </redirect>
+    </exception>
+    
+    <exception class="javax.persistence.EntityExistsException">
+        <redirect view-id="/error.xhtml">
+            <message severity="warn">Registro duplicado.Código: 003</message>
+        </redirect>
+    </exception>
+    
+    <exception class="javax.persistence.OptimisticLockException">
+        <end-conversation/>
+        <redirect view-id="/error.xhtml">
+            <message severity="warn">Outro usuário alterou este mesmo dado, tente novamente.Código: 004</message>
+        </redirect>
+    </exception>
+    
+    <exception class="org.jboss.seam.security.AuthorizationException">
+        <redirect view-id="/error.xhtml">        	
+            <message severity="warn">ACESSO NEGADO!!! Você não possui permissão para acessar este recurso.Código: 005</message>
+        </redirect>
+    </exception>
+    
+    <exception class="org.jboss.seam.security.NotLoggedInException">
+        <redirect view-id="/login.xhtml">
+            <message severity="warn">Por favor, realize o login primeiro.</message>
+        </redirect>
+    </exception>
+    
+    <exception class="javax.faces.application.ViewExpiredException">
+        <redirect view-id="/login.xhtml">
+            <message severity="warn">O tempo de sua sessão expirou, por favor tente novamente.</message>
+        </redirect>
+    </exception>
+    
+    <exception class="org.jboss.seam.ConcurrentRequestTimeoutException" log-level="trace">
+      <redirect view-id="/error.xhtml">
+            <message severity="warn">Múltiplas transações ocorreram, verifique novamente se foram concluídas. Código: 006</message>
+      </redirect>
+    </exception>
+    
+    <exception class="javax.el.PropertyNotFoundException" log-level="trace">
+      <redirect view-id="/error.xhtml">
+            <message severity="warn">Múltiplas transações ocorreram, verifique novamente se foram concluídas. Código: 007</message>
+      </redirect>
+    </exception>
+    
+    <exception class="javax.persistence.PersistenceException" log-level="trace">
+      <end-conversation/>
+      <redirect view-id="/error.xhtml">
+            <message severity="warn">Algo inesperado aconteceu, por favor tente novamente. Código: 008</message>
+      </redirect>
+    </exception>
+    
+    <exception class="javax.persistence.EntityNotFoundException">
+      <end-conversation/>
+      <redirect view-id="/error.xhtml">
+            <message severity="warn">Algo inesperado aconteceu, por favor tente novamente. Código: 009</message>
+      </redirect>
+    </exception>
+    
+     <exception class="javax.faces.FacesException">
+      <end-conversation/>
+      <redirect view-id="/error.xhtml">
+            <message severity="warn">Algo inesperado aconteceu, por favor tente novamente. Código: 010</message>
+      </redirect>
+    </exception>
+                 
+    <exception>
+    	<end-conversation/>
+        <redirect view-id="/error.xhtml">
+            <message severity="warn">Algo inesperado aconteceu, por favor tente novamente.</message>
+        </redirect>
+    </exception>
+    
 </pages>

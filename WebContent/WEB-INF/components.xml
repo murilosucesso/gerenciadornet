@@ -25,9 +25,9 @@
 	<core:manager concurrent-request-timeout="500"
 		conversation-timeout="600000" conversation-id-parameter="cid"
 		parent-conversation-id-parameter="pid" />
-		
+	<!-- 	
 	<resteasy:application resource-path-prefix="/rest"/>
-
+ -->
 	<!-- Make sure this URL pattern is the same as that used by the Faces Servlet -->
 	<web:hot-deploy-filter url-pattern="*.seam" />
 

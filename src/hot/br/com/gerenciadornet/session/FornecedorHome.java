@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Set;
 
 import javax.persistence.EntityManager;
+import javax.persistence.Query;
 
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
@@ -122,12 +123,12 @@ public class FornecedorHome extends EntityHome<Fornecedor> {
 		Fornecedor fornecedor = 	getInstance();
 		String log = "";
 		
-		if(fornecedor.getVendedors().size() == 0 && fornecedor.getMarcas().size() == 0){
+		/*if(fornecedor.getVendedors().size() == 0 && fornecedor.getMarcas().size() == 0){
 			super.remove();
 			addFacesMessage("O fornecedor " + fornecedor.getNomeFantasia().toUpperCase() + " foi excluido com sucesso.", "");
 			log = LogUtil.logHistoricoDelete("Fornecedor", fornecedor.getCodFornecedor(), fornecedor.getNomeFantasia().toUpperCase());
 			
-		} else {		
+		} else {		*/
 			fornecedor.setInExclusao(true);
 			update();
 			log = LogUtil.logHistoricoDesativada("Fornecedor", fornecedor.getCodFornecedor(), fornecedor.getNomeFantasia().toUpperCase());
@@ -152,7 +153,7 @@ public class FornecedorHome extends EntityHome<Fornecedor> {
 			
 			
 			addFacesMessage(message.toString(), "");
-		}
+		//}
 		
 		Historico historico = new Historico(user, log, new Date(System.currentTimeMillis()));
 		entityManager.persist(historico);
@@ -189,6 +190,15 @@ public class FornecedorHome extends EntityHome<Fornecedor> {
 	public String persist() {
 		
 		Fornecedor fornecedor = getInstance();
+
+		Query query = entityManager.createQuery("select fornecedor from Fornecedor fornecedor where lower(fornecedor.nomeFantasia) = :fornecedor");
+		query.setParameter("fornecedor", fornecedor.getNomeFantasia().toLowerCase());
+		
+		if(query.getResultList().size() > 0){
+			addFacesMessage("Fornecedor com este Nome Fantasia já cadastrado.", "");
+			return null;
+		}
+		
 		fornecedor.setNomeFantasia(Util.formataNome(fornecedor.getNomeFantasia()));
 		fornecedor.setRazaoSocial(Util.formataNome(fornecedor.getRazaoSocial()));
 		

@@ -52,8 +52,20 @@
             
 		</rich:simpleTogglePanel>
        
-        <ui:include src="/includes/includeBotoesPesquisarLimpar.xhtml" />
-
+        <div class="actionButtons">
+          <a:commandButton id="search" type="submit" value="Pesquisar" reRender="resultadoList, panelDiv, msnListaVazia, sc"/>
+           
+          <s:button id="reset" value="Limpar" includePageParams="false"/> 
+            		    
+	      <s:button view="/FornecedorEdit.xhtml"
+	                    id="create"
+	           propagation="none"
+	                 value="Novo Fornecedor">
+	            <f:param name="fornecedorCodFornecedor"/>
+	      </s:button>
+   		  <rich:hotKey key="return" handler="#{rich:element('search')}.click()"/>
+   		</div>
+      
     </h:form>
 	<h:form>
     <rich:panel>
@@ -165,16 +177,7 @@
     </div>
     </rich:panel>
 	</h:form>
-	
-       <s:div styleClass="actionButtons" rendered="#{empty from}">
-        <s:button view="/FornecedorEdit.xhtml"
-                    id="create"
-           propagation="none"
-                 value="Novo Fornecedor">
-            <f:param name="fornecedorCodFornecedor"/>
-        </s:button>
-    </s:div>
-
+	       
 </ui:define>
 
 </ui:composition>

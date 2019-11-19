@@ -1,0 +1,46 @@
+#bottom {
+ text-align: center;
+ padding: 10px;
+    background-color: #656a6f;
+}
+#bottom .copyright {
+	font-size: 0.7em;
+	color: #e6e6e6;
+	float:right;
+	padding-top: 4px;
+	margin-right: 10px;
+}
+#bottom ul {
+  list-style-type: none;
+}
+#bottom li {
+  float: right;
+}
+
+.btn-redes {
+  background-color: transparent; /* Blue background */
+  border: none; /* Remove borders */
+  color: white; /* White text */
+  padding: 0 5px 0 5px; /* Some padding */
+  font-size: 16px; /* Set a font size */
+  cursor: pointer; /* Mouse pointer on hover */
+}
+.btn-redes i {
+	position: relative;
+	top:1px;
+	font-size: 20px;
+}
+
+/* Darker background on mouse-over */
+.btn-redes:hover {
+	opacity: 0.8;
+	filter: alpha(opacity=50); /* For IE8 and earlier */
+}
+
+/* [celular] */
+@media screen and (max-width: 883px){
+/* Hide menu controle */
+#controle {
+	display: none;
+}
+}

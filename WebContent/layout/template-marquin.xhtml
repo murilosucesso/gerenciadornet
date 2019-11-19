@@ -1,0 +1,190 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<f:view xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:a="http://richfaces.org/a4j"
+	xmlns:s="http://jboss.com/products/seam/taglib" contentType="text/html">
+<html>
+
+<head>
+<title></title>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+<script src="js/menu_lateral.js"></script> 
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"/>
+<link rel="stylesheet" type="text/css" href="layout/css/menu_lateral.css" media="screen" />
+<link rel="stylesheet" type="text/css" href="layout/css/pagina.css" media="screen" />
+<link rel="stylesheet" type="text/css" href="layout/css/topo.css" media="screen" />
+<link rel="stylesheet" type="text/css" href="layout/css/bottom.css" media="screen" />
+<link rel="stylesheet" type="text/css" href="layout/css/responsive.css" media="screen" />
+<link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet"/>
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+<link id="favicon" rel="icon" href="img#{facesContext.externalContext.requestContextPath}/favicon.ico"/>
+</head>
+
+<body>
+
+<div class="grid-container">
+
+	<!-- topo -->
+		
+	<!-- logo -->
+	<div class="topo">
+	<a href="javascript:void(0);" class="ico-menu" onclick="myFunction()"><i class="fa fa-bars"></i></a>
+	<div id="logo"></div>
+	<div id="logo-ahaus"></div>
+	<div id="controle">
+		<ul>
+			<li><a href="#" class="btn"><i class="material-icons md-36 red-color2">close</i> SAIR</a></li>
+			<li><a href="javascript:void(0);" class="btn" onclick="tema()"><i class="material-icons md-36 gray-color">color_lens</i>Tema</a></li>
+			<li><a href="#" class="btn"><i class="material-icons md-36 gray-color">home</i> Inicial</a></li>
+			<li><a href="#" class="btn"><i class="material-icons md-36 green2-color">check_circle</i> Perfil</a></li>
+			<li><a href="#" class="btn"><i class="material-icons md-36 green-color">account_circle</i> Michael jackson</a></li>
+		</ul>
+	</div>
+	
+	<!-- menu topo celular -->
+	<div id="menu_mobile">
+	<div id="menu-cel" class="">
+		<ul class="margin-zero">
+			<li class="menu_celular_children"><a href="#" class="btn"><i class="material-icons md-36 gray-color">home</i> Inicial</a></li>
+			<li class="menu_celular_children"><a href="#" class="btn"><i class="material-icons md-36 green2-color">check_circle</i> Perfil</a></li>
+			<li class="menu_celular_children"><a href="#" class="btn"><i class="material-icons md-36 green-color">account_circle</i> Michael jackson</a></li>
+			<li class="menu_celular_children"><a href="#" class="btn"><i class="material-icons md-36 red-color2">close</i> SAIR</a></li>
+		</ul>
+	</div>
+	<div id="menu-cel2" class="">
+			<div id="menu_lateral_wrapper">
+	<a href="#" class="accordion"><i class="material-icons gray-color">dashboard</i> Gr&aacute;ficos</a>
+	<div class="panel">
+		<ul class="margin-zero">		
+			<li class="menu_lateral_children"><a href="sliders-ios-slider-default.html"><i class="material-icons gray-color">keyboard_arrow_right</i>Link</a></li>
+			<li class="menu_lateral_children"><a href="sliders-ios-slider-default.html"><i class="material-icons gray-color">keyboard_arrow_right</i>Link</a></li>
+			<li class="menu_lateral_children"><a href="sliders-ios-slider-default.html"><i class="material-icons gray-color">keyboard_arrow_right</i>Link</a></li>
+		</ul>
+	</div>
+
+	<a href="#" class="accordion"><i class="material-icons gray-color">account_box</i> Conta</a>
+	<div class="panel">
+		<ul class="margin-zero">
+			<li class="menu_lateral_children"><a href="sliders-ios-slider-default.html"><i class="material-icons gray-color">keyboard_arrow_right</i>Link</a></li>
+			<li class="menu_lateral_children"><a href="sliders-ios-slider-default.html"><i class="material-icons gray-color">keyboard_arrow_right</i>Link</a></li>
+			<li class="menu_lateral_children"><a href="sliders-ios-slider-default.html"><i class="material-icons gray-color">keyboard_arrow_right</i>Link</a></li>
+		</ul>
+	</div>
+
+	<a href="#" class="accordion"><i class="material-icons gray-color">info</i> Informa&ccedil;&otilde;es</a>
+	<div class="panel">
+		<ul class="margin-zero">
+			<li class="menu_lateral_children"><a href="sliders-ios-slider-default.html"><i class="material-icons gray-color">keyboard_arrow_right</i>Link</a></li>
+			<li class="menu_lateral_children"><a href="sliders-ios-slider-default.html"><i class="material-icons gray-color">keyboard_arrow_right</i>Link</a></li>
+			<li class="menu_lateral_children"><a href="sliders-ios-slider-default.html"><i class="material-icons gray-color">keyboard_arrow_right</i>Link</a></li>
+		</ul>
+	</div>
+	</div>
+	</div>
+	</div>
+	</div>
+	<!-- logo FIM -->
+	
+	<!-- topo FIM -->
+	<!-- area para inserir o conteudo -->
+	<div class="area1">
+		<ui:insert name="body" />
+	</div>
+	<!-- area para inserir o conteudo FIM -->
+
+	
+	<div class="menu">
+	<div id="menu_lateral_wrapper">
+	<a href="#" class="accordion"><i class="material-icons gray-color">dashboard</i> Gráficos</a>
+	<div class="panel">
+		<ul class="margin-zero">
+			<li class="menu_lateral_children">
+				<s:link view="/VendaEdit.xhtml" value="Nova Venda/Orçamento"  action="#{conversation.killAllOthers()}"
+				id="NovaVendaOrcamentoId" includePageParams="false" propagation="none"/><i class="material-icons gray-color"></i>
+			</li>
+			<li class="menu_lateral_children"><a href="sliders-ios-slider-default.html"><i class="material-icons gray-color">keyboard_arrow_right</i>Link</a></li>
+			<li class="menu_lateral_children"><a href="sliders-ios-slider-default.html"><i class="material-icons gray-color">keyboard_arrow_right</i>Link</a></li>
+		</ul>
+	</div>
+
+	<a href="#" class="accordion"><i class="material-icons gray-color">account_box</i> Conta</a>
+	<div class="panel">
+		<ul class="margin-zero">
+			<li class="menu_lateral_children"><a href="sliders-ios-slider-default.html"><i class="material-icons gray-color">keyboard_arrow_right</i>Link</a></li>
+			<li class="menu_lateral_children"><a href="sliders-ios-slider-default.html"><i class="material-icons gray-color">keyboard_arrow_right</i>Link</a></li>
+			<li class="menu_lateral_children"><a href="sliders-ios-slider-default.html"><i class="material-icons gray-color">keyboard_arrow_right</i>Link</a></li>
+		</ul>
+	</div>
+
+	<a href="#" class="accordion"><i class="material-icons gray-color">info</i> Informa&ccedil;&otilde;es</a>
+	<div class="panel">
+		<ul class="margin-zero">
+			<li class="menu_lateral_children"><a href="sliders-ios-slider-default.html"><i class="material-icons gray-color">keyboard_arrow_right</i>Link</a></li>
+			<li class="menu_lateral_children"><a href="sliders-ios-slider-default.html"><i class="material-icons gray-color">keyboard_arrow_right</i>Link</a></li>
+			<li class="menu_lateral_children"><a href="sliders-ios-slider-default.html"><i class="material-icons gray-color">keyboard_arrow_right</i>Link</a></li>
+		</ul>
+	</div>
+	</div>
+  </div>
+  <div id="bottom" class="bottom">
+   
+	<div class="redes-sociais">
+		<ul class="margin-zero">
+			<li><a href="#" class="btn-redes"><i class="fa fa-facebook-official"></i></a></li>
+			<li><a href="#" class="btn-redes"><i class="fa  fa-google-plus-circle"></i></a></li>
+			<li><a href="#" class="btn-redes"><i class="fa fa-linkedin-square"></i></a></li>
+		</ul>
+	</div>
+	
+	<div class="copyright"><strong>AHAUS TI</strong> &copy; TODOS OS DIREITOS RESERVADOS</div>
+  </div>
+</div>
+
+<!-- SCRIPTS -->
+<script>
+// animacao do menu lateral
+var acc = document.getElementsByClassName("accordion");
+var i;
+
+for (i = 0; acc.length > i ; i++) {
+  acc[i].addEventListener("click", function() {
+    this.classList.toggle("active");
+    var panel = this.nextElementSibling;
+    if (panel.style.maxHeight){
+      panel.style.maxHeight = null;
+    } else {
+      panel.style.maxHeight = panel.scrollHeight + "px";
+    } 
+  });
+}
+
+//esconder e mostrar o menu mobile
+function myFunction() {
+  var x = document.getElementById("menu_mobile");
+  if (x.style.display === "block") {
+    x.style.display = "none";
+  } else {
+    x.style.display = "block";
+  }
+}
+
+//trocar tema
+function tema() {
+  var x = document.getElementById("meu_tema");
+  if (x.disabled === "true") {
+    x.disabled = "false";
+  } else {
+    x.disabled = "true";
+  }
+}
+</script>
+</body>
+</html>
+</f:view>

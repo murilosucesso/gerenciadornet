@@ -12,11 +12,15 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 	<title>Gerenciador Net</title>
 	
-	<link id="favicon" rel="icon" href="img#{facesContext.externalContext.requestContextPath}/favicon.ico"/>
+	<link id="favicon" rel="icon" href="img/favicon.ico"/>
 	
+	<!-- <link href="/stylesheet/fontawesome/css/all.css" rel="stylesheet"/>
+	 -->
 	<a:loadStyle src="resource:///stylesheet/theme.xcss" />
 	<a:loadStyle src="/stylesheet/theme.css" />
 	<a:loadStyle src="/stylesheet/gerenciadornet.css" />
+	<a:loadStyle src="/stylesheet/fontawesome/css/all.css" />
+	<a:loadStyle src="/stylesheet/template.css" />
 	<f:loadBundle basename="messages_en" var="messages" />
 	<ui:insert name="head" /> 
 	
@@ -30,13 +34,32 @@
 	</script>
 </head>
 
-<body class="larguraPagina" onload="escreverTitle()">
+<body onload="escreverTitle()">
 
-	<a:outputPanel rendered="#{identity.loggedIn}" >
+	<!-- <a:outputPanel rendered="#{identity.loggedIn}" >
 		<ui:include src="testeira.xhtml">
 			<ui:param name="projectName" value="DENTAL DF LTDA" />
 		</ui:include>
-	</a:outputPanel>
+	</a:outputPanel> -->
+	<div class="logoempresa">
+    	<img src="img#{facesContext.externalContext.requestContextPath}/logo.png" alt="Home" height="75px"/>	
+    </div>
+	<div class="topnav">    
+		
+		<s:link id="menuLogoutId" view="/homeLite.xhtml" action="#{identity.logout}" 
+			actionListener="#{conversation.killAllOthers()}" rendered="#{identity.loggedIn}" styleClass="textoMedioCinza2" propagation="none">
+			<i class="fas fa-power-off fa-2x"></i>Sair</s:link>
+
+	    <s:link id="menuHomeId" view="/home.xhtml" actionListener="#{conversation.killAllOthers()}"  
+	    	propagation="none" styleClass="textoMedioCinza2"><i class="fas fa-home fa-2x"></i>Home</s:link>
+	    	
+	    <a><i class="fas fa-user-friends fa-2x"></i> #{user.perfil.nomePerfil} </a>
+	    <a><i class="fas fa-user-circle fa-2x"></i> #{credentials.username} </a>	 	
+	</div>
+	
+	<div class="toplogo">
+	    <img src="img/logo_ahausti.png" alt="Ahaus TI"/>
+	</div>
 	
 	<ui:include src="menu.xhtml" />
 
@@ -53,15 +76,12 @@
 		<ui:insert name="body" />
 
 	</div>
-
+	
 	<div class="footer">
-		<p class="textoMedioCinza" align="center">
-			<a href="#" class="textoMedioCinza">Sobre a Empresa</a> | <a href="#"
-				class="textoMedioCinza">Aplicações</a> | <a href="#"
-				class="textoMedioCinza">Entre em Contato</a>
-		</p>
-		<p class="textoMedioCinza" align="center">Desenvolvido por AHAUS
-			TECNOLOGIA DA INFORMAÇÃO - AHAUSTI &#174;</p>
+	    <div>
+	        <a href="#">Sistema GerenciadorNET v1.0.0 - Created by: ©AhausTI</a>
+	    	<i class="far fa-envelope fa-lg"></i><a href="#">Fale conosco: suporteahausti@gmail.com </a>
+	    </div> 	   
 	</div>
 
 </body>

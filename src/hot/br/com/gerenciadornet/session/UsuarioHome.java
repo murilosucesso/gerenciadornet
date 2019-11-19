@@ -16,6 +16,7 @@ import br.com.gerenciadornet.entity.Acesso;
 import br.com.gerenciadornet.entity.AcessoDefault;
 import br.com.gerenciadornet.entity.AcessoId;
 import br.com.gerenciadornet.entity.Compra;
+import br.com.gerenciadornet.entity.Empresa;
 import br.com.gerenciadornet.entity.Endereco;
 import br.com.gerenciadornet.entity.Historico;
 import br.com.gerenciadornet.entity.Transacao;
@@ -41,6 +42,9 @@ public class UsuarioHome extends EntityHome<Usuario> {
 	
 	@In
 	Usuario user;
+	
+	@In
+	Empresa empresa;
 	
 	String confirmacaoSenha;
 	
@@ -139,6 +143,11 @@ public class UsuarioHome extends EntityHome<Usuario> {
 	@Override
 	public String persist() {
 		
+		if(!validarQtdUsuarios()){
+			addFacesMessage("Quantidade de usuários superior ao contratado.", "");
+			return null;
+		}
+		
 		Usuario usuario = getInstance();
 		usuario.setInExclusao(false);
 		
@@ -182,6 +191,18 @@ public class UsuarioHome extends EntityHome<Usuario> {
 		addFacesMessage("Login ja cadastrado.", "");
 		return null;
 				
+	}
+	
+	private boolean validarQtdUsuarios(){
+		
+		Long qtdUusarios = (Long) entityManager
+				.createQuery("select count(usuario) from Usuario usuario where usuario.inExclusao = 0")
+				.getSingleResult();
+		
+		if(qtdUusarios++ > empresa.getQtdUsuarios()){
+			return false;
+		}
+		return true;
 	}
 	
 	@Override

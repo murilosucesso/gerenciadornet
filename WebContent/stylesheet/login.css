@@ -1,7 +1,7 @@
 @charset "UTF-8";
 /* imagem de fundo */
 body {
-	background: url(img/bg.jpg); /*para trocar a imagem, basta coloca-la na pasta img e mudar aqui se for necessario*/
+	background: url(../img/bg.jpg); /*para trocar a imagem, basta coloca-la na pasta img e mudar aqui se for necessario*/
 	background-size: cover !important;
 	margin: 8rem 0 0 0 !important;
     font-family: "Nunito Sans",sans-serif !important;

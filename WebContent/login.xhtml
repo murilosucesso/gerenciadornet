@@ -3,6 +3,7 @@
 <f:view xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:a="http://richfaces.org/a4j"
 	xmlns:h="http://java.sun.com/jsf/html" contentType="text/html">
 
 <html>
@@ -13,7 +14,7 @@
     <link id="favicon" rel="icon"  href="img#{facesContext.externalContext.requestContextPath}/favicon.ico"/>	
     <title>Gerenciador NET</title>
     
-	<link href="login.css" rel="stylesheet"/>
+	<link href="stylesheet/login.css" rel="stylesheet"/>
 </head>
 <body>
 	<div id="wrapper2">
@@ -22,16 +23,23 @@
 		<div id="login-box" class="text-center">
 			<div class="login-logo">
 			<span>
-				<a href="#"><img alt="logomarca" src="img#{facesContext.externalContext.requestContextPath}/logo_gn.png" border="0" /></a>
+				<a href="#"><img alt="logomarca" src="img/logo_gn.png" border="0" /></a>
 			</span>			
 			</div>
 			<!-- form -->
 			<h:form id="loginForm" styleClass="login-form text-left">
 				<span style="font-size:11px;">Por favor, faça o seu <b>login</b></span>
+				
+				<a:outputPanel ajaxRendered="true" id="panelGlobalMessages">
+					<h:messages id="messages" globalOnly="false" styleClass="message"
+						errorClass="errormsg" infoClass="infomsg" warnClass="warnmsg"
+						rendered="#{showGlobalMessages != 'false'}" />
+				</a:outputPanel>
+						
 			<div class="container">
-				<h:inputText  id="username" value="#{credentials.username}" placeholder="Seu nome de usu&aacute;rio" required="true"/>
+				<h:inputText  id="username" value="#{credentials.username}" requiredMessage="Preencha o nome do usuário" placeholder="Seu nome de usu&aacute;rio" required="true"/>
 
-				<h:inputSecret id="password" value="#{credentials.password}" placeholder="Entre sua senha" required="true"/>
+				<h:inputSecret id="password" value="#{credentials.password}" requiredMessage="Preencha a senha" placeholder="Entre sua senha" required="true"/>
 																		                
 				<h:commandButton id="submit" styleClass="my-button" value="Entrar" action="#{identity.login}" />   
 				     
